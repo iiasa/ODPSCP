@@ -1,3 +1,3 @@
-# ODPSCP 1.0
+## News and updates
 
-* Initial CRAN submission.
+* Initial Publication of the protocol and elicitation of feedback.

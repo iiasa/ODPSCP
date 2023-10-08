@@ -3,14 +3,156 @@
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @import shiny
+#' @import bs4Dash
+#' @import waiter
 #' @noRd
 app_ui <- function(request) {
+
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
-    # Your application UI logic
-    fluidPage(
-      h1("ODSCP")
+    # Use Shiny feedback
+    shinyFeedback::useShinyFeedback(),
+    # Use shinyJS
+    shinyjs::useShinyjs(),
+    # --- #
+    # Add the overall dashboard
+    bs4Dash::dashboardPage(
+      # Preloader using waiter
+      preloader = list(html = tagList(spin_1(), "Loading ..."), color = "#3c8dbc"),
+      # freshTheme =  odpscp_theme(), # Theme designed with fresh
+      # Other options
+      dark = FALSE,
+      scrollToTop = TRUE,
+      fullscreen = FALSE,
+      help = NULL, # Default enable tooltips
+      # controlbar = dashboardControlbar(),
+      # Define header and footer
+      header = bs4Dash::dashboardHeader(
+        title = dashboardBrand(
+          title = "A Protocol for SCP",
+          color = "primary",
+          opacity = 0,
+          href = NULL,
+          image = "logo.png"
+        ),
+        status = "white",
+        border = TRUE,
+        compact = FALSE,
+        leftUi = NULL, rightUi = NULL
+        ),
+      footer = bs4Dash::dashboardFooter(
+        fixed = FALSE,
+        left = a(
+          href = "https://github.com/iiasa/ODPSCP",
+          target = "_blank",
+          "Github"
+        ),
+        right = img(
+          href = "iiasa-logo.png",
+          target = "_blank"
+        )
+      ),
+      # Setup sidebar #
+      sidebar = bs4Dash::dashboardSidebar(
+        skin = "light",
+        status = "primary",
+        elevation = 3,
+        collapsed = FALSE,
+        minified = TRUE,
+        expandOnHover = TRUE,
+        fixed = TRUE,
+        id = NULL,
+        customArea = NULL,
+        #### Define sidebar menu ####
+        bs4Dash::sidebarMenu(
+          id = "sidebarmenu",
+          bs4Dash::menuItem(
+            "Home",
+            tabName = "Home",
+            icon = icon("home")
+          ),
+          bs4Dash::menuItem(
+            text = "Protocol",
+            startExpanded = TRUE,
+            # icon = icon("bars"),
+            bs4Dash::menuSubItem(
+              "Overview",
+              tabName = "Overview",
+              icon = icon("file-lines")
+            ),
+            bs4Dash::menuSubItem(
+              "Design",
+              tabName = "Design",
+              icon = icon("object-group")
+            ),
+            bs4Dash::menuSubItem(
+              "Specification",
+              tabName = "Specification",
+              icon = icon("tree")
+            ),
+            bs4Dash::menuSubItem(
+              "Context",
+              tabName = "Context",
+              icon = icon("users-rectangle")
+            ),
+            bs4Dash::menuSubItem(
+              "Planning",
+              tabName = "Planning",
+              icon = icon("map")
+            )
+          ),
+          sidebarHeader("Import/Export"),
+          bs4Dash::menuItem(
+            "Import protocol",
+            tabName = "Import",
+            icon = icon("upload")
+          ),
+          bs4Dash::menuItem(
+            "Export protocol",
+            tabName = "Export",
+            icon = icon("download")
+          ),
+          sidebarHeader("Info"),
+          bs4Dash::menuItem(
+            "News",
+            tabName = "News",
+            icon = icon("newspaper")
+          ),
+          bs4Dash::menuItem(
+            "Issues and Feedback",
+            href =  "https://github.com/iiasa/ODPSCP/issues",
+            newTab = TRUE,
+            icon = icon("question")
+          ),
+          bs4Dash::menuItem(
+            "Source code",
+            href =  "https://github.com/iiasa/ODPSCP",
+            newTab = TRUE,
+            icon = icon("code")
+          )
+        )
+      ), # Sidebar end
+      #### Body with sidebar menu ----
+      body = bs4Dash::dashboardBody(
+        shinyjs::useShinyjs(),
+        # title page --------------------------------------------------------------
+        tabItems(
+          # Starting site
+          mod_Home_ui("Home_1"),
+            # Protocol
+            mod_Overview_ui("Overview_1"),
+            mod_Design_ui("Design_1"),
+            mod_Specification_ui("Specification_1"),
+            mod_Context_ui("Context_1"),
+            mod_Planning_ui("Planning_1"),
+          # News
+          mod_News_ui("News_1"),
+          # Import
+          mod_Import_ui("Import_1"),
+          mod_Export_ui("Export_1")
+        )
+      )
     )
   )
 }
@@ -36,6 +178,5 @@ golem_add_external_resources <- function() {
       app_title = "ODSCP"
     )
     # Add here other external resources
-    # for example, you can add shinyalert::useShinyalert()
   )
 }

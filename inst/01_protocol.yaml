@@ -1,0 +1,117 @@
+# Basic information
+protocol:
+  name: ODPSCP
+  version: '1.0'
+  repository: 'https://github.com/iiasa/ODPSCP'
+  website: ''
+  last_updated: 2020-10-06
+
+#### Overview ####
+overview:
+  title:
+    render-id: 1
+    render-group: 'study_box'
+    question: 'What is the title of the conducted study?'
+    description: 'This field records basic information about the study and its scientific context.'
+    fieldtype: 'textbox'
+    mandatory: true
+
+  authors:
+    render-id: 2
+    render-group: 'study_box'
+    question: 'List the authors of the study.'
+    description: 'Create a list of all authors with link to their ORCID if specified.'
+    fieldtype: 'multifieldselection'
+    mandatory: true
+
+  corresponding:
+    render-id: 3
+    render-group: 'study_box'
+    question: 'Email of corresponding author.'
+    description: 'The email address of the corresponding author.'
+    fieldtype: 'textbox'
+    mandatory: true
+
+  studylink:
+    render-id: 4
+    render-group: 'study_box'
+    question: 'Link to the published study.'
+    description: 'Enter a Digital Object Identifier or any other permanent link.'
+    fieldtype: 'textbox'
+    mandatory: false
+
+  extent:
+    render-id: 1
+    render-group: 'study_location'
+    question: 'What is the target extent of the planning study?'
+    description: 'Spatial planning can be conducted at a range of different scales and this field aims to provide the various options. Local refers to a study at any given single site, National to planning at a country level, Regional for studies beyond single countries (e.g. bioregions), Continental for entire continents (e.g. Europe, Africa) and global for truly global studies.'
+    fieldtype: 'dropdown'
+    options:
+      - local
+      - national
+      - regional
+      - continental
+      - global
+    mandatory: true
+
+  location:
+    render-id: 2
+    render-group: 'study_location'
+    question: 'What is the location of the study?'
+    description: 'Open text description of the study location.'
+    fieldtype: 'textbox'
+    mandatory: true
+
+  realm:
+    render-id: 3
+    render-group: 'study_location'
+    question: 'What is the biophysical realm in which the planning work was conducted?'
+    description: 'Spatial planning have been carried out within and across different realms. Here we record where a study has been conducted. Note that multiple realms can be selected!'
+    fieldtype: 'multiplechoice'
+    options:
+      - Terrestrial (above ground)
+      - Terrestrial (below ground)
+      - Freshwater
+      - Marine
+    mandatory: true
+
+  output_availability:
+    render-id: 1
+    render-group: 'data_availability'
+    question: 'Are the used input data made available and if so where?'
+    description: 'If set to true, please enter a link to the data storage repository.'
+    fieldtype: 'checkbox'
+    fieldtype_conditional: 'textbox'
+    mandatory: true
+
+  input_availability:
+    render-id: 2
+    render-group: 'data_availability'
+    question: 'Are the created output results made openly available and if so where?'
+    description: 'If set to true, please enter a link to the data storage repository.'
+    fieldtype: 'checkbox'
+    fieldtype_conditional: 'textbox'
+    mandatory: true
+
+  reproducibility:
+    render-id: 2
+    render-group: 'data_availability'
+    question: 'Have analytical scripts or steps to reproduce the results been made available?'
+    description: 'If set to true, please enter a link to the code repository'
+    fieldtype: 'checkbox'
+    fieldtype_conditional: 'textbox'
+    mandatory: true
+
+#### Design ####
+design:
+  framework:
+    render-id: 1
+    render-group: 'study_design'
+    question: 'Does the planning work follow a specific analytical framework?'
+    description: 'Possible answers include references to a specific published framework, or if this has been defined in the study.'
+    fieldtype: 'dropdown'
+    options:
+      - reference
+      - defined in study
+      - none
+    mandatory: false

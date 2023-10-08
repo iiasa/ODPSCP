@@ -16,7 +16,7 @@
 ## Run checks ----
 ## Check the package before sending to prod
 devtools::check()
-rhub::check_for_cran()
+# rhub::check_for_cran()
 
 # Deploy
 
@@ -27,33 +27,33 @@ devtools::build()
 
 ## RStudio ----
 ## If you want to deploy on RStudio related platforms
-golem::add_rstudioconnect_file()
-golem::add_shinyappsio_file()
-golem::add_shinyserver_file()
+# golem::add_rstudioconnect_file(open = FALSE)
+# golem::add_shinyappsio_file()
+# golem::add_shinyserver_file(open = FALSE)
 
 ## Docker ----
 ## If you want to deploy via a generic Dockerfile
-golem::add_dockerfile_with_renv()
+# golem::add_dockerfile_with_renv()
 
 ## If you want to deploy to ShinyProxy
-golem::add_dockerfile_with_renv_shinyproxy()
+# golem::add_dockerfile_with_renv_shinyproxy()
 
-
+# Internally hosted at IIASA
 # Deploy to Posit Connect or ShinyApps.io
 # In command line.
-rsconnect::deployApp(
-  appName = desc::desc_get_field("Package"),
-  appTitle = desc::desc_get_field("Package"),
-  appFiles = c(
-    # Add any additional files unique to your app here.
-    "R/",
-    "inst/",
-    "data/",
-    "NAMESPACE",
-    "DESCRIPTION",
-    "app.R"
-  ),
-  appId = rsconnect::deployments(".")$appID,
-  lint = FALSE,
-  forceUpdate = TRUE
-)
+# rsconnect::deployApp(
+#   appName = desc::desc_get_field("Package"),
+#   appTitle = desc::desc_get_field("Package"),
+#   appFiles = c(
+#     # Add any additional files unique to your app here.
+#     "R/",
+#     "inst/",
+#     "data/",
+#     "NAMESPACE",
+#     "DESCRIPTION",
+#     "app.R"
+#   ),
+#   appId = rsconnect::deployments(".")$appID,
+#   lint = FALSE,
+#   forceUpdate = TRUE
+# )

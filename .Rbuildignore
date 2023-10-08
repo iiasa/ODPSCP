@@ -10,3 +10,6 @@ $run_dev.*
 ^README\.Rmd$
 ^LICENSE\.md$
 ^CODE_OF_CONDUCT\.md$
+^\.github$
+^app\.R$
+^rsconnect$
