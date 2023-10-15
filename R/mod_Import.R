@@ -10,8 +10,20 @@
 mod_Import_ui <- function(id){
   ns <- NS(id)
 
-  tabItem(tabName = "Import")
-  # https://shiny.posit.co/r/gallery/widgets/file-upload/
+  tabItem(tabName = "Import",
+          # https://shiny.posit.co/r/gallery/widgets/file-upload/
+          fluidPage(
+            box(
+              title = "Not yet implemented",
+              closable = FALSE,
+              width = 12,status = "danger",
+              solidHeader = TRUE,
+              collapsible = FALSE,
+              "To be added..."
+            )
+          )
+  )
+
 }
 
 #' Import Server Functions

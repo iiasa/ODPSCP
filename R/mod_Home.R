@@ -69,7 +69,7 @@ mod_Home_ui <- function(id){
       shinyWidgets::actionBttn(
         inputId = "start_new_protocol",
         label = "Start a new protocol",
-        style = "gradient",
+        style = "float",
         color = "royal",
         size = "md",
         block = TRUE,
