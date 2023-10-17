@@ -88,8 +88,9 @@ overview:
     render-id: 'inputavailability'
     render-group: 'data_availability'
     question: 'Are the used input data made available and if so where?'
-    description: 'If set to true, please enter a link to the data storage repository.'
+    description: 'If applicable please enter a link to the data storage repository.'
     fieldtype: 'checkbox'
+    fieldtype_conditional_id: 'inputdata'
     fieldtype_conditional: 'textbox'
     mandatory: true
 
@@ -97,9 +98,10 @@ overview:
     render-nr: 2
     render-id: 'outputavailability'
     render-group: 'data_availability'
-    question: 'Are the created output results made openly available and if so where?'
+    question: 'Are the created outputs made openly available and if so where?'
     description: 'If set to true, please enter a link to the data storage repository.'
     fieldtype: 'checkbox'
+    fieldtype_conditional_id: 'outputdata'
     fieldtype_conditional: 'textbox'
     mandatory: true
 
@@ -110,6 +112,7 @@ overview:
     question: 'Have analytical scripts or steps to reproduce the results been made available?'
     description: 'If set to true, please enter a link to the code repository'
     fieldtype: 'checkbox'
+    fieldtype_conditional_id: 'outputcode'
     fieldtype_conditional: 'textbox'
     mandatory: true
 

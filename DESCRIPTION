@@ -26,6 +26,7 @@ Imports:
     htmltools,
     qs,
     readr,
+    credentials,
     tidyverse,
     pkgload
 Encoding: UTF-8
