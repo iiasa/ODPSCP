@@ -14,6 +14,15 @@ mod_News_ui <- function(id){
           fluidRow(
             column(4,
                    includeMarkdown("NEWS.md")
+            ),
+            br(),
+            hr(),
+            box(
+              title = "R Session Info",
+              solidHeader = TRUE,
+              collapsed = TRUE,
+              width = 12,
+              verbatimTextOutput(ns("Rsession"))
             )
           )
   ) # End of tabItem
@@ -25,6 +34,10 @@ mod_News_ui <- function(id){
 mod_News_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
+    output$Rsession <- renderPrint(
+      print(utils::sessionInfo())
+    )
 
   })
 }

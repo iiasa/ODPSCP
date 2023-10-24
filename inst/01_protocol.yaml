@@ -1,10 +1,10 @@
 # Basic information
 protocol:
   name: ODPSCP
-  version: '1.0'
+  version: '0.1'
   repository: 'https://github.com/iiasa/ODPSCP'
   website: ''
-  last_updated: 2020-10-06
+  last_updated: 2023-10-22
 
 #### Overview ####
 overview:
@@ -90,7 +90,7 @@ overview:
     question: 'Are the used input data made available and if so where?'
     description: 'If applicable please enter a link to the data storage repository.'
     fieldtype: 'checkbox'
-    fieldtype_conditional_id: 'inputdata'
+    fieldtype_conditional_render-id: 'inputdata'
     fieldtype_conditional: 'textbox'
     mandatory: true
 
@@ -101,7 +101,7 @@ overview:
     question: 'Are the created outputs made openly available and if so where?'
     description: 'If set to true, please enter a link to the data storage repository.'
     fieldtype: 'checkbox'
-    fieldtype_conditional_id: 'outputdata'
+    fieldtype_conditional_render-id: 'outputdata'
     fieldtype_conditional: 'textbox'
     mandatory: true
 
@@ -112,21 +112,189 @@ overview:
     question: 'Have analytical scripts or steps to reproduce the results been made available?'
     description: 'If set to true, please enter a link to the code repository'
     fieldtype: 'checkbox'
-    fieldtype_conditional_id: 'outputcode'
+    fieldtype_conditional_render-id: 'outputcode'
     fieldtype_conditional: 'textbox'
     mandatory: true
 
 #### Design ####
 design:
-  framework:
+  aim:
     render-nr: 1
+    render-id: 'studyaim'
+    render-group: 'study_design'
+    question: 'What is the aim of the study?'
+    description: 'Desribe in 1-2 sentences what the study aims to achieve?'
+    fieldtype: 'textbox'
+    mandatory: true
+
+  framework:
+    render-nr: 2
     render-id: 'studyframework'
     render-group: 'study_design'
     question: 'Does the planning work follow a specific analytical framework?'
     description: 'Possible answers include references to a specific published framework, or if this has been defined in the study.'
     fieldtype: 'dropdown'
     options:
-      - reference
-      - defined in study
-      - none
+      - None
+      - Defined within study
+      - Reference
+    fieldtype_conditional_render-id: 'frameworkreference'
+    fieldtype_conditional: 'textbox'
+    mandatory: false
+
+  toc:
+    render-nr: 3
+    render-id: 'theoryofchange'
+    render-group: 'study_design'
+    question: 'Is there a theory of change underlying this work?'
+    description: 'Most SCP applications are applied rather than curiosity driven. The primary question here is whether the pathway to impact and influencing outcomes is clear.'
+    fieldtype: 'textbox'
+    mandatory: false
+
+  purpose:
+    render-nr: 1
+    render-id: 'studypurpose'
+    render-group: 'study_purpose'
+    question: 'What is the primary purpose of the study?'
+    description: 'Why was the planning was conducted. A range of commonly applied responses is provided.'
+    fieldtype: 'dropdown'
+    options:
+      - Area-based expansion
+      - Management improvement
+      - Action-based planning
+      - Monitoring and evaluation
+      - Other
+    fieldtype_conditional_render-id: 'otherpurpose'
+    fieldtype_conditional: 'textbox'
+    mandatory: true
+
+  multobj:
+    render-nr: 2
+    render-id: 'checkmultobj'
+    render-group: 'study_purpose'
+    question: 'Did the planning consider multiple objectives ?'
+    description: 'Were multiple, perhabs competing objectives persued in the planning for a horizontal integration, for example aligning biodiversity conservation and carbon stocks?'
+    fieldtype: 'radio'
+    fieldtype_conditional_render-id: 'multobj'
+    fieldtype_conditional: 'textbox'
+    mandatory: true
+
+  stakeholders:
+    render-nr: 1
+    render-id: 'checkstakeholders'
+    render-group: 'study_engagement'
+    question: 'Were stakeholders involved in the design of the study?'
+    description: 'Spatial plans are naturally context specific and different planning options might have different synergies or tradeoffs. To facilitate sucessful implementation it is thus important to consider stakeholders in the design of spatial plans'
+    fieldtype: 'radio'
+    fieldtype_conditional_render-id: 'stakeholderint'
+    fieldtype_conditional: 'dropdown'
+    conditional_options:
+      - Informed
+      - Consulted
+      - Involved
+      - Collaborated
+      - Co-design
+    mandatory: true
+
+  stakeholder_type:
+      render-nr: 2
+      render-id: 'stakeholdertype'
+      render-group: 'study_engagement'
+      question: 'What type of stakeholders were engaged?'
+      description: 'Engagement can happen at multiple levels and with different types of stakeholders. Here we record what type of stakeholders were engaged.'
+      fieldtype: 'dropdown'
+      options:
+        - Policy makers (International)
+        - Policy makers (National)
+        - Scientists
+        - NGOs
+        - General Public
+        - Youth
+      mandatory: false
+
+  stakeholder_method:
+      render-nr: 3
+      render-id: 'stakeholdermethod'
+      render-group: 'study_engagement'
+      question: 'How were stakeholders engaged?'
+      description: 'Describe in a few words how precisely stakeholder were engaged. For example when (conceptualization or start of the project) or how (workshops, interviews).'
+      fieldtype: 'textbox'
+      mandatory: false
+
+#### Specification ####
+#### Contextualization ####
+#### Prioritization ####
+prioritization:
+  software:
+    render-nr: 1
+    render-id: 'software'
+    render-group: 'study_software'
+    question: 'Which software or algorithmic approach was used to conduct the planning exercise?'
+    description: 'Select from common classes of algorithms available to end users'
+    fieldtype: 'dropdown'
+    options:
+      - Zonation
+      - Marxan
+      - prioritizr
+      - prioriactions
+      - RestOptr
+      - oppr
+      - CAPTAIN
+      - ROOT
+      - Custom
+      - Other
+    fieldtype_conditional_render-id: 'othersoftware'
+    fieldtype_conditional: 'textbox'
+    mandatory: true
+
+  versionnr:
+    render-nr: 2
+    render-id: 'versionnr'
+    render-group: 'study_software'
+    question: 'What is the version number of the algorithm approach?'
+    description: 'Enter a version number of the used software'
+    fieldtype: 'textbox'
+    mandatory: true
+
+  software_parameters:
+    render-nr: 3
+    render-id: 'parameters'
+    render-group: 'study_software'
+    question: 'Are there key parameters related to the solving of the planning problem?'
+    description: 'Records any specific parameters related to the prioritization that would be useful to know.'
+    fieldtype: 'textbox'
+    mandatory: false
+
+  solution_identification:
+    render-nr: 4
+    render-id: 'identsolution'
+    render-group: 'study_software'
+    question: 'How were the final priorities identified?'
+    description: 'Not always is there a single solution to the prioritization process. This field records how the final priorities (those reported in the study) were obtained.'
+    fieldtype: 'dropdown'
+    options:
+      - Targets achieved
+      - Budgets reached or costs exceeded
+      - External indicator
+      - Other
+    fieldtype_conditional_render-id: 'otheridentification'
+    fieldtype_conditional: 'textbox'
+    mandatory: true
+
+  performance:
+    render-nr: 1
+    render-id: 'evalperformance'
+    render-group: 'perfidenticators'
+    question: 'How was the performance of the obtained solution evaluated?'
+    description: 'Performance indicators can be used to identify the performance of the solution(s). Here we describe them.'
+    fieldtype: 'multifieldselection'
+    mandatory: false
+
+  otherperformance:
+    render-nr: 2
+    render-id: 'otherperformance'
+    render-group: 'perfidenticators'
+    question: 'Was the prioritization somehow differently evaluated?'
+    description: 'Any other form of performance evaluation applied?'
+    fieldtype: 'textbox'
     mandatory: false

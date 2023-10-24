@@ -18,6 +18,7 @@ Imports:
     shinydashboard,
     shinyFeedback,
     rsconnect,
+    sever,
     fresh,
     DT,
     bs4Dash,

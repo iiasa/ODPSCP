@@ -11,16 +11,12 @@ app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
-    # Use Shiny feedback
-    shinyFeedback::useShinyFeedback(),
-    # Use shinyJS
-    shinyjs::useShinyjs(),
     # --- #
     # Add the overall dashboard
     bs4Dash::dashboardPage(
       # Preloader using waiter
       preloader = list(html = tagList(spin_1(), "Loading ..."), color = "#3c8dbc"),
-      # freshTheme =  odpscp_theme(), # Theme designed with fresh
+      # freshTheme =  dark_theme(), # Theme designed with fresh
       # Other options
       dark = FALSE,
       scrollToTop = TRUE,
@@ -43,14 +39,22 @@ app_ui <- function(request) {
         ),
       footer = bs4Dash::dashboardFooter(
         fixed = FALSE,
-        left = a(
-          href = "https://github.com/iiasa/ODPSCP",
-          target = "_blank",
-          "Github"
+        left = tagList(
+          p("Protocol version: ", get_protocol_version(),
+            style = "padding-top: 10px; font-size: 14px; font-weight:bold;")
+          # a(
+          #   href = "https://github.com/iiasa/ODPSCP",
+          #   target = "_blank",
+          #   "Github"
+          # )
         ),
-        right = img(
-          href = "iiasa-logo.png",
-          target = "_blank"
+        right = tagList(
+          "IIASA BEC",
+          "(",format(Sys.Date(),"%Y"),")",
+          img(
+            href = "www/iiasa-logo.png",
+            target = "_blank"
+          )
         )
       ),
       # Setup sidebar #
@@ -66,6 +70,7 @@ app_ui <- function(request) {
         customArea = NULL,
         #### Define sidebar menu ####
         bs4Dash::sidebarMenu(
+          compact = TRUE,
           id = "sidebarmenu",
           bs4Dash::menuItem(
             "Home",
@@ -97,8 +102,8 @@ app_ui <- function(request) {
               icon = icon("users-rectangle")
             ),
             bs4Dash::menuSubItem(
-              "Planning",
-              tabName = "Planning",
+              "Prioritization",
+              tabName = "Prioritization",
               icon = icon("map")
             )
           ),
@@ -135,7 +140,6 @@ app_ui <- function(request) {
       ), # Sidebar end
       #### Body with sidebar menu ----
       body = bs4Dash::dashboardBody(
-        shinyjs::useShinyjs(),
         # title page --------------------------------------------------------------
         tabItems(
           # Starting site
@@ -145,7 +149,7 @@ app_ui <- function(request) {
             mod_Design_ui("Design_1"),
             mod_Specification_ui("Specification_1"),
             mod_Context_ui("Context_1"),
-            mod_Planning_ui("Planning_1"),
+            mod_Prioritization_ui("Prioritization_1"),
           # News
           mod_News_ui("News_1"),
           # Import
@@ -175,8 +179,14 @@ golem_add_external_resources <- function() {
     favicon(),
     bundle_resources(
       path = app_sys("app/www"),
-      app_title = "ODSCP"
-    )
+      app_title = "ODPSCP"
+    ),
+
     # Add here other external resources
+    # rintrojs::introjsUI(),
+    sever::useSever(),
+    waiter::use_waiter(),
+    shinyFeedback::useShinyFeedback(),
+    shinyjs::useShinyjs()
   )
 }

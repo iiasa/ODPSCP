@@ -134,7 +134,7 @@ mod_Overview_ui <- function(id){
             solidHeader = TRUE,
             status = "secondary",
             collapsible = FALSE,
-            textAreaInput(inputId = ns("studylocation"), label = "",
+            textAreaInput(inputId = ns("studylocation"), label = "Description",
                           placeholder = 'Qualitative description of the study location.',
                           height = "45px", width = "100%",resize = "vertical")
             ),
@@ -184,16 +184,16 @@ mod_Overview_ui <- function(id){
                 solidHeader = TRUE,
                 status = "gray",
                 collapsible = FALSE,
-                  # shinyWidgets::prettyToggle(
-                  #   inputId = ns('inputavailability'),
-                  #   label_on = "Yes",
-                  #   icon_on = icon("check"),
-                  #   status_on = "success",
-                  #   status_off = "danger",
-                  #   label_off = "No",
-                  #   icon_off = icon("remove")
-                  # ),
-                  textAreaInput(inputId = ns('inputdata'), label = "",
+                  shinyWidgets::prettyToggle(
+                    inputId = ns('inputavailability'),
+                    label_on = "Yes",
+                    icon_on = icon("check"),
+                    status_on = "success",
+                    status_off = "danger",
+                    label_off = "No",
+                    icon_off = icon("remove")
+                  ),
+                  textAreaInput(inputId = ns('inputdata'), label = "Input data",
                                 placeholder = 'If applicable please enter a link to the data storage repository.',
                                 height = "45px", width = "100%", resize = "none")
 
@@ -207,7 +207,16 @@ mod_Overview_ui <- function(id){
               solidHeader = TRUE,
               status = "gray",
               collapsible = FALSE,
-              textAreaInput(inputId = ns('outputdata'), label = "",
+              shinyWidgets::prettyToggle(
+                inputId = ns('outputavailability'),
+                label_on = "Yes",
+                icon_on = icon("check"),
+                status_on = "success",
+                status_off = "danger",
+                label_off = "No",
+                icon_off = icon("remove")
+              ),
+              textAreaInput(inputId = ns('outputdata'), label = "Output data",
                             placeholder = 'If applicable please enter a link to the data storage repository.',
                             height = "45px", width = "100%", resize = "none")
 
@@ -221,10 +230,18 @@ mod_Overview_ui <- function(id){
               solidHeader = TRUE,
               status = "gray",
               collapsible = FALSE,
-              textAreaInput(inputId = ns('outputcode'), label = "",
+              shinyWidgets::prettyToggle(
+                inputId = ns('codeavailability'),
+                label_on = "Yes",
+                icon_on = icon("check"),
+                status_on = "success",
+                status_off = "danger",
+                label_off = "No",
+                icon_off = icon("remove")
+              ),
+              textAreaInput(inputId = ns('outputcode'), label = "Analysis code",
                             placeholder = 'If applicable please enter a link to the code storage repository.',
                             height = "45px", width = "100%", resize = "none")
-
             )
           ) # End of column
         ) # End of fluid row
@@ -233,31 +250,31 @@ mod_Overview_ui <- function(id){
       # uiOutput("Overview_UI")
 
       # End of page button row
-      fluidRow(
-        column(width = 3),
-        column(width = 8,
-               # Add reset button
-               shinyWidgets::actionBttn(
-                 inputId = ns("reset"),
-                 label = "Clear all fields?",
-                 style = "simple",
-                 color = "danger",
-                 size = "md",
-                 block = FALSE,
-                 icon = icon("broom")
-               ),
-               # Add forward button
-               shinyWidgets::actionBttn(
-                 inputId = ns("next_design"),
-                 label = "Continue with the design",
-                 style = "simple",
-                 color = "royal",
-                 size = "md",
-                 block = FALSE,
-                 icon = icon("arrow-right")
-               )
-        )
-      ) # End of fluid row for buttons
+      # fluidRow(
+      #   column(width = 3),
+      #   column(width = 8,
+      #          # Add reset button
+      #          shinyWidgets::actionBttn(
+      #            inputId = ns("reset"),
+      #            label = "Clear all fields?",
+      #            style = "simple",
+      #            color = "danger",
+      #            size = "md",
+      #            block = FALSE,
+      #            icon = icon("broom")
+      #          ),
+      #          # Add forward button
+      #          shinyWidgets::actionBttn(
+      #            inputId = ns("next_design"),
+      #            label = "Continue with the design",
+      #            style = "simple",
+      #            color = "royal",
+      #            size = "md",
+      #            block = FALSE,
+      #            icon = icon("arrow-right")
+      #          )
+      #   )
+      # ) # End of fluid row for buttons
     ) # End of fluid page
   ) # End of tab
 
@@ -266,7 +283,7 @@ mod_Overview_ui <- function(id){
 #' Overview Server Functions
 #'
 #' @noRd
-mod_Overview_server <- function(id){
+mod_Overview_server <- function(id, results){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
@@ -276,6 +293,19 @@ mod_Overview_server <- function(id){
     # -------------------------------------------
 
     # Study overview page --------------------------------------------------------------
+
+    # Load all parameters in overview and add
+    ids <- get_protocol_ids(group = "overview")
+    observe({
+      for(id in ids){
+        if(id == "authors_table"){
+          results[[id]] <- data.frame(authors()) |> asplit(MARGIN = 1)
+        } else {
+          results[[id]] <- input[[id]]
+        }
+      }
+    })
+
     # Authors
     authors <- reactiveVal(
       data.frame(forename = character(0),
@@ -310,9 +340,23 @@ mod_Overview_server <- function(id){
       authors(modified_data)
     })
 
+    # ----- #
+    # Events for hiding data input boxes
+    observeEvent(input$inputavailability, {
+      shinyjs::toggle("inputdata")
+    })
+    observeEvent(input$outputavailability, {
+      shinyjs::toggle("outputdata")
+    })
+    observeEvent(input$codeavailability, {
+      shinyjs::toggle("outputcode")
+    })
+    # ----- #
+
+    # Bottom page buttons --------------------------------------------------------------
     # Final observe event to continue
     observeEvent(input$next_design, {
-      updateTabItems(session, "sidebarmenu", selected = "Design")
+      updateTabItems(session, inputId = ns("sidebarmenu"), selected = "Design")
     })
 
     # Clear all
