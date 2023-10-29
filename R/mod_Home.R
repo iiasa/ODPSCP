@@ -60,30 +60,36 @@ mod_Home_ui <- function(id){
                scientific community, publishers and editors and policy makers to make
                use of this protocol.",
                style= "font-size: 18px;"),
-             em(p("Please cite as follows:", style = "font-size: 18px;")),
-             p("<INSERT PREPRINT> DOI: ",
-               a(href = '', '', target = "_blank", .noWS = "outside"), style= "font-size: 18px;"),
+             # em(p("Please cite as follows:", style = "font-size: 18px;")),
+             # p("<INSERT PREPRINT> DOI: ",
+             #   a(href = '', '', target = "_blank", .noWS = "outside"), style= "font-size: 18px;"),
              hr(),br()
         )),
-      # Button to get started
-      shinyWidgets::actionBttn(
-        inputId = "start_new_protocol",
-        label = "Start a new protocol",
-        style = "float",
-        color = "royal",
-        size = "md",
-        block = TRUE,
-        icon = icon("play")
-      ),
-      column(width = 2)
-      )
+
+      # Button row
+      fluidRow(
+        column(width = 2),
+        column(width = 8,
+               # Button to get started
+               shinyWidgets::actionBttn(
+                 inputId = "start_new_protocol",
+                 label = "Start a new protocol",
+                 style = "float",
+                 color = "royal",
+                 size = "md",
+                 block = TRUE,
+                 icon = icon("play")
+               )
+          )
+        )
+      ) # End Fluid page
     )
 }
 
 #' Home Server Functions
 #'
 #' @noRd
-mod_Home_server <- function(id){
+mod_Home_server <- function(id, results){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 

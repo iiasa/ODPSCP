@@ -65,7 +65,7 @@ app_ui <- function(request) {
         collapsed = FALSE,
         minified = TRUE,
         expandOnHover = TRUE,
-        fixed = TRUE,
+        fixed = FALSE,
         id = NULL,
         customArea = NULL,
         #### Define sidebar menu ####

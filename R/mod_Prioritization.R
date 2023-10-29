@@ -118,6 +118,7 @@ mod_Prioritization_ui <- function(id){
                        DT::DTOutput(outputId = ns("perfidenticators")),
                        actionButton(inputId = ns("add_indicator"), label = "Add a new indicator", icon = icon("plus")),
                        actionButton(inputId = ns("remove_indicator"), label = "Remove last indicator", icon = icon("minus")),
+                       pre("(Doubleclick on an added row to change the input values)"),
                        br(),
                        br(),
                        # Any other performance evaluation conducted?

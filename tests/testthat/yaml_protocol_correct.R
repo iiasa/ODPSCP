@@ -24,6 +24,24 @@ test_that("Check that the protocol can be parsed", {
   expect_true( all( sapply(ll, function(z) "description" %in% z) ) )
   expect_true( all( sapply(ll, function(z) "mandatory" %in% z) ) )
 
+  # Query that we have ids for all entries
+  expect_no_error( get_protocol_ids(path_protocol = path_protocol,group = "overview") )
+  ids <- get_protocol_ids(group = "overview")
+  expect_gte( length(ids), 10)
+  expect_true( anyDuplicated(ids)==0 )
+  ids <- get_protocol_ids(group = "design")
+  expect_gte( length(ids), 10)
+  expect_true( anyDuplicated(ids)==0 )
+  ids <- get_protocol_ids(group = "specification")
+  expect_gte( length(ids), 10)
+  expect_true( anyDuplicated(ids)==0 )
+  ids <- get_protocol_ids(group = "context")
+  expect_gte( length(ids), 5)
+  expect_true( anyDuplicated(ids)==0 )
+  ids <- get_protocol_ids(group = "prioritization")
+  expect_gte( length(ids), 5)
+  expect_true( anyDuplicated(ids)==0 )
+
   # TODO:
   # Check that all options with pre-defined entries have such options
   # Check that fieldtypes are among recognized types

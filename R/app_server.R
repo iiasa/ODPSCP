@@ -24,11 +24,11 @@ app_server <- function(input, output, session) {
   })
 
   # Adding module server code
-  mod_Home_server("Home_1")
+  mod_Home_server("Home_1", results)
   mod_Overview_server("Overview_1", results)
   mod_Design_server("Design_1", results)
-  mod_Specification_server("Specification_1")
-  mod_Context_server("Context_1")
+  mod_Specification_server("Specification_1", results)
+  mod_Context_server("Context_1", results)
   mod_Prioritization_server("Prioritization_1", results)
 
   # News

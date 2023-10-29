@@ -23,7 +23,7 @@ mod_Design_ui <- function(id){
                    solidHeader = FALSE,
                    collapsible = FALSE,
                    "Systematic conservation planning can be conducted in a range
-                   of different ways. In this section we record the principle
+                   of different ways. In the 'Design' section we record the principle
                    design elements of the study. These elements usually do not
                    consider methodological specifications of the planning, but
                    rather the conceptual understanding of the aims, purpose, and
@@ -56,7 +56,7 @@ mod_Design_ui <- function(id){
                      collapsible = FALSE,
                      textAreaInput(inputId = ns("studyaim"), label = "",
                                    placeholder = 'A short 1-2 sentence description of what this study aims to achieve.',
-                                   height = "45px", width = "100%", resize = "vertical")
+                                   height = "60px", width = "100%", resize = "vertical")
                    ),
                    br(),
                    box(
@@ -166,10 +166,40 @@ mod_Design_ui <- function(id){
                                     placeholder = 'List them here',
                                     height = "45px", width = "100%", resize = "none")
                     )
+                  ),
+                  br(),
+                  box(
+                    title = "Scenarios or planning variants",
+                    closable = FALSE,
+                    width = 12,
+                    solidHeader = TRUE,
+                    status = "secondary",
+                    collapsible = FALSE,
+                    p("Often the output of a planning exercise is not a single
+                      prioritization, but multiple each with different assumptions,
+                      parameters or input data. Examples include planning approaches
+                      that account for various climate scenarios or assumptions regarding
+                      constraints. Please record whether there multiple scenarios
+                      or variants have been explored."),
+                    shinyWidgets::awesomeRadio(
+                      inputId = ns("checkscenarios"),
+                      label = "Are there multiple variants or scenarios explored in the planning?",
+                      choices = c("No", "Yes"),
+                      selected = "No",
+                      inline = FALSE,
+                      checkbox = TRUE
+                    ),
+                    br(),
+                    conditionalPanel(
+                      condition = "input.checkscenarios == 'Yes'",
+                      ns = ns,
+                      textAreaInput(inputId = ns("planningscenarios"), label = "Explain",
+                                    placeholder = 'Describe the planning scenarios or variants.',
+                                    height = "60px", width = "100%", resize = "vertical")
+                    )
                   )
                 ),
                 br(),
-
                 # Study Engagement
                 box(
                   title = 'Engagement of stakeholders',
@@ -273,7 +303,7 @@ mod_Design_server <- function(id, results){
 
     # Study design page --------------------------------------------------------------
 
-    # Load all parameters in overview and add them to the reactive result container
+    # Load all parameters and add them to the reactive result container
     # Upon change
     ids <- get_protocol_ids(group = "design")
     observe({

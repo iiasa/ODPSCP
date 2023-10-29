@@ -64,12 +64,23 @@ overview:
     render-id: 'studylocation'
     render-group: 'study_location'
     question: 'What is the location of the study?'
-    description: 'Open text description of the study location.'
+    description: 'Add text description of the study location.'
     fieldtype: 'textbox'
     mandatory: false
 
-  realm:
+  studytimeline:
     render-nr: 3
+    render-id: 'studytime'
+    render-group: 'study_location'
+    question: 'What is the temporal range of the study??'
+    description: 'Define the study range.'
+    fieldtype: 'slider'
+    fieldtype_conditional_render-id: 'otherstudytime'
+    fieldtype_conditional: 'textbox'
+    mandatory: false
+
+  realm:
+    render-nr: 4
     render-id: 'studyrealm'
     render-group: 'study_location'
     question: 'What is the biophysical realm in which the planning work was conducted?'
@@ -179,6 +190,17 @@ design:
     fieldtype_conditional: 'textbox'
     mandatory: true
 
+  scenarios:
+    render-nr: 3
+    render-id: 'checkscenarios'
+    render-group: 'study_purpose'
+    question: 'Are there multiple variants or scenarios explored in the planning?'
+    description: 'Instead of a single planning exercise, many studies often record multiple scenarios or variants which we can record here.'
+    fieldtype: 'checkbox'
+    fieldtype_conditional_render-id: 'planningscenarios'
+    fieldtype_conditional: 'textbox'
+    mandatory: false
+
   stakeholders:
     render-nr: 1
     render-id: 'checkstakeholders'
@@ -197,32 +219,251 @@ design:
     mandatory: true
 
   stakeholder_type:
-      render-nr: 2
-      render-id: 'stakeholdertype'
-      render-group: 'study_engagement'
-      question: 'What type of stakeholders were engaged?'
-      description: 'Engagement can happen at multiple levels and with different types of stakeholders. Here we record what type of stakeholders were engaged.'
-      fieldtype: 'dropdown'
-      options:
-        - Policy makers (International)
-        - Policy makers (National)
-        - Scientists
-        - NGOs
-        - General Public
-        - Youth
-      mandatory: false
+    render-nr: 2
+    render-id: 'stakeholdertype'
+    render-group: 'study_engagement'
+    question: 'What type of stakeholders were engaged?'
+    description: 'Engagement can happen at multiple levels and with different types of stakeholders. Here we record what type of stakeholders were engaged.'
+    fieldtype: 'dropdown'
+    options:
+      - Policy makers (International)
+      - Policy makers (National)
+      - Scientists
+      - NGOs
+      - General Public
+      - Youth
+    mandatory: false
 
   stakeholder_method:
-      render-nr: 3
-      render-id: 'stakeholdermethod'
-      render-group: 'study_engagement'
-      question: 'How were stakeholders engaged?'
-      description: 'Describe in a few words how precisely stakeholder were engaged. For example when (conceptualization or start of the project) or how (workshops, interviews).'
-      fieldtype: 'textbox'
-      mandatory: false
+    render-nr: 3
+    render-id: 'stakeholdermethod'
+    render-group: 'study_engagement'
+    question: 'How were stakeholders engaged?'
+    description: 'Describe in a few words how precisely stakeholder were engaged. For example when (conceptualization or start of the project) or how (workshops, interviews).'
+    fieldtype: 'textbox'
+    mandatory: false
 
 #### Specification ####
-#### Contextualization ####
+specification:
+  planningunits:
+    render-nr: 1
+    render-id: 'pu_type'
+    render-group: 'planningunits'
+    question: 'How are planning units defined?'
+    description: 'Describe the type of planning units used in this work.'
+    fieldtype: 'dropdown'
+    options:
+      - None
+      - Gridded
+      - Vector (Point, Line, Polygon)
+      - Other
+    fieldtype_conditional_render-id: 'othertypes'
+    fieldtype_conditional: 'textbox'
+    mandatory: true
+
+  grainspace:
+    render-nr: 2
+    render-id: 'pu_grainspace'
+    render-group: 'planningunits'
+    question: 'What was the spatial grain of planning?'
+    description: 'Describe the grain of planning units if applicable.'
+    fieldtype: 'textbox'
+    mandatory: false
+
+  pucosts:
+    render-nr: 3
+    render-id: 'pu_checkcosts'
+    render-group: 'planningunits'
+    question: 'Was the decision of selecting planning units driven by some costs?'
+    description: 'Describe the grain of planning units if applicable.'
+    fieldtype: 'dropdown'
+    options:
+      - No
+      - Area only
+      - Yes
+    fieldtype_conditional_render-id: 'pu_costs'
+    fieldtype_conditional: 'textbox'
+    mandatory: true
+
+  ecosystem_specificity:
+    render-nr: 1
+    render-id: 'zone_ecosystems'
+    render-group: 'checkecosystem'
+    question: 'Was there any ecosystem specificity?'
+    description: 'SCP can be conducted on all land or sea within a given region, but it can also be specific to certain ecosystems or land-use types, such as for example forests.'
+    fieldtype: 'radio'
+    fieldtype_conditional_render-id: 'specificecosystem'
+    fieldtype_conditional: 'textbox'
+    mandatory: false
+
+  zonedefinitions:
+    render-nr: 2
+    render-id: 'zones'
+    render-group: 'checkzones'
+    question: 'Where any zones used for the planning?'
+    description: 'Planning can be structured by multiple management or land-use zones. Here we describe them, also listing any parameters that structure their zone.'
+    fieldtype: 'radio'
+    fieldtype_conditional_render-id: 'specificzones'
+    fieldtype_conditional: 'textbox'
+    mandatory: false
+
+  inclusionexclusion:
+    render-nr: 3
+    render-id: 'zones'
+    render-group: 'inclusionexclusion'
+    question: 'Any areas or actions that were included or excluded by default?'
+    description: 'In a planning project, certain areas or actions can be included or excluded by default. '
+    fieldtype: 'dropdown'
+    options:
+    - None
+    - Areas or Action included
+    - Areas or Action excluded
+    fieldtype_conditional_render-id: 'defaultareas'
+    fieldtype_conditional: 'textbox'
+    mandatory: true
+
+  featuretypes:
+    render-nr: 1
+    render-id: 'featuretypes'
+    render-group: 'features'
+    question: 'What types of features are included in the spatial planning?'
+    description: 'Please provide a classification of the included features.'
+    fieldtype: 'multiplechoice'
+    options:
+      - Species (distributions)
+      - Species (abundance)
+      - Species (traits)
+      - Ecosystems or Habitats
+      - Land-cover and Land-use
+      - Socio-economic
+      - Political
+      - Biophysical
+      - Nature contribtions to people (supply)
+      - Nature contribtions to people (demand)
+      - Other
+    fieldtype_conditional_render-id: 'otherfeaturetype'
+    fieldtype_conditional: 'textbox'
+    mandatory: true
+
+  featuresaggregated:
+    render-nr: 2
+    render-id: 'checkaggregated'
+    render-group: 'features'
+    question: 'Where any features aggregated before use in the planning?'
+    description: 'If applicable please describe which and how.'
+    fieldtype: 'checkbox'
+    fieldtype_conditional_render-id: 'featureaggregated'
+    fieldtype_conditional: 'textbox'
+    mandatory: false
+
+  featurelist:
+    render-nr: 3
+    render-id: 'featurelist'
+    render-group: 'features'
+    question: 'List the features'
+    description: 'Add the features to the list.'
+    fieldtype: 'multifieldselection'
+    mandatory: false
+
+  featureorigin:
+    render-nr: 4
+    render-id: 'featureorigin'
+    render-group: 'features'
+    question: 'How were features created?'
+    description: 'Describe the origin of the features.'
+    fieldtype: 'textbox'
+    mandatory: false
+
+#### Context ####
+context:
+  decisionvariable:
+    render-nr: 1
+    render-id: 'decisiontype'
+    render-group: 'plancontext'
+    question: 'What are the decision or output variables?'
+    description: 'For a given objective, decisions can be reached by allocating certain amount of land or costs.'
+    fieldtype: 'selectizedropdown'
+    options:
+      - Binary allocation
+      - Proportional share
+      - Semi-continious share
+      - Importance ranking
+    mandatory: false
+
+  timeconditions:
+    render-nr: 2
+    render-id: 'timedecision'
+    render-group: 'plancontext'
+    question: 'Which temporal conditions does the planning consider?'
+    description: 'Was the planning conducted in a way that considers future states or conditions?'
+    fieldtype: 'selectizedropdown'
+    options:
+      - Past conditions
+      - Current conditions
+      - Future conditions
+      - Fully dynamic
+    mandatory: false
+
+  connectivity:
+    render-nr: 3
+    render-id: 'checkconnectivity'
+    render-group: 'plancontext'
+    question: 'Was connectivity somehow considered in the planning?'
+    description: 'Connectivity can be an important aspect when considering the realism of any conservation plan.'
+    fieldtype: 'radio'
+    fieldtype_conditional_render-id: 'connectivityplan'
+    fieldtype_conditional: 'selectizedropdown'
+    conditional_options:
+      - Boundary penalty
+      - Neighbour constraint
+      - Size constraint
+      - Structural connectivity
+      - Functional connectivity
+    mandatory: false
+
+  connectivitydetail:
+    render-nr: 4
+    render-id: 'otherconnectivity'
+    render-group: 'plancontext'
+    question: 'Additional detail to how connectivity was considered?'
+    description: 'Any other methodological detail on how connectivity was considered in the planning.'
+    fieldtype: 'textbox'
+    mandatory: false
+
+  constraintdetail:
+    render-nr: 5
+    render-id: 'otherconstraints'
+    render-group: 'plancontext'
+    question: 'Any other constraints used in the planning?'
+    description: 'Other constraints can for example constraint lower or upper estimates on allocated land.'
+    fieldtype: 'textbox'
+    mandatory: false
+
+  featuretargets:
+    render-nr: 1
+    render-id: 'contexttargets'
+    render-group: 'features'
+    question: 'Were targets used for features?'
+    description: 'Were targets used to determine how benefits of features accrue in the planning? If so how were they defined?'
+    fieldtype: 'selectizedropdown'
+    options:
+      - None
+      - Flat (e.g. 30 percent),
+      - Log-linear,
+      - Favourable Reference value
+    mandatory: true
+
+  featureweights:
+    render-nr: 2
+    render-id: 'checkfeatureweights'
+    render-group: 'features'
+    question: 'Where some features weighted differently than others?'
+    description: 'Are differential weights applied to features? For example for threatened species?'
+    fieldtype: 'checkbox'
+    fieldtype_conditional_render-id: 'featureweightsdetails'
+    fieldtype_conditional: 'textbox'
+    mandatory: true
+
 #### Prioritization ####
 prioritization:
   software:

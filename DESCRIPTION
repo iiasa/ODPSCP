@@ -25,6 +25,7 @@ Imports:
     waiter,
     dplyr,
     htmltools,
+    markdown,
     qs,
     readr,
     credentials,

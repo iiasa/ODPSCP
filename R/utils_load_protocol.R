@@ -37,6 +37,9 @@ get_protocol_ids <- function(path_protocol = NULL, group = NULL){
   protocol <- load_protocol(path_protocol)
 
   if(!is.null(group)){
+    group <- match.arg(tolower(group), c("protocol","overview",
+                                       "design","specification",
+                                       "context","prioritization"), several.ok = FALSE)
     protocol <- protocol[[group]]
   }
 

@@ -17,8 +17,8 @@ to create reporting standard for systematic conservation planning
 studies. The abbrevation stands for *O*verview and *D*esign *P*rotocol
 for *S*ystematic *C*onservation *P*lanning, but can equally be
 understood as abbreviations for its individual elements (Overview,
-Design, Specification, Contextualization, Planning). The protocol
-follows other reporting framework such
+Design, Specification, Context, Planning). The protocol follows other
+reporting framework such
 [ODMAP](https://onlinelibrary.wiley.com/doi/10.1111/ecog.04960) or
 [ODD](https://www.jasss.org/23/2/7.html).
 

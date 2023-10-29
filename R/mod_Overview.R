@@ -60,6 +60,7 @@ mod_Overview_ui <- function(id){
             DT::DTOutput(outputId = ns("authors_table")),
             actionButton(inputId = ns("add_author"), label = "Add a new author row", icon = icon("plus")),
             actionButton(inputId = ns("remove_author"), label = "Remove last author row", icon = icon("minus")),
+            pre("(Doubleclick on an added row to change the input values)"),
             br()
           ),
           # Corresponding author
@@ -94,7 +95,7 @@ mod_Overview_ui <- function(id){
         column(width = 12,
              # Next box with study location
         box(
-          title = "Study location",
+          title = "Overview of scale and extent of a study",
           closable = FALSE,
           width = 12,
           solidHeader = TRUE,
@@ -138,6 +139,28 @@ mod_Overview_ui <- function(id){
                           placeholder = 'Qualitative description of the study location.',
                           height = "45px", width = "100%",resize = "vertical")
             ),
+          # Study location
+          box(
+            title = "Temporal coverage of the study",
+            closable = FALSE,
+            width = 12,
+            solidHeader = TRUE,
+            status = "secondary",
+            collapsible = FALSE,
+            p("Define the temporal scale over which the planning applies.
+              If outside the chosen scale, please provide details in the textbox."),
+            shinyWidgets::sliderTextInput(
+              inputId = ns("studytime"),
+              label = "Choose a range:",
+              choices = 1960:2100,
+              grid = TRUE,
+              selected = seq(2000,2020,1)
+            ),
+            br(),
+            textAreaInput(inputId = ns("otherstudytime"), label = "(Optional) Custom coverage",
+                          placeholder = 'Enter in case the range cannot be reflected with the slider.',
+                          height = "45px", width = "100%",resize = "vertical")
+          ),
           # Realm
           box(
             title = "Study realm",
@@ -184,18 +207,18 @@ mod_Overview_ui <- function(id){
                 solidHeader = TRUE,
                 status = "gray",
                 collapsible = FALSE,
-                  shinyWidgets::prettyToggle(
-                    inputId = ns('inputavailability'),
-                    label_on = "Yes",
-                    icon_on = icon("check"),
-                    status_on = "success",
-                    status_off = "danger",
-                    label_off = "No",
-                    icon_off = icon("remove")
-                  ),
-                  textAreaInput(inputId = ns('inputdata'), label = "Input data",
-                                placeholder = 'If applicable please enter a link to the data storage repository.',
-                                height = "45px", width = "100%", resize = "none")
+                shinyWidgets::prettyToggle(
+                  inputId = ns('inputavailability'),
+                  label_on = "Yes",
+                  icon_on = icon("check"),
+                  status_on = "success",
+                  status_off = "danger",
+                  label_off = "No",
+                  icon_off = icon("remove")
+                ),
+                textAreaInput(inputId = ns('inputdata'), label = "Input data",
+                              placeholder = 'If applicable please enter a link to the data storage repository.',
+                              height = "45px", width = "100%", resize = "none")
 
                 ),
             pre(),
