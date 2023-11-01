@@ -7,14 +7,16 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+#' @importFrom bs4Dash insertTab tabItem tabItems
+#' @importFrom shiny actionButton tabsetPanel column
 mod_Specification_ui <- function(id){
   ns <- NS(id)
 
-  tabItem(tabName = "Specification",
+  bs4Dash::tabItem(tabName = "Specification",
           fluidPage(
             fluidRow(
               column(width = 12,
-                     box(
+                     bs4Dash::box(
                        title = "Specification",
                        closable = FALSE,
                        width = 12,
@@ -34,7 +36,7 @@ mod_Specification_ui <- function(id){
                 column(width = 2),
                 column(width = 12,
                        # Planning units
-                       box(
+                       bs4Dash::box(
                          title = 'Planning units and scale',
                          closable = FALSE,
                          width = 12,
@@ -48,7 +50,7 @@ mod_Specification_ui <- function(id){
                            applications that are non-spatial."),
                          br(),
                          # Planning unit type
-                         box(
+                         bs4Dash::box(
                            title = "Planning unit type",
                            closable = FALSE,
                            width = 12,
@@ -73,7 +75,7 @@ mod_Specification_ui <- function(id){
                            )
                           ),
                          br(),
-                         box(
+                         bs4Dash::box(
                            title = "What was the spatial grain of planning?",
                            closable = FALSE,
                            width = 12,
@@ -87,7 +89,7 @@ mod_Specification_ui <- function(id){
                                          height = "45px", width = "100%", resize = "none")
                          ),
                          br(),
-                         box(
+                         bs4Dash::box(
                            title = "Planning unit costs",
                            closable = FALSE,
                            width = 12,
@@ -115,7 +117,7 @@ mod_Specification_ui <- function(id){
               column(width = 2),
               column(width = 12,
                      # Planning units
-                     box(
+                     bs4Dash::box(
                        title = 'Zones and specific groups',
                        closable = FALSE,
                        width = 12,
@@ -128,7 +130,7 @@ mod_Specification_ui <- function(id){
                          exclusively considered, included or excluded."),
                        br(),
                        # Ecosystem specifics
-                       box(
+                       bs4Dash::box(
                          title = "Was there any ecosystem specificity?",
                          closable = FALSE,
                          width = 12,
@@ -158,7 +160,7 @@ mod_Specification_ui <- function(id){
                       ),
                       br(),
                       # Zones
-                      box(
+                      bs4Dash::box(
                         title = "Where any zones used for the planning?",
                         closable = FALSE,
                         width = 12,
@@ -187,7 +189,7 @@ mod_Specification_ui <- function(id){
                       ),
                       br(),
                       # Areas included or excluded
-                      box(
+                      bs4Dash::box(
                         title = "Inclusion or exclusions?",
                         closable = FALSE,
                         width = 12,
@@ -219,7 +221,7 @@ mod_Specification_ui <- function(id){
                column(width = 2),
                column(width = 12,
                       # Features
-                      box(
+                      bs4Dash::box(
                         title = 'Feature types and description',
                         closable = FALSE,
                         width = 12,
@@ -233,7 +235,7 @@ mod_Specification_ui <- function(id){
                           of species or Nature Contributions to people (NCPs)."),
                         br(),
                         # Feature types
-                        box(
+                        bs4Dash::box(
                           title = "Feature types",
                           closable = FALSE,
                           width = 12,
@@ -267,7 +269,7 @@ mod_Specification_ui <- function(id){
                         ),
                         br(),
                         # Aggregated features
-                        box(
+                        bs4Dash::box(
                           title = "Where any features types aggregated before use in the planning?",
                           closable = FALSE,
                           width = 12,
@@ -295,7 +297,7 @@ mod_Specification_ui <- function(id){
                         ),
                         br(),
                         # List the features
-                        box(
+                        bs4Dash::box(
                           title = "Provide a list of all features:",
                           closable = FALSE,
                           width = 12,
@@ -311,7 +313,7 @@ mod_Specification_ui <- function(id){
                         ),
                         br(),
                         # How were features created?
-                        box(
+                        bs4Dash::box(
                           title = "How were features created?",
                           closable = FALSE,
                           width = 12,
@@ -337,6 +339,7 @@ mod_Specification_ui <- function(id){
 
 #' Specification Server Functions
 #'
+#' @importFrom shiny observe observeEvent
 #' @noRd
 mod_Specification_server <- function(id, results){
   moduleServer( id, function(input, output, session){
@@ -356,7 +359,7 @@ mod_Specification_server <- function(id, results){
 
     # --- #
     # Define the features list
-    feature_table <- reactiveVal(
+    feature_table <- shiny::reactiveVal(
       data.frame(name = character(0),
                  group = character(0))
     )
@@ -390,7 +393,7 @@ mod_Specification_server <- function(id, results){
     })
 
     # Load an external file
-    loadedfeatures <- reactive({
+    loadedfeatures <- shiny::reactive({
       if(is.null(input$load_feature)){
         return(NULL)
       }

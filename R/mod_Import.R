@@ -7,6 +7,8 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+#' @importFrom bs4Dash insertTab tabItem tabItems
+#' @importFrom shiny actionButton tabsetPanel column
 mod_Import_ui <- function(id){
   ns <- NS(id)
 

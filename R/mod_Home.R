@@ -7,11 +7,12 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-#' @import bs4Dash
+#' @importFrom bs4Dash insertTab tabItem tabItems
+#' @importFrom shiny actionButton tabsetPanel column
 mod_Home_ui <- function(id){
   ns <- NS(id)
 
-  tabItem(
+  bs4Dash::tabItem(
     tabName = "Home",
 
     fluidPage(

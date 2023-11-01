@@ -72,7 +72,7 @@ overview:
     render-nr: 3
     render-id: 'studytime'
     render-group: 'study_location'
-    question: 'What is the temporal range of the study??'
+    question: 'What is the temporal range of the study?'
     description: 'Define the study range.'
     fieldtype: 'slider'
     fieldtype_conditional_render-id: 'otherstudytime'
@@ -168,15 +168,12 @@ design:
     render-group: 'study_purpose'
     question: 'What is the primary purpose of the study?'
     description: 'Why was the planning was conducted. A range of commonly applied responses is provided.'
-    fieldtype: 'dropdown'
+    fieldtype: 'selectizedropdown'
     options:
       - Area-based expansion
       - Management improvement
       - Action-based planning
       - Monitoring and evaluation
-      - Other
-    fieldtype_conditional_render-id: 'otherpurpose'
-    fieldtype_conditional: 'textbox'
     mandatory: true
 
   multobj:
@@ -224,7 +221,7 @@ design:
     render-group: 'study_engagement'
     question: 'What type of stakeholders were engaged?'
     description: 'Engagement can happen at multiple levels and with different types of stakeholders. Here we record what type of stakeholders were engaged.'
-    fieldtype: 'dropdown'
+    fieldtype: 'selectizedropdown'
     options:
       - Policy makers (International)
       - Policy makers (National)
@@ -278,7 +275,7 @@ specification:
     description: 'Describe the grain of planning units if applicable.'
     fieldtype: 'dropdown'
     options:
-      - No
+      - None
       - Area only
       - Yes
     fieldtype_conditional_render-id: 'pu_costs'
@@ -315,9 +312,9 @@ specification:
     description: 'In a planning project, certain areas or actions can be included or excluded by default. '
     fieldtype: 'dropdown'
     options:
-    - None
-    - Areas or Action included
-    - Areas or Action excluded
+      - None
+      - Areas or Action included
+      - Areas or Action excluded
     fieldtype_conditional_render-id: 'defaultareas'
     fieldtype_conditional: 'textbox'
     mandatory: true
@@ -512,7 +509,7 @@ prioritization:
     render-group: 'study_software'
     question: 'How were the final priorities identified?'
     description: 'Not always is there a single solution to the prioritization process. This field records how the final priorities (those reported in the study) were obtained.'
-    fieldtype: 'dropdown'
+    fieldtype: 'selectizedropdown'
     options:
       - Targets achieved
       - Budgets reached or costs exceeded

@@ -30,7 +30,6 @@ load_protocol <- function(path_protocol = NULL){
 #' @param path_protocol A [`character`] pointing to the destination of the protocol.
 #' @return A [`character`] object with all ids.
 #'
-#' @import yaml
 #' @noRd
 get_protocol_ids <- function(path_protocol = NULL, group = NULL){
   # Load the protocol
@@ -57,7 +56,6 @@ get_protocol_ids <- function(path_protocol = NULL, group = NULL){
 #' @param path_protocol A [`character`] pointing to the destination of the protocol.
 #' @return A [`character`] with the current version number
 #'
-#' @import yaml
 #' @noRd
 get_protocol_version <- function(path_protocol = NULL){
   # Load the protocol
@@ -65,3 +63,38 @@ get_protocol_version <- function(path_protocol = NULL){
   version <- protocol$protocol$version
   return(version)
 }
+
+#' Get protocol group for render-id
+#'
+#' @description
+#' Utility function to get the group for a render-id
+#' @param path_protocol A [`character`] pointing to the destination of the protocol.
+#' @return A [`data.frame`] with the group and element
+#'
+#' @noRd
+get_protocol_elementgroup <- function(id, path_protocol = NULL){
+  assertthat::assert_that(
+    is.character(id),
+    is.null(path_protocol) || is.character(path_protocol)
+  )
+  # Load the protocol
+  template <- load_protocol(path_protocol)
+
+  # FIXME: Hacky, lazy coding from a train
+  out <- data.frame()
+  for(gr in names(template)[-1]){
+    pp <- template[[gr]]
+    for(element in names(pp)){
+      ppp <- pp[[element]]
+      if(ppp[['render-id']] == id){
+        out <- dplyr::bind_rows(
+          out,
+          data.frame(group = gr, element = element, id = id)
+        )
+      }
+    }
+  }
+  if(nrow(out)==0) return( NULL )
+  return(out)
+}
+

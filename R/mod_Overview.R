@@ -7,15 +7,17 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+#' @importFrom bs4Dash insertTab tabItem tabItems
+#' @importFrom shiny actionButton tabsetPanel column
 mod_Overview_ui <- function(id){
   ns <- NS(id)
 
-  tabItem(
+  bs4Dash::tabItem(
     tabName = "Overview",
     fluidPage(
       fluidRow(
         column(width = 12,
-          box(
+               bs4Dash::box(
             title = "Provide an overview of the conducted work",
             closable = FALSE,
             width = 12,
@@ -37,7 +39,7 @@ mod_Overview_ui <- function(id){
         column(width = 2),
         column(width = 12,
           # Study name group
-          box(
+          bs4Dash::box(
             title = "Study information",
             closable = FALSE,
             width = 12,
@@ -45,12 +47,12 @@ mod_Overview_ui <- function(id){
             status = "primary",
             collapsed = FALSE,
             collapsible = TRUE,
-            icon = icon("info"),
+            # icon = icon("info"),
             textAreaInput(inputId = ns("studyname"), label = "Study name",
                           placeholder = 'What is the title of the conducted study?',
                           height = "45px", width = "100%", resize = "none"),
           # Authors
-          box(
+          bs4Dash::box(
             title = "Provide a list of authors:",
             closable = FALSE,
             width = 12,
@@ -64,7 +66,7 @@ mod_Overview_ui <- function(id){
             br()
           ),
           # Corresponding author
-          box(
+          bs4Dash::box(
             title = "Corresponding Author",
             closable = FALSE,
             width = 12,
@@ -76,7 +78,7 @@ mod_Overview_ui <- function(id){
                           height = "45px", width = "100%", resize = "none")
           ),
           # Link to study
-          box(
+          bs4Dash::box(
             title = "(optional) Link to study",
             closable = FALSE,
             width = 12,
@@ -94,7 +96,7 @@ mod_Overview_ui <- function(id){
         column(width = 2),
         column(width = 12,
              # Next box with study location
-        box(
+             bs4Dash::box(
           title = "Overview of scale and extent of a study",
           closable = FALSE,
           width = 12,
@@ -102,12 +104,12 @@ mod_Overview_ui <- function(id){
           status = "primary",
           collapsed = FALSE,
           collapsible = TRUE,
-          icon = icon("location"),
+          # icon = icon("location"),
           "Spatial planning can be conducted at a range of different scales and realms
           and this field aims to provide the various options.",
           pre(),
           # Scale
-          box(
+          bs4Dash::box(
             title = "Study scale",
             closable = FALSE,
             width = 12,
@@ -128,7 +130,7 @@ mod_Overview_ui <- function(id){
               )
           ),
           # Study location
-          box(
+          bs4Dash::box(
             title = "Study location",
             closable = FALSE,
             width = 12,
@@ -140,7 +142,7 @@ mod_Overview_ui <- function(id){
                           height = "45px", width = "100%",resize = "vertical")
             ),
           # Study location
-          box(
+          bs4Dash::box(
             title = "Temporal coverage of the study",
             closable = FALSE,
             width = 12,
@@ -162,7 +164,7 @@ mod_Overview_ui <- function(id){
                           height = "45px", width = "100%",resize = "vertical")
           ),
           # Realm
-          box(
+          bs4Dash::box(
             title = "Study realm",
             closable = FALSE,
             width = 12,
@@ -186,7 +188,7 @@ mod_Overview_ui <- function(id){
         column(width = 2),
         column(width = 12,
           # Data availability
-          box(
+          bs4Dash::box(
             title = "Data and code availability",
             closable = FALSE,
             width = 12,
@@ -194,13 +196,13 @@ mod_Overview_ui <- function(id){
             status = "primary",
             collapsed = FALSE,
             collapsible = TRUE,
-            icon = icon("magnifying-glass-chart"),
+            # icon = icon("magnifying-glass-chart"),
             "This box records whether a study makes available the data - both for
             input and outputs - as well as the software code or analytical to
             reproduce the analysis.",
             pre(),
             # Link to input data
-              box(
+            bs4Dash::box(
                 title = 'Are the used input data made available and if so where?',
                 closable = FALSE,
                 width = 12,
@@ -223,7 +225,7 @@ mod_Overview_ui <- function(id){
                 ),
             pre(),
             # Link to output data
-            box(
+            bs4Dash::box(
               title = 'Are the created outputs made openly available and if so where?',
               closable = FALSE,
               width = 12,
@@ -246,7 +248,7 @@ mod_Overview_ui <- function(id){
             ),
             pre(),
             # Link to code
-            box(
+            bs4Dash::box(
               title = 'Are the analytical steps to reproduce the results made available?',
               closable = FALSE,
               width = 12,
@@ -305,6 +307,7 @@ mod_Overview_ui <- function(id){
 
 #' Overview Server Functions
 #'
+#' @importFrom shiny observe observeEvent
 #' @noRd
 mod_Overview_server <- function(id, results){
   moduleServer( id, function(input, output, session){
@@ -379,7 +382,7 @@ mod_Overview_server <- function(id, results){
     # Bottom page buttons --------------------------------------------------------------
     # Final observe event to continue
     observeEvent(input$next_design, {
-      updateTabItems(session, inputId = ns("sidebarmenu"), selected = "Design")
+      bs4Dash::updateTabItems(session, inputId = ns("sidebarmenu"), selected = "Design")
     })
 
     # Clear all
@@ -387,7 +390,7 @@ mod_Overview_server <- function(id, results){
       shinyWidgets::ask_confirmation(
         inputId = ns("confirm_reset"),
         text = tags$b(
-          icon("broom"),
+          shiny::icon("broom"),
           "Do you really want to clear all entries?",
           style = "color: #FA5858;"
         ),
@@ -397,8 +400,7 @@ mod_Overview_server <- function(id, results){
       )
     })
     # TODO
-    clearall <- renderPrint(input$confirm_reset)
-
+    clearall <- shiny::renderPrint(input$confirm_reset)
   })
 }
 

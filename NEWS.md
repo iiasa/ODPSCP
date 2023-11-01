@@ -1,5 +1,3 @@
-## News and updates
-
-### Version 0.1
+## Version 0.1
 
 * Initial Publication of the protocol and elicitation of expert feedback.

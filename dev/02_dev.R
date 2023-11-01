@@ -36,6 +36,7 @@ golem::add_module(name = "Export", with_test = FALSE) # Name of the module
 golem::add_fct("theme", with_test = TRUE)
 golem::add_fct("uistyles", with_test = FALSE)
 golem::add_utils("load_protocol", with_test = FALSE) # Text external
+golem::add_utils("format_protocol", with_test = FALSE) # Text external
 
 ## External resources
 ## Creates .js and .css files at inst/app/www

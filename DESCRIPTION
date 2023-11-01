@@ -1,6 +1,6 @@
 Package: ODPSCP
 Title: A standard reporting protocol for conservation planning
-Version: 1.0
+Version: 0.1
 Authors@R: person('Martin', 'Jung', email = 'jung@iiasa.ac.at', role = c('cre', 'aut'))
 Description: This repository contains the environment and shiny code underlying the reporting protocol.
 License: CC BY 4.0
@@ -12,25 +12,16 @@ Imports:
     shiny (>= 1.7.5),
     yaml,
     assertthat,
-    mapdeck,
     shinyWidgets,
     shinyjs,
-    shinydashboard,
     shinyFeedback,
-    rsconnect,
     sever,
     fresh,
     DT,
     bs4Dash,
     waiter,
     dplyr,
-    htmltools,
-    markdown,
-    qs,
-    readr,
-    credentials,
-    tidyverse,
-    pkgload
+    readr
 Encoding: UTF-8
 Language: en-US
 LazyData: true

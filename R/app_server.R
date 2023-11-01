@@ -10,17 +10,18 @@ app_server <- function(input, output, session) {
   sever::sever()
 
   # fake reload at start
-  observeEvent(input$reload, {
+  shiny::observeEvent(input$reload, {
     session$reload()
   })
 
   # Define overall protocol results
   # to modify a global variable use <<- instead of <- or =
-  results <- reactiveValues()
+  results <- shiny::reactiveValues()
 
   # title page --------------------------------------------------------------
-  observeEvent(input$start_new_protocol, {
-    updateTabItems(session,inputId = "sidebarmenu", selected = "Overview")
+  shiny::observeEvent(input$start_new_protocol, {
+    bs4Dash::updateTabItems(session,
+                            inputId = "sidebarmenu", selected = "Overview")
   })
 
   # Adding module server code
@@ -37,5 +38,7 @@ app_server <- function(input, output, session) {
   mod_Import_server("Import_1")
   mod_Export_server("Export_1", results)
 
+  # Automatically stop a Shiny app when closing the browser tab
+  session$onSessionEnded(stopApp)
 }
 

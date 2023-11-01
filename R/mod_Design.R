@@ -7,15 +7,17 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+#' @importFrom bs4Dash insertTab tabItem tabItems
+#' @importFrom shiny actionButton tabsetPanel column
 mod_Design_ui <- function(id){
   ns <- NS(id)
 
-  tabItem(
+  bs4Dash::tabItem(
     tabName = "Design",
       fluidPage(
         fluidRow(
           column(width = 12,
-                 box(
+                 bs4Dash::box(
                    title = "What are the overall design criteria for the planning?",
                    closable = FALSE,
                    width = 12,
@@ -38,7 +40,7 @@ mod_Design_ui <- function(id){
           column(width = 2),
           column(width = 12,
                  # Purpose
-                 box(
+                 bs4Dash::box(
                    title = 'Aims and framing',
                    closable = FALSE,
                    width = 12,
@@ -47,7 +49,7 @@ mod_Design_ui <- function(id){
                    collapsible = TRUE,
                    # icon = icon("info"),
                    # Study aims
-                   box(
+                   bs4Dash::box(
                      title = "Study aims",
                      closable = FALSE,
                      width = 12,
@@ -59,7 +61,7 @@ mod_Design_ui <- function(id){
                                    height = "60px", width = "100%", resize = "vertical")
                    ),
                    br(),
-                   box(
+                   bs4Dash::box(
                      title = 'Analytical Framework',
                      closable = FALSE,
                      width = 12,
@@ -87,7 +89,7 @@ mod_Design_ui <- function(id){
                    ),
                    br(),
                    # Theory of Change
-                   box(
+                   bs4Dash::box(
                      title = "(Optional) Theory of change",
                      closable = FALSE,
                      width = 12,
@@ -104,7 +106,7 @@ mod_Design_ui <- function(id){
                 ), # End study aims box
 
                 # Study purpose overall box
-                box(
+                bs4Dash::box(
                   title = 'Purpose of planning',
                   closable = FALSE,
                   width = 12,
@@ -113,33 +115,28 @@ mod_Design_ui <- function(id){
                   collapsible = TRUE,
                   # icon = icon("info"),
                   # Study purpose
-                  box(
+                  bs4Dash::box(
                     title = "Study purpose",
                     closable = FALSE,
                     width = 12,
                     solidHeader = TRUE,
                     status = "secondary",
                     collapsible = FALSE,
-                    shinyWidgets::pickerInput(
-                      inputId = ns("studypurpose"),
-                      label = "Identify a primary purpose",
-                      choices = c("Area-based expansion", "Management improvement",
-                                  "Action-based planning", "Monitoring and evaluation",
-                                  "Land-use allocation",
-                                  "Other"),
-                      multiple = FALSE
-                    ),
-                    conditionalPanel(
-                      condition = "input.studypurpose == 'Other'",
-                      ns = ns,
-                      textAreaInput(inputId = ns("otherpurpose"), label = "Other purpose",
-                                    placeholder = 'Describe the purpose',
-                                    height = "45px", width = "100%", resize = "none")
-                    )
+                    p("As primary purpose we refer to the overall aim of a study
+                      such as the identification of areas to be placed under
+                      conservation management (e.g. Protected areas)"),
+                    shiny::selectizeInput(inputId = ns("studypurpose"),
+                                          label = "Identify or add a primary purpose",
+                                          choices = c("","Area-based expansion", "Management improvement",
+                                                      "Action-based planning", "Monitoring and evaluation",
+                                                      "Land-use allocation"),
+                                          multiple = FALSE,
+                                          options = list(create = TRUE,
+                                                         placeholder = "Choose from list, or type and click to add new option."))
                   ),
                   br(),
                   # Multiple objective
-                  box(
+                  bs4Dash::box(
                     title = "Multiple objectives",
                     closable = FALSE,
                     width = 12,
@@ -168,7 +165,7 @@ mod_Design_ui <- function(id){
                     )
                   ),
                   br(),
-                  box(
+                  bs4Dash::box(
                     title = "Scenarios or planning variants",
                     closable = FALSE,
                     width = 12,
@@ -201,7 +198,7 @@ mod_Design_ui <- function(id){
                 ),
                 br(),
                 # Study Engagement
-                box(
+                bs4Dash::box(
                   title = 'Engagement of stakeholders',
                   closable = FALSE,
                   width = 12,
@@ -215,7 +212,7 @@ mod_Design_ui <- function(id){
                     of the planning exercise. There are multiple ways of doing so
                     and the fields below record these details."),
                   br(),
-                  box(
+                  bs4Dash::box(
                     title = "Stakeholder engaged",
                     closable = FALSE,
                     width = 12,
@@ -235,7 +232,7 @@ mod_Design_ui <- function(id){
                       condition = "input.checkstakeholders == 'Yes'",
                       ns = ns,
                       br(),
-                      box(
+                      bs4Dash::box(
                         title = "Type of engagement",
                         closable = FALSE,
                         width = 12,
@@ -254,27 +251,27 @@ mod_Design_ui <- function(id){
                         )
                       ),
                       br(),
-                      box(
+                      bs4Dash::box(
                         title = "Stakeholders",
                         closable = FALSE,
                         width = 12,
                         solidHeader = TRUE,
                         status = "secondary",
                         collapsible = FALSE,
-                        shinyWidgets::pickerInput(
-                          inputId = ns("stakeholdertype"),
-                          label = "Who was engaged?",
-                          choices = c("Policy makers (International)",
-                                      "Policy makers (National)",
-                                      "Scientists",
-                                      "NGOs",
-                                      "General Public",
-                                      "Youth"),
-                          multiple = TRUE
-                        )
+                        shiny::selectizeInput(inputId = ns("stakeholdertype"),
+                                              label = "Who was engaged?",
+                                              choices = c("Policy makers (International)",
+                                                          "Policy makers (National)",
+                                                          "Scientists",
+                                                          "NGOs",
+                                                          "General Public",
+                                                          "Youth"),
+                                              multiple = TRUE,
+                                              options = list(create = TRUE,
+                                                             placeholder = "Choose from list, or type and click to add new option."))
                       ),
                       br(),
-                      box(
+                      bs4Dash::box(
                         title = "Stakeholder engagement method",
                         closable = FALSE,
                         width = 12,

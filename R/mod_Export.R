@@ -7,10 +7,13 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+#' @importFrom utils write.csv
+#' @importFrom bs4Dash insertTab tabItem tabItems
+#' @importFrom shiny actionButton tabsetPanel column
 mod_Export_ui <- function(id){
   ns <- NS(id)
 
-  tabItem(
+  bs4Dash::tabItem(
     tabName = "Export",
     fluidPage(
       bs4Dash::tabsetPanel(
@@ -18,7 +21,7 @@ mod_Export_ui <- function(id){
         tabPanel(
           title = "Export protocol",
           icon = icon("save",lib = "glyphicon"),
-          box(
+          bs4Dash::box(
             title = "Output format",
             closable = FALSE,
             width = 12,
@@ -70,16 +73,18 @@ mod_Export_ui <- function(id){
         tabPanel(
           title = "Render protocol",
           icon = icon("list-alt",lib = "glyphicon"),
-          box(
+          bs4Dash::box(
             title = "Protocol",
             closable = FALSE,
-            width = 12,
+            width = 12,height = 20,
             solidHeader = TRUE,
             collapsible = FALSE
           ),
-          shiny::textOutput(
-            outputId = ns("protocolmarkdown")
-            )
+          p("Rendering protocol to be added!")
+          # DT::DTOutput(outputId = ns("results_table"))
+          # shiny::textOutput(
+          #   outputId = ns("protocolmarkdown")
+          # )
         ) # End Tab panel
        ) # End Tabset panel
     )
@@ -107,21 +112,19 @@ mod_Export_server <- function(id, results){
         )
       },
       content = function(file) {
-        # Create outputs from results
-        protocol <- list()
-        exportVals <- names(rvtl(results))
-        for(i in 1:length(exportVals)){
-          protocol[[exportVals[i]]] <- results[[exportVals[i]]]
-        }
-
         if(oftype() == "rData"){
+          # Create outputs from results
+          protocol <- format_protocol(results, format = "data.frame")
           save(protocol, file = file)
           # load("../../../Downloads/test.rData")
         } else if(oftype() == "csv"){
-          # TODO: Write proper wrapper for csv in wide format
-          write.csv(list2DF(protocol), file = file)
+          # Create outputs from results
+          protocol <- format_protocol(results, format = "data.frame")
+          readr::write_csv(protocol, file = file)
           # read.csv("../../../Downloads/test.csv")
         } else if(oftype() == "yaml"){
+          # Create outputs from results
+          protocol <- format_protocol(results, format = "list")
           yaml::write_yaml(protocol, file = file)
           # yaml::read_yaml("../../../Downloads/test.yaml")
         }

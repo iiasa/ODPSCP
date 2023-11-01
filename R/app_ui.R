@@ -8,29 +8,30 @@
 #' @noRd
 app_ui <- function(request) {
 
-  tagList(
+  shiny::tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # --- #
     # Add the overall dashboard
     bs4Dash::dashboardPage(
       # Preloader using waiter
-      preloader = list(html = tagList(spin_1(), "Loading ..."), color = "#3c8dbc"),
-      # freshTheme =  dark_theme(), # Theme designed with fresh
+      preloader = list(html = shiny::tagList(
+          waiter::spin_1(), "Loading ..."), color = "#3c8dbc"),
+      # freshTheme =  odpscp_theme(), # Theme designed with fresh
       # Other options
       dark = FALSE,
       scrollToTop = TRUE,
       fullscreen = FALSE,
       help = NULL, # Default enable tooltips
-      # controlbar = dashboardControlbar(),
+      # controlbar = bs4Dash::dashboardControlbar(),
       # Define header and footer
       header = bs4Dash::dashboardHeader(
-        title = dashboardBrand(
+        title = bs4Dash::dashboardBrand(
           title = "A Protocol for SCP",
           color = "primary",
           opacity = 0,
           href = NULL,
-          image = "logo.png"
+          image = "www/logo.png"
         ),
         status = "white",
         border = TRUE,
@@ -39,20 +40,21 @@ app_ui <- function(request) {
         ),
       footer = bs4Dash::dashboardFooter(
         fixed = FALSE,
-        left = tagList(
-          p("Protocol version: ", get_protocol_version(),
+        left = shiny::tagList(
+          div("Protocol version: ", get_protocol_version(),
             style = "padding-top: 10px; font-size: 14px; font-weight:bold;")
+          # HTML("&nbsp; &nbsp; &nbsp; &nbsp;")
+          # "(",format(Sys.Date(),"%Y"),")"
           # a(
           #   href = "https://github.com/iiasa/ODPSCP",
           #   target = "_blank",
           #   "Github"
           # )
         ),
-        right = tagList(
-          "IIASA BEC",
-          "(",format(Sys.Date(),"%Y"),")",
-          img(
-            href = "www/iiasa-logo.png",
+        right = shiny::tagList(
+          shiny::img(
+            src = "www/iiasa-logo.png",
+            title = "IIASA", height = "40px",
             target = "_blank"
           )
         )
@@ -75,7 +77,7 @@ app_ui <- function(request) {
           bs4Dash::menuItem(
             "Home",
             tabName = "Home",
-            icon = icon("home")
+            icon = shiny::icon("home")
           ),
           bs4Dash::menuItem(
             text = "Protocol",
@@ -84,64 +86,64 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               "Overview",
               tabName = "Overview",
-              icon = icon("file-lines")
+              icon = shiny::icon("file-lines")
             ),
             bs4Dash::menuSubItem(
               "Design",
               tabName = "Design",
-              icon = icon("object-group")
+              icon = shiny::icon("object-group")
             ),
             bs4Dash::menuSubItem(
               "Specification",
               tabName = "Specification",
-              icon = icon("tree")
+              icon = shiny::icon("tree")
             ),
             bs4Dash::menuSubItem(
               "Context",
               tabName = "Context",
-              icon = icon("users-rectangle")
+              icon = shiny::icon("users-rectangle")
             ),
             bs4Dash::menuSubItem(
               "Prioritization",
               tabName = "Prioritization",
-              icon = icon("map")
+              icon = shiny::icon("map")
             )
           ),
-          sidebarHeader("Import/Export"),
+          bs4Dash::sidebarHeader("Import/Export"),
           bs4Dash::menuItem(
             "Import protocol",
             tabName = "Import",
-            icon = icon("upload")
+            icon = shiny::icon("upload")
           ),
           bs4Dash::menuItem(
             "Export protocol",
             tabName = "Export",
-            icon = icon("download")
+            icon = shiny::icon("download")
           ),
-          sidebarHeader("Info"),
+          bs4Dash::sidebarHeader("Info"),
           bs4Dash::menuItem(
             "News",
             tabName = "News",
-            icon = icon("newspaper")
+            icon = shiny::icon("newspaper")
           ),
           bs4Dash::menuItem(
             "Issues and Feedback",
             href =  "https://github.com/iiasa/ODPSCP/issues",
             newTab = TRUE,
-            icon = icon("question")
+            icon = shiny::icon("question")
           ),
           bs4Dash::menuItem(
             "Source code",
             href =  "https://github.com/iiasa/ODPSCP",
             newTab = TRUE,
-            icon = icon("code")
+            icon = shiny::icon("code")
           )
         )
       ), # Sidebar end
       #### Body with sidebar menu ----
       body = bs4Dash::dashboardBody(
         # title page --------------------------------------------------------------
-        tabItems(
+        bs4Dash::tabItems(
           # Starting site
           mod_Home_ui("Home_1"),
             # Protocol

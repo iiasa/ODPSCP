@@ -7,14 +7,16 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+#' @importFrom bs4Dash insertTab tabItem tabItems
+#' @importFrom shiny actionButton tabsetPanel column
 mod_Context_ui <- function(id){
   ns <- NS(id)
 
-  tabItem(tabName = "Context",
-          fluidPage(
-            fluidRow(
-              column(width = 12,
-                     box(
+  bs4Dash::tabItem(tabName = "Context",
+          shiny::fluidPage(
+            shiny::fluidRow(
+              shiny::column(width = 12,
+                            bs4Dash::box(
                        title = "Important contextual information with regards to the planning.",
                        closable = FALSE,
                        width = 12,
@@ -28,16 +30,16 @@ mod_Context_ui <- function(id){
                        of connectivity or other constraints that limit the primary
                        objective of the planning."
                      ),
-                   hr()
+                   shiny::hr()
               )
             ),
             #---#
             # Start with the context
-           fluidRow(
-             column(width = 2),
-             column(width = 12,
+            shiny::fluidRow(
+             shiny::column(width = 2),
+             shiny::column(width = 12,
                     # Purpose
-                    box(
+                    bs4Dash::box(
                       title = 'Selection criteria',
                       closable = FALSE,
                       width = 12,
@@ -46,7 +48,7 @@ mod_Context_ui <- function(id){
                       collapsible = TRUE,
                       # icon = icon("info"),
                       # Decision variable
-                      box(
+                      bs4Dash::box(
                         title = "Decision variable",
                         closable = FALSE,
                         width = 12,
@@ -63,16 +65,16 @@ mod_Context_ui <- function(id){
                                        options = list(create = TRUE,
                                                       placeholder = "Choose from list, or type and click to add new option"))
                       ),
-                      br(),
+                      shiny::br(),
                       # Time context
-                      box(
+                      bs4Dash::box(
                         title = "Temporal considerations",
                         closable = FALSE,
                         width = 12,
                         solidHeader = TRUE,
                         status = "secondary",
                         collapsible = FALSE,
-                        p("For example, was the planning conducted in a way that
+                        shiny::p("For example, was the planning conducted in a way that
                           considers future states or conditions?"),
                         shiny::selectizeInput(inputId = ns("timedecision"),
                                               label = "Which temporal conditions does the planning consider?",
@@ -84,9 +86,9 @@ mod_Context_ui <- function(id){
                                               options = list(create = FALSE,
                                                              placeholder = "Choose single or multiple from list"))
                       ),
-                      br(),
+                      shiny::br(),
                       # Connectivity
-                      box(
+                      bs4Dash::box(
                         title = "Aspects of connectivity considered?",
                         closable = FALSE,
                         width = 12,
@@ -101,12 +103,12 @@ mod_Context_ui <- function(id){
                           inline = FALSE,
                           checkbox = TRUE
                         ),
-                        conditionalPanel(
+                        shiny::conditionalPanel(
                           condition = "input.checkconnectivity == 'Yes'",
                           ns = ns,
-                          br(),
+                          shiny::br(),
                           # Options for connectivity
-                          box(
+                          bs4Dash::box(
                             title = "Connectivity planning",
                             closable = FALSE,
                             width = 12,
@@ -124,32 +126,32 @@ mod_Context_ui <- function(id){
                                                   options = list(create = TRUE,
                                                                  placeholder = "Choose from list, or type and click to add new option"))
                           ),
-                          br(),
-                          box(
+                          shiny::br(),
+                          bs4Dash::box(
                             title = "Other connectivity details",
                             closable = FALSE,
                             width = 12,
                             solidHeader = TRUE,
                             status = "secondary",
                             collapsible = FALSE,
-                            p("Any other methodological detail on how connectivity was considered in the planning."),
-                            textAreaInput(inputId = ns("otherconnectivity"), label = "Connectivity method",
+                            shiny::p("Any other methodological detail on how connectivity was considered in the planning."),
+                            shiny::textAreaInput(inputId = ns("otherconnectivity"), label = "Connectivity method",
                                           placeholder = 'Describe the methodology',
                                           height = "60px", width = "100%", resize = "none")
                           )
                           )
                         ),
-                      br(),
+                      shiny::br(),
                       # Any other constraints
-                      box(
+                      bs4Dash::box(
                         title = "Other constraints",
                         closable = FALSE,
                         width = 12,
                         solidHeader = TRUE,
                         status = "secondary",
                         collapsible = FALSE,
-                        p("Any other constraints used in the planning?"),
-                        textAreaInput(inputId = ns("otherconstraints"), label = "Constraints",
+                        shiny::p("Any other constraints used in the planning?"),
+                        shiny::textAreaInput(inputId = ns("otherconstraints"), label = "Constraints",
                                       placeholder = 'If any, shortly describe how they are defined.',
                                       height = "60px", width = "100%", resize = "vertical")
                         )
@@ -158,23 +160,23 @@ mod_Context_ui <- function(id){
                    ), # Fluid row end
            # --- #
            # Further entries on features #
-           fluidRow(
-             column(width = 2),
-             column(width = 12,
+           shiny::fluidRow(
+             shiny::column(width = 2),
+             shiny::column(width = 12,
                     # Purpose
-                    box(
+                    bs4Dash::box(
                       title = 'Feature contexts',
                       closable = FALSE,
                       width = 12,
                       solidHeader = TRUE,
                       status = "primary",
                       collapsible = TRUE,
-                      p("In many situations the features used in the planning
+                      shiny::p("In many situations the features used in the planning
                         might also have their own parametrizations and options.
                         A common example is for instance the setting of targets
                         as a specific constraint."),
                       # Feature targets
-                      box(
+                      bs4Dash::box(
                         title = "Feature targets",
                         closable = FALSE,
                         width = 12,
@@ -191,16 +193,16 @@ mod_Context_ui <- function(id){
                                               options = list(create = TRUE,
                                                              placeholder = "Choose from list, or type and click to add new option"))
                       ),
-                      br(),
+                      shiny::br(),
                       # Feature weights
-                      box(
+                      bs4Dash::box(
                         title = "Feature weights",
                         closable = FALSE,
                         width = 12,
                         solidHeader = TRUE,
                         status = "secondary",
                         collapsible = FALSE,
-                        p("Were differential weights assigned to some features,
+                        shiny::p("Were differential weights assigned to some features,
                           such as for example giving threatened species a higher
                           weight in the planning? If so, describe here:"),
                       shinyWidgets::awesomeRadio(
@@ -211,11 +213,11 @@ mod_Context_ui <- function(id){
                         inline = FALSE,
                         checkbox = TRUE
                       ),
-                      br(),
-                      conditionalPanel(
+                      shiny::br(),
+                      shiny::conditionalPanel(
                         condition = "input.checkfeatureweights == 'Yes'",
                         ns = ns,
-                        textAreaInput(inputId = ns("featureweightsdetails"), label = "Feature weights",
+                        shiny::textAreaInput(inputId = ns("featureweightsdetails"), label = "Feature weights",
                                       placeholder = 'Describe how feature weights have been defined or set.',
                                       height = "60px", width = "100%", resize = "none")
                       )
@@ -229,6 +231,7 @@ mod_Context_ui <- function(id){
 
 #' Context Server Functions
 #'
+#' @importFrom shiny observe
 #' @noRd
 mod_Context_server <- function(id, results){
   moduleServer( id, function(input, output, session){

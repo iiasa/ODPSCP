@@ -42,6 +42,12 @@ test_that("Check that the protocol can be parsed", {
   expect_gte( length(ids), 5)
   expect_true( anyDuplicated(ids)==0 )
 
+  # Check a query of group and elements
+  val <- get_protocol_elementgroup("studyaim")
+  expect_s3_class(val, "data.frame")
+  val <- get_protocol_elementgroup("studyaims")
+  expect_null(val)
+
   # TODO:
   # Check that all options with pre-defined entries have such options
   # Check that fieldtypes are among recognized types

@@ -7,36 +7,55 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+#' @importFrom bs4Dash insertTab tabItem tabItems
+#' @importFrom shiny actionButton tabsetPanel column
 mod_Prioritization_ui <- function(id){
   ns <- NS(id)
 
-  tabItem(tabName = "Prioritization",
+  bs4Dash::tabItem(tabName = "Prioritization",
           fluidPage(
             fluidRow(
-              column(width = 2),
               column(width = 12,
-                     box(
+                     bs4Dash::box(
                        title = 'Prioritization',
                        closable = FALSE,
                        width = 12,
-                       solidHeader = TRUE,
+                       solidHeader = FALSE,
                        status = "primary",
-                       collapsible = TRUE,
+                       collapsible = FALSE,
                        p("With prioritization we usually refer to the process of taking
                          the various datasets and parameters defined earlier and
                          identifying 'solutions' that might be spatial, spatial-temporal
                          or non-spatial in nature. This section elaborates on the
                          process of prioritization and specifically the algorithms used
-                         to generate such solutions for the planning problem."),
-                       br(),
-                       shinyWidgets::pickerInput(
-                         inputId = ns("software"),
-                         label = "Used software",
-                         choices = c("","Zonation","Marxan",
-                                     "prioritizr","prioriactions",
-                                     "RestOptr","oppr",
-                                     "CAPTAIN","ROOT",
-                                     "Custom","Other"),
+                         to generate such solutions for the planning problem.")
+                     )
+                )
+              ),
+              hr(),
+              fluidRow(
+                column(width = 2),
+                column(width = 12,
+                       # Software description
+                       bs4Dash::box(
+                         title = 'Used Software',
+                         closable = FALSE,
+                         width = 12,
+                         solidHeader = TRUE,
+                         status = "primary",
+                         collapsible = TRUE,
+                         p("There are multiple existing types of software that
+                           allow users to integrate various features, constraints
+                           and targets in a single prioritization. The most
+                           commonly used SCP software solutions are listed below."),
+                         shinyWidgets::pickerInput(
+                           inputId = ns("software"),
+                           label = "Used software",
+                           choices = c("","Zonation","Marxan",
+                                       "prioritizr","prioriactions",
+                                       "RestOptr","oppr",
+                                       "CAPTAIN","ROOT",
+                                       "Custom","Other"),
                          options = list(
                            style = "btn-info")
                        ),
@@ -59,7 +78,7 @@ mod_Prioritization_ui <- function(id){
                                      height = "45px", width = "100%", resize = "none")
                        ),
                      br(),
-                     box(
+                     bs4Dash::box(
                        title = "Key parameters",
                        closable = FALSE,
                        width = 12,
@@ -73,7 +92,7 @@ mod_Prioritization_ui <- function(id){
                        ),
                      br(),
                      # Identification of final priorities
-                     box(
+                     bs4Dash::box(
                        title = "Identification of final priorities",
                        closable = FALSE,
                        width = 12,
@@ -86,7 +105,7 @@ mod_Prioritization_ui <- function(id){
                        shinyWidgets::pickerInput(
                          inputId = ns("identsolution"),
                          label = "Identification of solutions",
-                         choices = c("Budgets reached or costs exceeded",
+                         choices = c("","Budgets reached or costs exceeded",
                                      "Targets achieved",
                                      "External indicator",
                                      "Other")
@@ -105,7 +124,7 @@ mod_Prioritization_ui <- function(id){
             fluidRow(
               column(width = 2),
               column(width = 12,
-                     box(
+                     bs4Dash::box(
                        title = 'Performance evaluation',
                        closable = FALSE,
                        width = 12,
@@ -122,7 +141,7 @@ mod_Prioritization_ui <- function(id){
                        br(),
                        br(),
                        # Any other performance evaluation conducted?
-                       box(
+                       bs4Dash::box(
                          title = "Other performance evaluation",
                          closable = FALSE,
                          width = 12,
@@ -144,6 +163,7 @@ mod_Prioritization_ui <- function(id){
 
 #' Planning Server Functions
 #'
+#' @importFrom shiny observe observeEvent
 #' @noRd
 mod_Prioritization_server <- function(id, results){
   moduleServer( id, function(input, output, session){
