@@ -2,9 +2,6 @@
 #'
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
-#' @import shiny
-#' @import bs4Dash
-#' @import waiter
 #' @noRd
 app_ui <- function(request) {
 
@@ -41,7 +38,7 @@ app_ui <- function(request) {
       footer = bs4Dash::dashboardFooter(
         fixed = FALSE,
         left = shiny::tagList(
-          div("Protocol version: ", get_protocol_version(),
+          shiny::div("Protocol version: ", get_protocol_version(),
             style = "padding-top: 10px; font-size: 14px; font-weight:bold;")
           # HTML("&nbsp; &nbsp; &nbsp; &nbsp;")
           # "(",format(Sys.Date(),"%Y"),")"
@@ -168,7 +165,6 @@ app_ui <- function(request) {
 #' This function is internally used to add external
 #' resources inside the Shiny application.
 #'
-#' @import shiny
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
 #' @noRd
 golem_add_external_resources <- function() {

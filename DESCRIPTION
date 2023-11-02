@@ -5,11 +5,12 @@ Authors@R: person('Martin', 'Jung', email = 'jung@iiasa.ac.at', role = c('cre', 
 Description: This repository contains the environment and shiny code underlying the reporting protocol.
 License: CC BY 4.0
 Depends:
-    R (>= 4.0.0)
+    R (>= 4.0.0),
+    shiny (>= 1.7.5),
+    bs4Dash
 Imports:
     config (>= 0.3.2),
     golem (>= 0.4.1),
-    shiny (>= 1.7.5),
     yaml,
     assertthat,
     shinyWidgets,
@@ -18,10 +19,11 @@ Imports:
     sever,
     fresh,
     DT,
-    bs4Dash,
     waiter,
     dplyr,
-    readr
+    readr,
+    markdown,
+    rmarkdown
 Encoding: UTF-8
 Language: en-US
 LazyData: true

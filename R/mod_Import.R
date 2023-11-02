@@ -14,10 +14,10 @@ mod_Import_ui <- function(id){
 
   # TODO:
   # Import existing Marxan / Zonation / Prioritizr configuration files?
-  tabItem(tabName = "Import",
+  bs4Dash::tabItem(tabName = "Import",
           # https://shiny.posit.co/r/gallery/widgets/file-upload/
-          fluidPage(
-            box(
+          shiny::fluidPage(
+            bs4Dash::box(
               title = "Not yet implemented",
               closable = FALSE,
               width = 12,status = "danger",
@@ -72,7 +72,7 @@ mod_Import_ui <- function(id){
 #'
 #' @noRd
 mod_Import_server <- function(id){
-  moduleServer( id, function(input, output, session){
+ shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
   })

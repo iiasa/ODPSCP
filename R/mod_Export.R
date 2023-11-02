@@ -15,12 +15,12 @@ mod_Export_ui <- function(id){
 
   bs4Dash::tabItem(
     tabName = "Export",
-    fluidPage(
+    shiny::fluidPage(
       bs4Dash::tabsetPanel(
         id = ns("tabcard"),type = "pills",
-        tabPanel(
+        shiny::tabPanel(
           title = "Export protocol",
-          icon = icon("save",lib = "glyphicon"),
+          icon = shiny::icon("save",lib = "glyphicon"),
           bs4Dash::box(
             title = "Output format",
             closable = FALSE,
@@ -40,39 +40,39 @@ mod_Export_ui <- function(id){
               choices = c('rData', 'csv', 'yaml'),
               selected = 'rData'
             ),
-            br(),
+            shiny::br(),
             # Conditional info
-            conditionalPanel(
+            shiny::conditionalPanel(
               condition = "input.downloadFormat == 'rData'",
               ns = ns,
-              p("Protocol will be exported as a list in a R data object. RData objects
+              shiny::p("Protocol will be exported as a list in a R data object. RData objects
               can only be opened through R and the resulting file can be loaded
               again via load(file) in R.")
             ),
-            conditionalPanel(
+            shiny::conditionalPanel(
               condition = "input.downloadFormat == 'csv'",
               ns = ns,
-              p("Protocol will be exported as a comma-separated file (csv) that can
+              shiny::p("Protocol will be exported as a comma-separated file (csv) that can
               be loaded in any conventional software that allows the modification
               of text or spreadsheets. The protocol can also be reloaded in R via
               read.csv(file).")
             ),
-            conditionalPanel(
+            shiny::conditionalPanel(
               condition = "input.downloadFormat == 'yaml'",
               ns = ns,
-              p("Protocol will be exported in the YAML Ain't Markup Language, a
+              shiny::p("Protocol will be exported in the YAML Ain't Markup Language, a
               human-readable data serialization language that is common among
               many programming languages. YAML files can be read and edited with
               any text editor and loaded as lists into R via yaml::read_yaml(file).")
             ),
-            br(),
+            shiny::br(),
             # Button
-            downloadButton(ns("downloadData"), "Download the protocol")
+            shiny::downloadButton(ns("downloadData"), "Download the protocol")
           )
         ),
-        tabPanel(
+        shiny::tabPanel(
           title = "Render protocol",
-          icon = icon("list-alt",lib = "glyphicon"),
+          icon = shiny::icon("list-alt",lib = "glyphicon"),
           bs4Dash::box(
             title = "Protocol",
             closable = FALSE,
@@ -80,7 +80,7 @@ mod_Export_ui <- function(id){
             solidHeader = TRUE,
             collapsible = FALSE
           ),
-          p("Rendering protocol to be added!")
+          shiny::p("Rendering protocol to be added!")
           # DT::DTOutput(outputId = ns("results_table"))
           # shiny::textOutput(
           #   outputId = ns("protocolmarkdown")
@@ -95,14 +95,14 @@ mod_Export_ui <- function(id){
 #'
 #' @noRd
 mod_Export_server <- function(id, results){
-  moduleServer( id, function(input, output, session){
+  shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
     # Get output format
-    oftype <- reactive({input$downloadFormat})
+    oftype <- shiny::reactive({input$downloadFormat})
 
     # Make a download handler ----
-    output$downloadData <- downloadHandler(
+    output$downloadData <- shiny::downloadHandler(
       filename = function() {
         # Compose output file
         paste0(

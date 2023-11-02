@@ -14,9 +14,9 @@ mod_Design_ui <- function(id){
 
   bs4Dash::tabItem(
     tabName = "Design",
-      fluidPage(
-        fluidRow(
-          column(width = 12,
+      shiny::fluidPage(
+        shiny::fluidRow(
+          shiny::column(width = 12,
                  bs4Dash::box(
                    title = "What are the overall design criteria for the planning?",
                    closable = FALSE,
@@ -31,14 +31,14 @@ mod_Design_ui <- function(id){
                    rather the conceptual understanding of the aims, purpose, and
                    framework underlying a study."
                  ),
-                 hr()
+                 shiny::hr()
           )
         ),
         # --- #
         # Entries #
-        fluidRow(
-          column(width = 2),
-          column(width = 12,
+        shiny::fluidRow(
+          shiny::column(width = 2),
+          shiny::column(width = 12,
                  # Purpose
                  bs4Dash::box(
                    title = 'Aims and framing',
@@ -56,11 +56,11 @@ mod_Design_ui <- function(id){
                      solidHeader = TRUE,
                      status = "secondary",
                      collapsible = FALSE,
-                     textAreaInput(inputId = ns("studyaim"), label = "",
+                     shiny::textAreaInput(inputId = ns("studyaim"), label = "",
                                    placeholder = 'A short 1-2 sentence description of what this study aims to achieve.',
                                    height = "60px", width = "100%", resize = "vertical")
                    ),
-                   br(),
+                   shiny::br(),
                    bs4Dash::box(
                      title = 'Analytical Framework',
                      closable = FALSE,
@@ -70,7 +70,7 @@ mod_Design_ui <- function(id){
                      collapsible = TRUE,
                      # icon = icon("info"),
                      # Study framework
-                     p("Does the study follow an analytical framework, either explicitly
+                     shiny::p("Does the study follow an analytical framework, either explicitly
                        defined within the study or through a reference to previous
                        work?"),
                      shinyWidgets::pickerInput(
@@ -79,15 +79,15 @@ mod_Design_ui <- function(id){
                        choices = c("None","Defined within study","Reference"),
                        multiple = FALSE
                      ),
-                     conditionalPanel(
+                     shiny::conditionalPanel(
                        condition = "input.studyframework == 'Reference'",
                        ns = ns,
-                       textAreaInput(inputId = ns("frameworkreference"), label = "Reference",
+                       shiny::textAreaInput(inputId = ns("frameworkreference"), label = "Reference",
                                      placeholder = 'Provide a reference for the framework used.',
                                      height = "45px", width = "100%", resize = "none")
                      )
                    ),
-                   br(),
+                   shiny::br(),
                    # Theory of Change
                    bs4Dash::box(
                      title = "(Optional) Theory of change",
@@ -96,10 +96,10 @@ mod_Design_ui <- function(id){
                      solidHeader = TRUE,
                      status = "secondary",
                      collapsible = FALSE,
-                     p('Most SCP applications are applied rather than curiosity driven.
+                     shiny::p('Most SCP applications are applied rather than curiosity driven.
                        Here we ask whether the pathway to impact and
                        influencing outcomes is clear.'),
-                     textAreaInput(inputId = ns("theoryofchange"), label = "",
+                     shiny::textAreaInput(inputId = ns("theoryofchange"), label = "",
                                    placeholder = 'Describe the theory of change if there is any.',
                                    height = "45px", width = "100%", resize = "vertical")
                    )
@@ -122,7 +122,7 @@ mod_Design_ui <- function(id){
                     solidHeader = TRUE,
                     status = "secondary",
                     collapsible = FALSE,
-                    p("As primary purpose we refer to the overall aim of a study
+                    shiny::p("As primary purpose we refer to the overall aim of a study
                       such as the identification of areas to be placed under
                       conservation management (e.g. Protected areas)"),
                     shiny::selectizeInput(inputId = ns("studypurpose"),
@@ -134,7 +134,7 @@ mod_Design_ui <- function(id){
                                           options = list(create = TRUE,
                                                          placeholder = "Choose from list, or type and click to add new option."))
                   ),
-                  br(),
+                  shiny::br(),
                   # Multiple objective
                   bs4Dash::box(
                     title = "Multiple objectives",
@@ -143,7 +143,7 @@ mod_Design_ui <- function(id){
                     solidHeader = TRUE,
                     status = "secondary",
                     collapsible = FALSE,
-                    p("For a given purpose there can be often multiple, sometimes
+                    shiny::p("For a given purpose there can be often multiple, sometimes
                       competing objectives involved in the planning. For example,
                       if one would to identify management options that can maximize
                       both species and carbon storage."),
@@ -155,16 +155,16 @@ mod_Design_ui <- function(id){
                       inline = FALSE,
                       checkbox = TRUE
                     ),
-                    br(),
-                    conditionalPanel(
+                    shiny::br(),
+                    shiny::conditionalPanel(
                       condition = "input.checkmultobj == 'Yes'",
                       ns = ns,
-                      textAreaInput(inputId = ns("multobj"), label = "Muliple objectives",
+                      shiny::textAreaInput(inputId = ns("multobj"), label = "Muliple objectives",
                                     placeholder = 'List them here',
                                     height = "45px", width = "100%", resize = "none")
                     )
                   ),
-                  br(),
+                  shiny::br(),
                   bs4Dash::box(
                     title = "Scenarios or planning variants",
                     closable = FALSE,
@@ -172,7 +172,7 @@ mod_Design_ui <- function(id){
                     solidHeader = TRUE,
                     status = "secondary",
                     collapsible = FALSE,
-                    p("Often the output of a planning exercise is not a single
+                    shiny::p("Often the output of a planning exercise is not a single
                       prioritization, but multiple each with different assumptions,
                       parameters or input data. Examples include planning approaches
                       that account for various climate scenarios or assumptions regarding
@@ -186,17 +186,17 @@ mod_Design_ui <- function(id){
                       inline = FALSE,
                       checkbox = TRUE
                     ),
-                    br(),
-                    conditionalPanel(
+                    shiny::br(),
+                    shiny::conditionalPanel(
                       condition = "input.checkscenarios == 'Yes'",
                       ns = ns,
-                      textAreaInput(inputId = ns("planningscenarios"), label = "Explain",
+                      shiny::textAreaInput(inputId = ns("planningscenarios"), label = "Explain",
                                     placeholder = 'Describe the planning scenarios or variants.',
                                     height = "60px", width = "100%", resize = "vertical")
                     )
                   )
                 ),
-                br(),
+                shiny::br(),
                 # Study Engagement
                 bs4Dash::box(
                   title = 'Engagement of stakeholders',
@@ -207,11 +207,11 @@ mod_Design_ui <- function(id){
                   collapsible = TRUE,
                   # icon = icon("info"),
                   # Stakeholders
-                  p("To facilitate sucessful implementation it can be considered
+                  shiny::p("To facilitate sucessful implementation it can be considered
                     important to involve stakeholders in the design and execution
                     of the planning exercise. There are multiple ways of doing so
                     and the fields below record these details."),
-                  br(),
+                  shiny::br(),
                   bs4Dash::box(
                     title = "Stakeholder engaged",
                     closable = FALSE,
@@ -228,10 +228,10 @@ mod_Design_ui <- function(id){
                       checkbox = TRUE
                     ),
                     # Details on type of engagement
-                    conditionalPanel(
+                    shiny::conditionalPanel(
                       condition = "input.checkstakeholders == 'Yes'",
                       ns = ns,
-                      br(),
+                      shiny::br(),
                       bs4Dash::box(
                         title = "Type of engagement",
                         closable = FALSE,
@@ -250,7 +250,7 @@ mod_Design_ui <- function(id){
                             title = "Engaged how?")
                         )
                       ),
-                      br(),
+                      shiny::br(),
                       bs4Dash::box(
                         title = "Stakeholders",
                         closable = FALSE,
@@ -270,7 +270,7 @@ mod_Design_ui <- function(id){
                                               options = list(create = TRUE,
                                                              placeholder = "Choose from list, or type and click to add new option."))
                       ),
-                      br(),
+                      shiny::br(),
                       bs4Dash::box(
                         title = "Stakeholder engagement method",
                         closable = FALSE,
@@ -278,7 +278,7 @@ mod_Design_ui <- function(id){
                         solidHeader = TRUE,
                         status = "secondary",
                         collapsible = FALSE,
-                        textAreaInput(inputId = ns("stakeholdermethod"), label = "Method of engagement",
+                        shiny::textAreaInput(inputId = ns("stakeholdermethod"), label = "Method of engagement",
                                       placeholder = 'Describe when and how stakeholders were engaged in the course of the project',
                                       height = "80px", width = "100%", resize = "both")
                       )
@@ -293,9 +293,10 @@ mod_Design_ui <- function(id){
 
 #' Design Server Functions
 #'
+#' @importFrom shiny observe
 #' @noRd
 mod_Design_server <- function(id, results){
-  moduleServer( id, function(input, output, session){
+  shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
     # Study design page --------------------------------------------------------------

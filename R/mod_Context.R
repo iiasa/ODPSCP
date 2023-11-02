@@ -234,12 +234,12 @@ mod_Context_ui <- function(id){
 #' @importFrom shiny observe
 #' @noRd
 mod_Context_server <- function(id, results){
-  moduleServer( id, function(input, output, session){
+  shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
     # Get all parameters
     ids <- get_protocol_ids(group = "context")
-    observe({
+    shiny::observe({
       for(id in ids){
         results[[id]] <- input[[id]]
       }

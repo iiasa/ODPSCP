@@ -15,14 +15,14 @@ mod_Home_ui <- function(id){
   bs4Dash::tabItem(
     tabName = "Home",
 
-    fluidPage(
+    shiny::fluidPage(
 
-      fluidRow(
-        column(width = 2),
-        column(width = 8,
-               p("A reporting protocol for SCP", style = "padding-top: 10px; font-size: 30px; font-weight:bold;"),
+      shiny::fluidRow(
+        shiny::column(width = 2),
+        shiny::column(width = 8,
+               shiny::p("A reporting protocol for SCP", style = "padding-top: 10px; font-size: 30px; font-weight:bold;"),
 
-               p("Systematic conservation planning (SCP) usually make use of
+               shiny::p("Systematic conservation planning (SCP) usually make use of
                  decision theoretical approaches to decide - given all available evidence - where,
                  when and/or what to do so that outcomes are most beneficial for biodiversity conservation.
                  SCP can be applied at the identification, planning, implementation and
@@ -31,12 +31,12 @@ mod_Home_ui <- function(id){
                  from a range of scientific disciplines.",
              style= "font-size: 18px;"),
 
-              p("Area-based and action-based conservation planning are critical scientific
+              shiny::p("Area-based and action-based conservation planning are critical scientific
                 tools in reaching conservation policy objectives across scales.
                 Yet despite decades of research and numerous scientific advances
-                in Europe ",a(href = 'https://osf.io/8x2ug/', '(Jung et al. 2023)',
+                in Europe ",shiny::a(href = 'https://osf.io/8x2ug/', '(Jung et al. 2023)',
                                                     target = "_blank", .noWS = "outside"),".",
-                " and globally ",a(href = 'https://www.annualreviews.org/doi/10.1146/annurev-environ-102016-060902',
+                " and globally ",shiny::a(href = 'https://www.annualreviews.org/doi/10.1146/annurev-environ-102016-060902',
                                    '(McIntosh et al. 2017)',
                                    target = "_blank", .noWS = "outside"),
                 ", it often remains incomprehensible for those unfamiliar with the
@@ -47,7 +47,7 @@ mod_Home_ui <- function(id){
              # img(src = "", width = "60%", style="display: block; margin-left: auto; margin-right: auto;
              #     min-width:500px;"), br(),
 
-             p("The ODPSCP protocol serves three main purposes. First, it provides a
+             shiny::p("The ODPSCP protocol serves three main purposes. First, it provides a
                checklist for authors to detail all key steps in their planning work.
                Second, it introduces a standard approach to documentation that ensures
                transparency and reproducibility, facilitating peer review and
@@ -55,7 +55,7 @@ mod_Home_ui <- function(id){
                authors and decision makers to identify key strength, but also
                weaknesses of a systematic planning exercise. ", style= "font-size: 18px;"),
 
-             p("This Shiny web application helps to implement the protocol through
+             shiny::p("This Shiny web application helps to implement the protocol through
                an easy understandable user interface and allows export the created
                protocols in a range of formats for further usages. We encourage the
                scientific community, publishers and editors and policy makers to make
@@ -64,13 +64,13 @@ mod_Home_ui <- function(id){
              # em(p("Please cite as follows:", style = "font-size: 18px;")),
              # p("<INSERT PREPRINT> DOI: ",
              #   a(href = '', '', target = "_blank", .noWS = "outside"), style= "font-size: 18px;"),
-             hr(),br()
+             shiny::hr(), shiny::br()
         )),
 
       # Button row
-      fluidRow(
-        column(width = 2),
-        column(width = 8,
+      shiny::fluidRow(
+        shiny::column(width = 2),
+        shiny::column(width = 8,
                # Button to get started
                shinyWidgets::actionBttn(
                  inputId = "start_new_protocol",
@@ -79,7 +79,7 @@ mod_Home_ui <- function(id){
                  color = "royal",
                  size = "md",
                  block = TRUE,
-                 icon = icon("play")
+                 icon = shiny::icon("play")
                )
           )
         )
@@ -91,7 +91,7 @@ mod_Home_ui <- function(id){
 #'
 #' @noRd
 mod_Home_server <- function(id, results){
-  moduleServer( id, function(input, output, session){
+  shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
   })

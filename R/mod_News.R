@@ -14,10 +14,10 @@ mod_News_ui <- function(id){
 
   bs4Dash::tabItem(
     tabName = "News",
-       fluidPage(
-         fluidRow(
-           column(width = 2),
-           column(width = 12,
+       shiny::fluidPage(
+         shiny::fluidRow(
+           shiny::column(width = 2),
+           shiny::column(width = 12,
                   bs4Dash::tabsetPanel(
                     id = ns("Tabset"),
                     type = "pills",
@@ -26,21 +26,21 @@ mod_News_ui <- function(id){
                     # News panel
                     shiny::tabPanel(
                       title = "News",
-                      br(),
-                      box(
+                      shiny::br(),
+                      bs4Dash::box(
                         title = "News and protocol updates",
                         status = "primary",
                         solidHeader = TRUE,
                         collapsed = FALSE,
                         width = 12,
-                        includeMarkdown("NEWS.md")
+                        shiny::includeMarkdown("NEWS.md")
                       )
                     ),
                     # Rendered protocol
                     shiny::tabPanel(
                       title = "ODPSCP protocol",
-                      br(),
-                      box(
+                      shiny::br(),
+                      bs4Dash::box(
                         title = "The protocol template",
                         status = "primary",
                         solidHeader = TRUE,
@@ -51,14 +51,14 @@ mod_News_ui <- function(id){
                     ),
                     shiny::tabPanel(
                       title = "R Session Info",
-                      br(),
-                      box(
+                      shiny::br(),
+                      bs4Dash::box(
                         title = "R Session Info",
                         status = "primary",
                         solidHeader = TRUE,
                         collapsed = FALSE,
                         width = 12,
-                        verbatimTextOutput(ns("Rsession"))
+                        shiny::verbatimTextOutput(ns("Rsession"))
                       )
                     )
                   )
@@ -72,11 +72,11 @@ mod_News_ui <- function(id){
 #'
 #' @noRd
 mod_News_server <- function(id){
-  moduleServer( id, function(input, output, session){
+  shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
     # Print out the current Rsession
-    output$Rsession <- renderPrint(
+    output$Rsession <- shiny::renderPrint(
       print(utils::sessionInfo())
     )
 
@@ -84,7 +84,7 @@ mod_News_server <- function(id){
     ppath <- system.file("01_protocol.yaml",
                          package = "ODPSCP",
                          mustWork = TRUE)
-    output$current_protocol <- renderPrint(
+    output$current_protocol <- shiny::renderPrint(
       print( readLines(ppath) )
     )
 

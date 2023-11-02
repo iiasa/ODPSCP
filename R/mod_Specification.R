@@ -13,9 +13,9 @@ mod_Specification_ui <- function(id){
   ns <- NS(id)
 
   bs4Dash::tabItem(tabName = "Specification",
-          fluidPage(
-            fluidRow(
-              column(width = 12,
+          shiny::fluidPage(
+            shiny::fluidRow(
+              shiny::column(width = 12,
                      bs4Dash::box(
                        title = "Specification",
                        closable = FALSE,
@@ -23,18 +23,18 @@ mod_Specification_ui <- function(id){
                        status = "primary",
                        solidHeader = FALSE,
                        collapsible = FALSE,
-                       p("Under the protocol entry 'Specification' we list all
+                       shiny::p("Under the protocol entry 'Specification' we list all
                          the elements, features and datasets that are being used
                          in the planning. Basic information on their broad categorization,
                          type and origin are recorded.")
                      )
               )
             ),
-            hr(),
+            shiny::hr(),
             # Row for planning units
-             fluidRow(
-                column(width = 2),
-                column(width = 12,
+             shiny::fluidRow(
+                shiny::column(width = 2),
+                shiny::column(width = 12,
                        # Planning units
                        bs4Dash::box(
                          title = 'Planning units and scale',
@@ -43,12 +43,12 @@ mod_Specification_ui <- function(id){
                          solidHeader = TRUE,
                          status = "primary",
                          collapsible = TRUE,
-                         p("The principal elements of a SCP application are generally
+                         shiny::p("The principal elements of a SCP application are generally
                            called 'Planning units'. They can be for example based on a
                            gridded Raster layer or any spatial organization such as
                            a polygon. There could also be no planning units for SCP
                            applications that are non-spatial."),
-                         br(),
+                         shiny::br(),
                          # Planning unit type
                          bs4Dash::box(
                            title = "Planning unit type",
@@ -66,15 +66,15 @@ mod_Specification_ui <- function(id){
                              ),
                              multiple = FALSE
                            ),
-                           conditionalPanel(
+                           shiny::conditionalPanel(
                              condition = "input.pu_type == 'Other'",
                              ns = ns,
-                             textAreaInput(inputId = ns("othertypes"), label = "Other type",
+                             shiny::textAreaInput(inputId = ns("othertypes"), label = "Other type",
                                            placeholder = 'Define here',
                                            height = "45px", width = "100%", resize = "none")
                            )
                           ),
-                         br(),
+                         shiny::br(),
                          bs4Dash::box(
                            title = "What was the spatial grain of planning?",
                            closable = FALSE,
@@ -82,13 +82,13 @@ mod_Specification_ui <- function(id){
                            solidHeader = TRUE,
                            status = "secondary",
                            collapsible = FALSE,
-                           p("Briefly describe the spatial grain of planning if applicable, for
+                           shiny::p("Briefly describe the spatial grain of planning if applicable, for
                              example whether a planning unit was homogeneous in size."),
-                           textAreaInput(inputId = ns("pu_grainspace"), label = "",
+                           shiny::textAreaInput(inputId = ns("pu_grainspace"), label = "",
                                          placeholder = 'Describe the grain of planning units if applicable.',
                                          height = "45px", width = "100%", resize = "none")
                          ),
-                         br(),
+                         shiny::br(),
                          bs4Dash::box(
                            title = "Planning unit costs",
                            closable = FALSE,
@@ -102,10 +102,10 @@ mod_Specification_ui <- function(id){
                              choices = c("No", "Area only", "Yes"),
                              multiple = FALSE
                            ),
-                           conditionalPanel(
+                           shiny::conditionalPanel(
                              condition = "input.pu_checkcosts == 'Yes'",
                              ns = ns,
-                             textAreaInput(inputId = ns("pu_costs"), label = "Describe process of creating costs",
+                             shiny::textAreaInput(inputId = ns("pu_costs"), label = "Describe process of creating costs",
                                            placeholder = 'Provide some detail on how costs were defined or created.',
                                            height = "45px", width = "100%", resize = "none")
                            )
@@ -113,9 +113,9 @@ mod_Specification_ui <- function(id){
                     )
                 ) # End column
               ), # End row
-            fluidRow(
-              column(width = 2),
-              column(width = 12,
+            shiny::fluidRow(
+              shiny::column(width = 2),
+              shiny::column(width = 12,
                      # Planning units
                      bs4Dash::box(
                        title = 'Zones and specific groups',
@@ -124,11 +124,10 @@ mod_Specification_ui <- function(id){
                        solidHeader = TRUE,
                        status = "primary",
                        collapsible = TRUE,
-                       p("Not all planning units or planning objectives might
+                       shiny::p("Not all planning units or planning objectives might
                          receive the same attention or are considered equally.
                          Here we record whether certain area or themes were
                          exclusively considered, included or excluded."),
-                       br(),
                        # Ecosystem specifics
                        bs4Dash::box(
                          title = "Was there any ecosystem specificity?",
@@ -137,10 +136,10 @@ mod_Specification_ui <- function(id){
                          solidHeader = TRUE,
                          status = "secondary",
                          collapsible = FALSE,
-                         p("Planning can be conducted on all land or sea within a given
+                         shiny::p("Planning can be conducted on all land or sea within a given
                            region, but it can also be specific to certain ecosystems
                            or land-use types, such as for example forests.",
-                           strong("Check No if all available land or sea was considered.")),
+                           shiny::strong("Check No if all available land or sea was considered.")),
                           shinyWidgets::awesomeRadio(
                             inputId = ns("checkecosystem"),
                             label = "Was there any ecosystem specificity?",
@@ -149,16 +148,16 @@ mod_Specification_ui <- function(id){
                             inline = FALSE,
                             checkbox = TRUE
                           ),
-                      br(),
-                      conditionalPanel(
+                      shiny::br(),
+                      shiny::conditionalPanel(
                         condition = "input.checkecosystem == 'Yes'",
                         ns = ns,
-                        textAreaInput(inputId = ns("specificecosystem"), label = "Which ecosystems were considered?",
+                        shiny::textAreaInput(inputId = ns("specificecosystem"), label = "Which ecosystems were considered?",
                                       placeholder = 'List them here',
                                       height = "45px", width = "100%", resize = "none")
                         )
                       ),
-                      br(),
+                      shiny::br(),
                       # Zones
                       bs4Dash::box(
                         title = "Where any zones used for the planning?",
@@ -167,7 +166,7 @@ mod_Specification_ui <- function(id){
                         solidHeader = TRUE,
                         status = "secondary",
                         collapsible = FALSE,
-                        p("Planning can be structured by considering multiple
+                        shiny::p("Planning can be structured by considering multiple
                           management or land-use objectives through zones.
                           Here we describe them if those are set."),
                         shinyWidgets::awesomeRadio(
@@ -178,16 +177,16 @@ mod_Specification_ui <- function(id){
                           inline = FALSE,
                           checkbox = TRUE
                         ),
-                        br(),
-                        conditionalPanel(
+                        shiny::br(),
+                        shiny::conditionalPanel(
                           condition = "input.checkzones == 'Yes'",
                           ns = ns,
-                          textAreaInput(inputId = ns("specificzones"), label = "Zones used?",
+                          shiny::textAreaInput(inputId = ns("specificzones"), label = "Zones used?",
                                         placeholder = 'Describe the zones used in the planning.',
                                         height = "45px", width = "100%", resize = "none")
                         )
                       ),
-                      br(),
+                      shiny::br(),
                       # Areas included or excluded
                       bs4Dash::box(
                         title = "Inclusion or exclusions?",
@@ -196,7 +195,7 @@ mod_Specification_ui <- function(id){
                         solidHeader = TRUE,
                         status = "secondary",
                         collapsible = FALSE,
-                        p("Any areas or actions that were included or excluded by default?"),
+                        shiny::p("Any areas or actions that were included or excluded by default?"),
                         shinyWidgets::pickerInput(
                           inputId = ns("inclusionexclusion"),
                           label = "Select:",
@@ -204,22 +203,23 @@ mod_Specification_ui <- function(id){
                           selected = "None",
                           multiple = TRUE
                         ),
-                        conditionalPanel(
+                        shiny::conditionalPanel(
                           condition = "input.inclusionexclusion != 'None'",
                           ns = ns,
-                          textAreaInput(inputId = ns("defaultareas"), label = "Describe inclusions or exclusions",
-                                        placeholder = 'Describe in wording the specific areas or actions considered...',
+                          shiny::textAreaInput(inputId = ns("defaultareas"),
+                                               label = "Describe inclusions or exclusions",
+                                               placeholder = 'Describe in wording the specific areas or actions considered...',
                                         height = "60px", width = "100%", resize = "vertical")
                         )
                       )
                      )
                ) # Column end
              ), # Fluid row end
-             br(),
+             shiny::br(),
              # Entries #
-             fluidRow(
-               column(width = 2),
-               column(width = 12,
+             shiny::fluidRow(
+               shiny::column(width = 2),
+               shiny::column(width = 12,
                       # Features
                       bs4Dash::box(
                         title = 'Feature types and description',
@@ -228,12 +228,11 @@ mod_Specification_ui <- function(id){
                         solidHeader = TRUE,
                         status = "primary",
                         collapsible = TRUE,
-                        p("What types of features are included in the spatial planning?
+                        shiny::p("What types of features are included in the spatial planning?
                           As features we do traditionally describe all (spatial)
                           information that enters the prioritization with the aim of
                           accruing benefits. Examples include estimates of the distribution
                           of species or Nature Contributions to people (NCPs)."),
-                        br(),
                         # Feature types
                         bs4Dash::box(
                           title = "Feature types",
@@ -261,13 +260,13 @@ mod_Specification_ui <- function(id){
                               options = list(`actions-box` = TRUE),
                               multiple = TRUE
                             ),
-                            br(),
+                            shiny::br(),
                             # Any other types?
-                            textAreaInput(inputId = ns("otherfeaturetype"), label = "Other types",
+                            shiny::textAreaInput(inputId = ns("otherfeaturetype"), label = "Other types",
                                           placeholder = 'Any other broad feature types included? Describe',
                                           height = "45px", width = "100%", resize = "none")
                         ),
-                        br(),
+                        shiny::br(),
                         # Aggregated features
                         bs4Dash::box(
                           title = "Where any features types aggregated before use in the planning?",
@@ -276,26 +275,26 @@ mod_Specification_ui <- function(id){
                           solidHeader = TRUE,
                           status = "secondary",
                           collapsible = FALSE,
-                          p("An example is the use of Overall Species richness as
+                          shiny::p("An example is the use of Overall Species richness as
                             aggregated sum of species distributions in the planning"),
                           shinyWidgets::prettyToggle(
                             inputId = ns('checkaggregated'),
                             label_on = "Yes",
-                            icon_on = icon("check"),
+                            icon_on = shiny::icon("check"),
                             status_on = "success",
                             status_off = "danger",
                             label_off = "No",
-                            icon_off = icon("remove")
+                            icon_off = shiny::icon("remove")
                           ),
-                          conditionalPanel(
+                          shiny::conditionalPanel(
                             condition = "input.checkaggregated",
                             ns = ns,
-                            textAreaInput(inputId = ns('featureaggregated'), label = "Aggregation of feature types",
+                            shiny::textAreaInput(inputId = ns('featureaggregated'), label = "Aggregation of feature types",
                                         placeholder = 'If applicable please describe which and how.',
                                         height = "45px", width = "100%", resize = "none")
                           )
                         ),
-                        br(),
+                        shiny::br(),
                         # List the features
                         bs4Dash::box(
                           title = "Provide a list of all features:",
@@ -305,13 +304,15 @@ mod_Specification_ui <- function(id){
                           status = "secondary",
                           collapsible = TRUE,
                           DT::DTOutput(outputId = ns("featurelist")),
-                          actionButton(inputId = ns("add_feature"), label = "Add a new feature row", icon = icon("plus")),
-                          actionButton(inputId = ns("remove_feature"), label = "Remove last feature row", icon = icon("minus")),
-                          fileInput(inputId = ns('load_feature'),label = 'Alternatively upload a feature/group list:',
+                          shiny::actionButton(inputId = ns("add_feature"), label = "Add a new feature row",
+                                              icon = shiny::icon("plus")),
+                          shiny::actionButton(inputId = ns("remove_feature"), label = "Remove last feature row",
+                                              icon = shiny::icon("minus")),
+                          shiny::fileInput(inputId = ns('load_feature'),label = 'Alternatively upload a feature/group list:',
                                     accept = c('csv', 'comma-separated-values','.csv', 'tsv', '.tsv')),
-                          p("(Doubleclick on an added row to change the input values)")
+                          shiny::p("(Doubleclick on an added row to change the input values)")
                         ),
-                        br(),
+                        shiny::br(),
                         # How were features created?
                         bs4Dash::box(
                           title = "How were features created?",
@@ -320,19 +321,17 @@ mod_Specification_ui <- function(id){
                           solidHeader = TRUE,
                           status = "secondary",
                           collapsible = FALSE,
-                          p('Commonly input features in the planning were created
+                          shiny::p('Commonly input features in the planning were created
                             through separate processes, such as through qualitative
                             data gathering or ecological modelling. Here we briefly
                             describe how input features were created.'),
-                          textAreaInput(inputId = ns("featureorigin"), label = "",
+                          shiny::textAreaInput(inputId = ns("featureorigin"), label = "",
                                            placeholder = 'Describe the origin of the input features',
                                            height = "60px", width = "100%", resize = "vertical")
                         )
                       )
                   ) # Fluid column end
-                ), # Fluidrow end
-            br()
-
+                ) # Fluidrow end
           )
   ) # End tab
 }
@@ -342,12 +341,12 @@ mod_Specification_ui <- function(id){
 #' @importFrom shiny observe observeEvent
 #' @noRd
 mod_Specification_server <- function(id, results){
-  moduleServer( id, function(input, output, session){
+  shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
     # Load all parameters in specification and add
     ids <- get_protocol_ids(group = "specification")
-    observe({
+    shiny::observe({
       for(id in ids){
         if(id == "feature_table"){
           results[[id]] <- data.frame(feature_table()) |> asplit(MARGIN = 1)
@@ -365,13 +364,14 @@ mod_Specification_server <- function(id, results){
     )
 
     # Events for author table
-    observeEvent(input$add_feature, {
+    shiny::observeEvent(input$add_feature, {
       new_data <- feature_table() |> dplyr::add_row(
         data.frame(name = "My species", group = "Species distribution")
       )
       feature_table(new_data)
     })
-    observeEvent(input$remove_feature, {
+
+    shiny::observeEvent(input$remove_feature, {
       new_data <- feature_table() |> dplyr::slice(-dplyr::n())
       feature_table(new_data)
     })
@@ -385,7 +385,7 @@ mod_Specification_server <- function(id, results){
     })
 
     # Manual edit
-    observeEvent(input$feature_table_cell_edit, {
+    shiny::observeEvent(input$feature_table_cell_edit, {
       info <- input$feature_table_cell_edit
       modified_data <- feature_table()
       modified_data[info$row, info$col+1] <- info$value
@@ -404,7 +404,7 @@ mod_Specification_server <- function(id, results){
     # --- #
 
     # Events for hiding data input boxes
-    observeEvent(input$featuretypes, {
+    shiny::observeEvent(input$featuretypes, {
       if('Other' %in% input$featuretypes){
         shinyjs::show("otherfeaturetype")
       }

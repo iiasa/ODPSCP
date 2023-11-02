@@ -13,9 +13,9 @@ mod_Prioritization_ui <- function(id){
   ns <- NS(id)
 
   bs4Dash::tabItem(tabName = "Prioritization",
-          fluidPage(
-            fluidRow(
-              column(width = 12,
+          shiny::fluidPage(
+            shiny::fluidRow(
+              shiny::column(width = 12,
                      bs4Dash::box(
                        title = 'Prioritization',
                        closable = FALSE,
@@ -23,7 +23,7 @@ mod_Prioritization_ui <- function(id){
                        solidHeader = FALSE,
                        status = "primary",
                        collapsible = FALSE,
-                       p("With prioritization we usually refer to the process of taking
+                       shiny::p("With prioritization we usually refer to the process of taking
                          the various datasets and parameters defined earlier and
                          identifying 'solutions' that might be spatial, spatial-temporal
                          or non-spatial in nature. This section elaborates on the
@@ -32,10 +32,10 @@ mod_Prioritization_ui <- function(id){
                      )
                 )
               ),
-              hr(),
-              fluidRow(
-                column(width = 2),
-                column(width = 12,
+              shiny::hr(),
+              shiny::fluidRow(
+                shiny::column(width = 2),
+                shiny::column(width = 12,
                        # Software description
                        bs4Dash::box(
                          title = 'Used Software',
@@ -44,7 +44,7 @@ mod_Prioritization_ui <- function(id){
                          solidHeader = TRUE,
                          status = "primary",
                          collapsible = TRUE,
-                         p("There are multiple existing types of software that
+                         shiny::p("There are multiple existing types of software that
                            allow users to integrate various features, constraints
                            and targets in a single prioritization. The most
                            commonly used SCP software solutions are listed below."),
@@ -61,23 +61,23 @@ mod_Prioritization_ui <- function(id){
                        ),
                        #TODO: Show some explanation / reference for each method
                        # upon selection.
-                       conditionalPanel(
+                       shiny::conditionalPanel(
                          condition = "input.software == 'Custom' || input.software == 'Other'",
                          ns = ns,
-                         textAreaInput(inputId = ns("othersoftware"), label = "Other",
+                         shiny::textAreaInput(inputId = ns("othersoftware"), label = "Other",
                                        placeholder = 'Describe the custom or other algorithm.',
                                        height = "45px", width = "100%", resize = "none")
                        ),
                        # Version number
-                       br(),
-                       conditionalPanel(
+                       shiny::br(),
+                       shiny::conditionalPanel(
                          condition = "input.software != ''",
                          ns = ns,
-                         textAreaInput(inputId = ns("versionnr"), label = "Provide a version number",
+                         shiny::textAreaInput(inputId = ns("versionnr"), label = "Provide a version number",
                                      placeholder = 'Enter a version nr for the used algorithm',
                                      height = "45px", width = "100%", resize = "none")
                        ),
-                     br(),
+                     shiny::br(),
                      bs4Dash::box(
                        title = "Key parameters",
                        closable = FALSE,
@@ -85,12 +85,12 @@ mod_Prioritization_ui <- function(id){
                        solidHeader = TRUE,
                        status = "secondary",
                        collapsible = FALSE,
-                       br(),
-                       textAreaInput(inputId = ns("parameters"), label = "Specific parameters used in the prioritization",
+                       shiny::br(),
+                       shiny::textAreaInput(inputId = ns("parameters"), label = "Specific parameters used in the prioritization",
                                      placeholder = 'Records any specific parameters related to the prioritization that would be useful to know.',
                                      height = "60px", width = "100%", resize = "vertical")
                        ),
-                     br(),
+                     shiny::br(),
                      # Identification of final priorities
                      bs4Dash::box(
                        title = "Identification of final priorities",
@@ -99,7 +99,7 @@ mod_Prioritization_ui <- function(id){
                        solidHeader = TRUE,
                        status = "secondary",
                        collapsible = FALSE,
-                       p("Not always is there a single solution to the prioritization process or
+                       shiny::p("Not always is there a single solution to the prioritization process or
                          where only single prioritizations run. Here we record how the
                          final priorities (those reported in the study) were obtained."),
                        shinyWidgets::pickerInput(
@@ -110,10 +110,10 @@ mod_Prioritization_ui <- function(id){
                                      "External indicator",
                                      "Other")
                        ),
-                       conditionalPanel(
+                       shiny::conditionalPanel(
                          condition = "input.identsolution == 'Other'",
                          ns = ns,
-                         textAreaInput(inputId = ns("otheridentification"), label = "",
+                         shiny::textAreaInput(inputId = ns("otheridentification"), label = "",
                                        placeholder = 'Explain how final solutions were obtained',
                                        height = "45px", width = "100%", resize = "vertical")
                        )
@@ -121,9 +121,9 @@ mod_Prioritization_ui <- function(id){
                      )
               )
             ), # Fluidrow
-            fluidRow(
-              column(width = 2),
-              column(width = 12,
+            shiny::fluidRow(
+              shiny::column(width = 2),
+              shiny::column(width = 12,
                      bs4Dash::box(
                        title = 'Performance evaluation',
                        closable = FALSE,
@@ -131,15 +131,17 @@ mod_Prioritization_ui <- function(id){
                        solidHeader = TRUE,
                        status = "primary",
                        collapsible = TRUE,
-                       p("A performance evaluation determines the value or overall
+                       shiny::p("A performance evaluation determines the value or overall
                          benefits of a given prioritization output in terms of
                          chosen representative indicators or values."),
                        DT::DTOutput(outputId = ns("perfidenticators")),
-                       actionButton(inputId = ns("add_indicator"), label = "Add a new indicator", icon = icon("plus")),
-                       actionButton(inputId = ns("remove_indicator"), label = "Remove last indicator", icon = icon("minus")),
-                       pre("(Doubleclick on an added row to change the input values)"),
-                       br(),
-                       br(),
+                       shiny::actionButton(inputId = ns("add_indicator"), label = "Add a new indicator",
+                                           icon = shiny::icon("plus")),
+                       shiny::actionButton(inputId = ns("remove_indicator"), label = "Remove last indicator",
+                                           icon = shiny::icon("minus")),
+                       shiny::pre("(Doubleclick on an added row to change the input values)"),
+                       shiny::br(),
+                       shiny::br(),
                        # Any other performance evaluation conducted?
                        bs4Dash::box(
                          title = "Other performance evaluation",
@@ -148,8 +150,8 @@ mod_Prioritization_ui <- function(id){
                          solidHeader = TRUE,
                          status = "secondary",
                          collapsible = FALSE,
-                         br(),
-                         textAreaInput(inputId = ns("otherperformance"),
+                         shiny::br(),
+                         shiny::textAreaInput(inputId = ns("otherperformance"),
                                        label = "Was there any other form of evaluation of the prioritization?",
                                        placeholder = 'If applicable, elaborate',
                                        height = "60px", width = "100%", resize = "vertical")
@@ -166,11 +168,11 @@ mod_Prioritization_ui <- function(id){
 #' @importFrom shiny observe observeEvent
 #' @noRd
 mod_Prioritization_server <- function(id, results){
-  moduleServer( id, function(input, output, session){
+  shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
     ids <- get_protocol_ids(group = "prioritization")
-    observe({
+    shiny::observe({
       for(id in ids){
         if(id == "perfidenticators"){
           results[[id]] <- data.frame(indicators()) |> asplit(MARGIN = 1)
@@ -181,7 +183,7 @@ mod_Prioritization_server <- function(id, results){
     })
 
     # List for performance indicators
-    indicators <- reactiveVal(
+    indicators <- shiny::reactiveVal(
       data.frame(name = character(0),
                  description = character(0),
                  unit = character(0),
@@ -189,14 +191,14 @@ mod_Prioritization_server <- function(id, results){
     )
 
     # Events for author table
-    observeEvent(input$add_indicator, {
+    shiny::observeEvent(input$add_indicator, {
       new_data <- indicators() |> dplyr::add_row(
         data.frame(name = "EDIT ME", description = "EDIT ME",
                    unit = "EDIT ME", reference = "EDIT ME")
       )
       indicators(new_data)
     })
-    observeEvent(input$remove_indicator, {
+    shiny::observeEvent(input$remove_indicator, {
       new_data <- indicators() |> dplyr::slice(-dplyr::n())
       indicators(new_data)
     })
@@ -209,7 +211,7 @@ mod_Prioritization_server <- function(id, results){
                     editable = TRUE)
     })
 
-    observeEvent(input$perfidenticators_cell_edit, {
+    shiny::observeEvent(input$perfidenticators_cell_edit, {
       info <- input$perfidenticators_cell_edit
       modified_data <- indicators()
       modified_data[info$row, info$col+1] <- info$value

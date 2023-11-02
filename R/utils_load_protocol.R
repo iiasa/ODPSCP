@@ -5,7 +5,6 @@
 #' @param path_protocol A [`character`] pointing to the destination of the protocol.
 #' @return A [`list`] object.
 #'
-#' @import yaml
 #' @noRd
 load_protocol <- function(path_protocol = NULL){
   assertthat::assert_that(

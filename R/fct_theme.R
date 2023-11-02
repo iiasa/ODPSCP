@@ -9,25 +9,24 @@
 #'
 #' @return Returns a css object to be used in the dashboard.
 #'
-#' @import fresh
 #' @noRd
 odpscp_theme <- function(){
   # Create theme
   tt <- fresh::create_theme(
-    bs4dash_vars(
+    fresh::bs4dash_vars(
       navbar_light_color = "#bec5cb",
       navbar_light_active_color = "#FFF",
       navbar_light_hover_color = "#FFF"
     ),
-    bs4dash_yiq(
+    fresh::bs4dash_yiq(
       contrasted_threshold = 10,
       text_dark = "#FFF",
       text_light = "#272c30"
     ),
-    bs4dash_layout(
+    fresh::bs4dash_layout(
       main_bg = "grey95"
     ),
-    bs4dash_sidebar_dark(
+    fresh::bs4dash_sidebar_dark(
       bg = "#FFF",
       color = "#bec5cb",
       hover_color = "#006994",
@@ -35,7 +34,7 @@ odpscp_theme <- function(){
       submenu_color = "#FFF",
       submenu_hover_color = "#FFF"
     ),
-    bs4dash_sidebar_dark(
+    fresh::bs4dash_sidebar_dark(
       bg = "#272c30",
       color = "#bec5cb",
       hover_color = "#006994",
@@ -43,10 +42,10 @@ odpscp_theme <- function(){
       submenu_color = "#FFF",
       submenu_hover_color = "#FFF"
     ),
-    bs4dash_status(
+    fresh::bs4dash_status(
       primary = "#5E81AC", danger = "#BF616A", light = "#272c30"
     ),
-    bs4dash_color(
+    fresh::bs4dash_color(
       gray_900 = "#FFF"
     )
   )

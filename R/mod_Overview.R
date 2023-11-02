@@ -14,9 +14,9 @@ mod_Overview_ui <- function(id){
 
   bs4Dash::tabItem(
     tabName = "Overview",
-    fluidPage(
-      fluidRow(
-        column(width = 12,
+    shiny::fluidPage(
+      shiny::fluidRow(
+        shiny::column(width = 12,
                bs4Dash::box(
             title = "Provide an overview of the conducted work",
             closable = FALSE,
@@ -30,14 +30,14 @@ mod_Overview_ui <- function(id){
             based on the listed properties.
             "
           ),
-          hr()
+          shiny::hr()
         )
       ),
       # --- #
       # Entries #
-      fluidRow(
-        column(width = 2),
-        column(width = 12,
+      shiny::fluidRow(
+        shiny::column(width = 2),
+        shiny::column(width = 12,
           # Study name group
           bs4Dash::box(
             title = "Study information",
@@ -48,7 +48,7 @@ mod_Overview_ui <- function(id){
             collapsed = FALSE,
             collapsible = TRUE,
             # icon = icon("info"),
-            textAreaInput(inputId = ns("studyname"), label = "Study name",
+            shiny::textAreaInput(inputId = ns("studyname"), label = "Study name",
                           placeholder = 'What is the title of the conducted study?',
                           height = "45px", width = "100%", resize = "none"),
           # Authors
@@ -60,10 +60,12 @@ mod_Overview_ui <- function(id){
             status = "secondary",
             collapsible = TRUE,
             DT::DTOutput(outputId = ns("authors_table")),
-            actionButton(inputId = ns("add_author"), label = "Add a new author row", icon = icon("plus")),
-            actionButton(inputId = ns("remove_author"), label = "Remove last author row", icon = icon("minus")),
-            pre("(Doubleclick on an added row to change the input values)"),
-            br()
+            shiny::actionButton(inputId = ns("add_author"), label = "Add a new author row",
+                                icon = shiny::icon("plus")),
+            shiny::actionButton(inputId = ns("remove_author"), label = "Remove last author row",
+                                icon = shiny::icon("minus")),
+            shiny::pre("(Doubleclick on an added row to change the input values)"),
+            shiny::br()
           ),
           # Corresponding author
           bs4Dash::box(
@@ -73,7 +75,7 @@ mod_Overview_ui <- function(id){
             solidHeader = TRUE,
             status = "secondary",
             collapsible = FALSE,
-            textAreaInput(inputId = ns("authoremail"), label = "",
+            shiny::textAreaInput(inputId = ns("authoremail"), label = "",
                           placeholder = 'Email of the corresponding author',
                           height = "45px", width = "100%", resize = "none")
           ),
@@ -85,16 +87,16 @@ mod_Overview_ui <- function(id){
             solidHeader = TRUE,
             status = "gray",
             collapsible = FALSE,
-            textAreaInput(inputId = ns("studylink"), label = "",
+            shiny::textAreaInput(inputId = ns("studylink"), label = "",
                           placeholder = 'Link to the published study such as DOI.',
                           height = "45px", width = "100%", resize = "none")
           )
           )
         ),
       ),
-      fluidRow(
-        column(width = 2),
-        column(width = 12,
+      shiny::fluidRow(
+        shiny::column(width = 2),
+        shiny::column(width = 12,
              # Next box with study location
              bs4Dash::box(
           title = "Overview of scale and extent of a study",
@@ -105,9 +107,8 @@ mod_Overview_ui <- function(id){
           collapsed = FALSE,
           collapsible = TRUE,
           # icon = icon("location"),
-          "Spatial planning can be conducted at a range of different scales and realms
-          and this field aims to provide the various options.",
-          pre(),
+          shiny::p("Spatial planning can be conducted at a range of different scales and realms
+          and this field aims to provide the various options."),
           # Scale
           bs4Dash::box(
             title = "Study scale",
@@ -116,11 +117,10 @@ mod_Overview_ui <- function(id){
             solidHeader = TRUE,
             status = "secondary",
             collapsible = FALSE,
-            "Local refers to a study at any given single site, National to planning
+            shiny::p("Local refers to a study at any given single site, National to planning
             at a country level, Regional for studies beyond single countries
             (e.g. bioregions), Continental for entire continents (e.g. Europe, Africa)
-            and global for truly global studies.",
-            pre(),
+            and global for truly global studies."),
             shinyWidgets::pickerInput(
                 inputId = ns("studyscale"),
                 label = "At what scale was the study conducted?",
@@ -137,7 +137,7 @@ mod_Overview_ui <- function(id){
             solidHeader = TRUE,
             status = "secondary",
             collapsible = FALSE,
-            textAreaInput(inputId = ns("studylocation"), label = "Description",
+            shiny::textAreaInput(inputId = ns("studylocation"), label = "Description",
                           placeholder = 'Qualitative description of the study location.',
                           height = "45px", width = "100%",resize = "vertical")
             ),
@@ -149,7 +149,7 @@ mod_Overview_ui <- function(id){
             solidHeader = TRUE,
             status = "secondary",
             collapsible = FALSE,
-            p("Define the temporal scale over which the planning applies.
+            shiny::p("Define the temporal scale over which the planning applies.
               If outside the chosen scale, please provide details in the textbox."),
             shinyWidgets::sliderTextInput(
               inputId = ns("studytime"),
@@ -158,8 +158,8 @@ mod_Overview_ui <- function(id){
               grid = TRUE,
               selected = seq(2000,2020,1)
             ),
-            br(),
-            textAreaInput(inputId = ns("otherstudytime"), label = "(Optional) Custom coverage",
+            shiny::br(),
+            shiny::textAreaInput(inputId = ns("otherstudytime"), label = "(Optional) Custom coverage",
                           placeholder = 'Enter in case the range cannot be reflected with the slider.',
                           height = "45px", width = "100%",resize = "vertical")
           ),
@@ -178,15 +178,15 @@ mod_Overview_ui <- function(id){
                           "Freshwater", "Marine", "Air"),
               size = "sm",
               justified = TRUE,
-              checkIcon = list(yes = icon("ok", lib = "glyphicon"))
+              checkIcon = list(yes = shiny::icon("ok", lib = "glyphicon"))
              )
             )
           )
         ) # Column end
       ),
-      fluidRow(
-        column(width = 2),
-        column(width = 12,
+      shiny::fluidRow(
+        shiny::column(width = 2),
+        shiny::column(width = 12,
           # Data availability
           bs4Dash::box(
             title = "Data and code availability",
@@ -197,10 +197,9 @@ mod_Overview_ui <- function(id){
             collapsed = FALSE,
             collapsible = TRUE,
             # icon = icon("magnifying-glass-chart"),
-            "This box records whether a study makes available the data - both for
+            shiny::p("This box records whether a study makes available the data - both for
             input and outputs - as well as the software code or analytical to
-            reproduce the analysis.",
-            pre(),
+            reproduce the analysis."),
             # Link to input data
             bs4Dash::box(
                 title = 'Are the used input data made available and if so where?',
@@ -212,18 +211,18 @@ mod_Overview_ui <- function(id){
                 shinyWidgets::prettyToggle(
                   inputId = ns('inputavailability'),
                   label_on = "Yes",
-                  icon_on = icon("check"),
+                  icon_on = shiny::icon("check"),
                   status_on = "success",
                   status_off = "danger",
                   label_off = "No",
-                  icon_off = icon("remove")
+                  icon_off = shiny::icon("remove")
                 ),
-                textAreaInput(inputId = ns('inputdata'), label = "Input data",
+                shiny::textAreaInput(inputId = ns('inputdata'), label = "Input data",
                               placeholder = 'If applicable please enter a link to the data storage repository.',
                               height = "45px", width = "100%", resize = "none")
 
                 ),
-            pre(),
+            shiny::br(),
             # Link to output data
             bs4Dash::box(
               title = 'Are the created outputs made openly available and if so where?',
@@ -235,18 +234,18 @@ mod_Overview_ui <- function(id){
               shinyWidgets::prettyToggle(
                 inputId = ns('outputavailability'),
                 label_on = "Yes",
-                icon_on = icon("check"),
+                icon_on = shiny::icon("check"),
                 status_on = "success",
                 status_off = "danger",
                 label_off = "No",
-                icon_off = icon("remove")
+                icon_off = shiny::icon("remove")
               ),
-              textAreaInput(inputId = ns('outputdata'), label = "Output data",
+              shiny::textAreaInput(inputId = ns('outputdata'), label = "Output data",
                             placeholder = 'If applicable please enter a link to the data storage repository.',
                             height = "45px", width = "100%", resize = "none")
 
             ),
-            pre(),
+            shiny::br(),
             # Link to code
             bs4Dash::box(
               title = 'Are the analytical steps to reproduce the results made available?',
@@ -258,19 +257,19 @@ mod_Overview_ui <- function(id){
               shinyWidgets::prettyToggle(
                 inputId = ns('codeavailability'),
                 label_on = "Yes",
-                icon_on = icon("check"),
+                icon_on = shiny::icon("check"),
                 status_on = "success",
                 status_off = "danger",
                 label_off = "No",
-                icon_off = icon("remove")
+                icon_off = shiny::icon("remove")
               ),
-              textAreaInput(inputId = ns('outputcode'), label = "Analysis code",
+              shiny::textAreaInput(inputId = ns('outputcode'), label = "Analysis code",
                             placeholder = 'If applicable please enter a link to the code storage repository.',
                             height = "45px", width = "100%", resize = "none")
             )
           ) # End of column
         ) # End of fluid row
-      ),
+      )
 
       # uiOutput("Overview_UI")
 
@@ -310,7 +309,7 @@ mod_Overview_ui <- function(id){
 #' @importFrom shiny observe observeEvent
 #' @noRd
 mod_Overview_server <- function(id, results){
-  moduleServer( id, function(input, output, session){
+  shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
     #### Dynamic rendering of UI Elements ####
@@ -322,7 +321,7 @@ mod_Overview_server <- function(id, results){
 
     # Load all parameters in overview and add
     ids <- get_protocol_ids(group = "overview")
-    observe({
+    shiny::observe({
       for(id in ids){
         if(id == "authors_table"){
           results[[id]] <- data.frame(authors()) |> asplit(MARGIN = 1)
@@ -333,20 +332,20 @@ mod_Overview_server <- function(id, results){
     })
 
     # Authors
-    authors <- reactiveVal(
+    authors <- shiny::reactiveVal(
       data.frame(forename = character(0),
                  surename = character(0),
                  orcid = character(0))
     )
 
     # Events for author table
-    observeEvent(input$add_author, {
+    shiny::observeEvent(input$add_author, {
       new_data <- authors() |> dplyr::add_row(
         data.frame(forename = "EDIT ME", surename = "EDIT ME", orcid = "EDIT ME")
       )
       authors(new_data)
     })
-    observeEvent(input$remove_author, {
+    shiny::observeEvent(input$remove_author, {
       new_data <- authors() |> dplyr::slice(-dplyr::n())
       authors(new_data)
     })
@@ -359,7 +358,7 @@ mod_Overview_server <- function(id, results){
                     editable = TRUE)
     })
 
-    observeEvent(input$authors_table_cell_edit, {
+    shiny::observeEvent(input$authors_table_cell_edit, {
       info <- input$authors_table_cell_edit
       modified_data <- authors()
       modified_data[info$row, info$col+1] <- info$value
@@ -368,25 +367,25 @@ mod_Overview_server <- function(id, results){
 
     # ----- #
     # Events for hiding data input boxes
-    observeEvent(input$inputavailability, {
+    shiny::observeEvent(input$inputavailability, {
       shinyjs::toggle("inputdata")
     })
-    observeEvent(input$outputavailability, {
+    shiny::observeEvent(input$outputavailability, {
       shinyjs::toggle("outputdata")
     })
-    observeEvent(input$codeavailability, {
+    shiny::observeEvent(input$codeavailability, {
       shinyjs::toggle("outputcode")
     })
     # ----- #
 
     # Bottom page buttons --------------------------------------------------------------
     # Final observe event to continue
-    observeEvent(input$next_design, {
+    shiny::observeEvent(input$next_design, {
       bs4Dash::updateTabItems(session, inputId = ns("sidebarmenu"), selected = "Design")
     })
 
     # Clear all
-    observeEvent(input$reset, {
+    shiny::observeEvent(input$reset, {
       shinyWidgets::ask_confirmation(
         inputId = ns("confirm_reset"),
         text = tags$b(
