@@ -60,7 +60,8 @@ mod_Context_ui <- function(id){
                                        choices = c("","Binary allocation",
                                                    "Proportional share",
                                                    "Semi-continious share",
-                                                   "Importance ranking"),
+                                                   "Importance ranking",
+                                                   "Discrete action"),
                                        multiple = FALSE,
                                        options = list(create = TRUE,
                                                       placeholder = "Choose from list, or type and click to add new option"))
@@ -191,7 +192,11 @@ mod_Context_ui <- function(id){
                                                           "Favourable Reference value"),
                                               multiple = FALSE,
                                               options = list(create = TRUE,
-                                                             placeholder = "Choose from list, or type and click to add new option"))
+                                                             placeholder = "Choose from list, or type and click to add new option")),
+                        shiny::br(),
+                        shiny::textAreaInput(inputId = ns('targetdetail'), label = "Details on targets",
+                                             placeholder = 'Explain how targets for features were estimated.',
+                                             height = "45px", width = "100%", resize = "none")
                       ),
                       shiny::br(),
                       # Feature weights
@@ -245,6 +250,16 @@ mod_Context_server <- function(id, results){
       }
     })
 
+    # ----- #
+    # Toggler
+    shiny::observeEvent(input$contexttargets, {
+      if(!(input$contexttargets %in% c("None",""))){
+        shinyjs::show("targetdetail")
+      } else if(input$contexttargets %in% c("None","")){
+        shinyjs::hide("targetdetail")
+      }
+    })
+    # ----- #
   })
 }
 

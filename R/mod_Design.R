@@ -56,8 +56,10 @@ mod_Design_ui <- function(id){
                      solidHeader = TRUE,
                      status = "secondary",
                      collapsible = FALSE,
+                     shiny::div("A short 1-2 sentence description of what the study aimed
+                         to achieve. "),
                      shiny::textAreaInput(inputId = ns("studyaim"), label = "",
-                                   placeholder = 'A short 1-2 sentence description of what this study aims to achieve.',
+                                   placeholder = 'Describe study aims...',
                                    height = "60px", width = "100%", resize = "vertical")
                    ),
                    shiny::br(),
@@ -132,7 +134,7 @@ mod_Design_ui <- function(id){
                                                       "Land-use allocation"),
                                           multiple = FALSE,
                                           options = list(create = TRUE,
-                                                         placeholder = "Choose from list, or type and click to add new option."))
+                                                         placeholder = "Choose from list, or type and click to add a new option."))
                   ),
                   shiny::br(),
                   # Multiple objective
@@ -196,7 +198,6 @@ mod_Design_ui <- function(id){
                     )
                   )
                 ),
-                shiny::br(),
                 # Study Engagement
                 bs4Dash::box(
                   title = 'Engagement of stakeholders',

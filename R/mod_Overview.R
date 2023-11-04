@@ -75,20 +75,22 @@ mod_Overview_ui <- function(id){
             solidHeader = TRUE,
             status = "secondary",
             collapsible = FALSE,
+            shiny::div("Who is the corresponding author?"),
             shiny::textAreaInput(inputId = ns("authoremail"), label = "",
                           placeholder = 'Email of the corresponding author',
                           height = "45px", width = "100%", resize = "none")
           ),
           # Link to study
           bs4Dash::box(
-            title = "(optional) Link to study",
+            title = "Link to study",
             closable = FALSE,
             width = 12,
             solidHeader = TRUE,
             status = "gray",
             collapsible = FALSE,
+            shiny::div("Has the study already been published? If so, pprove a reference"),
             shiny::textAreaInput(inputId = ns("studylink"), label = "",
-                          placeholder = 'Link to the published study such as DOI.',
+                          placeholder = 'Link to the published study such as a DOI.',
                           height = "45px", width = "100%", resize = "none")
           )
           )
@@ -107,8 +109,9 @@ mod_Overview_ui <- function(id){
           collapsed = FALSE,
           collapsible = TRUE,
           # icon = icon("location"),
-          shiny::p("Spatial planning can be conducted at a range of different scales and realms
-          and this field aims to provide the various options."),
+          shiny::p("Spatial planning can be conducted at a range of different spatial
+                   and temporal scales, and realms. The fields below capture this
+                   information."),
           # Scale
           bs4Dash::box(
             title = "Study scale",
@@ -137,6 +140,8 @@ mod_Overview_ui <- function(id){
             solidHeader = TRUE,
             status = "secondary",
             collapsible = FALSE,
+            shiny::div("Describe in a few sentences which location the study covers, for
+                example the land- or seascape covered by study at local scale."),
             shiny::textAreaInput(inputId = ns("studylocation"), label = "Description",
                           placeholder = 'Qualitative description of the study location.',
                           height = "45px", width = "100%",resize = "vertical")

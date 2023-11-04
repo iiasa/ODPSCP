@@ -76,12 +76,11 @@ mod_Export_ui <- function(id){
           bs4Dash::box(
             title = "Protocol",
             closable = FALSE,
-            width = 12,height = 20,
+            width = 12,
             solidHeader = TRUE,
-            collapsible = FALSE
-          ),
-          shiny::p("Rendering protocol to be added!")
-          # DT::DTOutput(outputId = ns("results_table"))
+            collapsible = FALSE,
+            DT::DTOutput(outputId = ns("results_table"))
+          )
           # shiny::textOutput(
           #   outputId = ns("protocolmarkdown")
           # )
@@ -97,6 +96,16 @@ mod_Export_ui <- function(id){
 mod_Export_server <- function(id, results){
   shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
+
+    # Format the results table to a data.frame
+    output$results_table <- DT::renderDT({
+      DT::datatable(format_protocol(results, format = "data.frame") |>
+                      dplyr::select(-element),
+                    rownames = FALSE,
+                    filter = "top", selection = "none",
+                    style = "auto",
+                    editable = FALSE)
+    })
 
     # Get output format
     oftype <- shiny::reactive({input$downloadFormat})

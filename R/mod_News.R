@@ -46,7 +46,7 @@ mod_News_ui <- function(id){
                         solidHeader = TRUE,
                         collapsed = FALSE,
                         width = 12,
-                        shiny::htmlOutput(ns("current_protocol"))
+                        shiny::verbatimTextOutput(ns("current_protocol"))
                       )
                     ),
                     shiny::tabPanel(
@@ -85,7 +85,7 @@ mod_News_server <- function(id){
                          package = "ODPSCP",
                          mustWork = TRUE)
     output$current_protocol <- shiny::renderPrint(
-      print( readLines(ppath) )
+     readLines(ppath)
     )
 
   })

@@ -28,7 +28,7 @@ app_ui <- function(request) {
           color = "primary",
           opacity = 0,
           href = NULL,
-          image = "www/logo.png"
+          image = shiny::img(src = "www/logo.png", height = "20px")
         ),
         status = "white",
         border = TRUE,

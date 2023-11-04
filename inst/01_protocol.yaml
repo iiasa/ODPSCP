@@ -448,6 +448,8 @@ context:
       - Flat (e.g. 30 percent),
       - Log-linear,
       - Favourable Reference value
+    fieldtype_conditional_render-id: 'targetdetail'
+    fieldtype_conditional: 'textbox'
     mandatory: true
 
   featureweights:
