@@ -496,8 +496,17 @@ prioritization:
     fieldtype: 'textbox'
     mandatory: true
 
-  software_parameters:
+  benefits:
     render-nr: 3
+    render-id: 'benefitfunctions'
+    render-group: 'study_software'
+    question: 'What is being optimized and how?'
+    description: 'Was a specific benefit function being used the optimization, or are there any specifics on how benefits were identified?'
+    fieldtype: 'textbox'
+    mandatory: false
+
+  software_parameters:
+    render-nr: 4
     render-id: 'parameters'
     render-group: 'study_software'
     question: 'Are there key parameters related to the solving of the planning problem?'
@@ -506,7 +515,7 @@ prioritization:
     mandatory: false
 
   solution_identification:
-    render-nr: 4
+    render-nr: 5
     render-id: 'identsolution'
     render-group: 'study_software'
     question: 'How were the final priorities identified?'

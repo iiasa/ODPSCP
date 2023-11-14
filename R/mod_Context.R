@@ -228,7 +228,33 @@ mod_Context_ui <- function(id){
                       )
                       )
                     )
-                )
+                ),
+                 # End of page button row
+                 shiny::fluidRow(
+                   shiny::column(width = 2),
+                   shiny::column(width = 8,
+                                 # Add backward button
+                                 shinyWidgets::actionBttn(
+                                   inputId = "go_specification",
+                                   label = "Back to specification",
+                                   style = "simple",
+                                   color = "primary",
+                                   size = "sm",
+                                   block = FALSE,
+                                   icon = shiny::icon("arrow-left")
+                                 ),
+                                 # Add forward button
+                                 shinyWidgets::actionBttn(
+                                   inputId = "go_prioritization",
+                                   label = "Continue with prioritization",
+                                   style = "simple",
+                                   color = "primary",
+                                   size = "sm",
+                                   block = FALSE,
+                                   icon = shiny::icon("arrow-right")
+                                 )
+                   )
+                 ) # End button box
               ) # End Fluid row
             ) # End Fluidpage
           )
@@ -238,7 +264,7 @@ mod_Context_ui <- function(id){
 #'
 #' @importFrom shiny observe
 #' @noRd
-mod_Context_server <- function(id, results){
+mod_Context_server <- function(id, results, parentsession){
   shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 

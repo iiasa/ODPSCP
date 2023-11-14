@@ -331,8 +331,35 @@ mod_Specification_ui <- function(id){
                         )
                       )
                   ) # Fluid column end
-                ) # Fluidrow end
-          )
+                ), # Fluidrow end
+
+            # End of page button row
+            shiny::fluidRow(
+              shiny::column(width = 2),
+              shiny::column(width = 8,
+                            # Add backward button
+                            shinyWidgets::actionBttn(
+                              inputId = "go_design",
+                              label = "Back to Design",
+                              style = "simple",
+                              color = "primary",
+                              size = "sm",
+                              block = FALSE,
+                              icon = shiny::icon("arrow-left")
+                            ),
+                            # Add forward button
+                            shinyWidgets::actionBttn(
+                              inputId = "go_context",
+                              label = "Continue to context",
+                              style = "simple",
+                              color = "primary",
+                              size = "sm",
+                              block = FALSE,
+                              icon = shiny::icon("arrow-right")
+                            )
+              )
+            )
+          ) # Fluidpage end
   ) # End tab
 }
 
@@ -340,7 +367,7 @@ mod_Specification_ui <- function(id){
 #'
 #' @importFrom shiny observe observeEvent
 #' @noRd
-mod_Specification_server <- function(id, results){
+mod_Specification_server <- function(id, results, parentsession){
   shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 

@@ -13,7 +13,7 @@ app_ui <- function(request) {
     bs4Dash::dashboardPage(
       # Preloader using waiter
       preloader = list(html = shiny::tagList(
-          waiter::spin_1(), "Loading ..."), color = "#3c8dbc"),
+          waiter::spin_balance(), "Loading ..."), color = "#3c8dbc"),
       # freshTheme =  odpscp_theme(), # Theme designed with fresh
       # Other options
       dark = FALSE,
@@ -73,7 +73,7 @@ app_ui <- function(request) {
           id = "sidebarmenu",
           bs4Dash::menuItem(
             "Home",
-            tabName = "Home",
+            tabName = "Home",selected = TRUE,
             icon = shiny::icon("home")
           ),
           bs4Dash::menuItem(
@@ -115,7 +115,7 @@ app_ui <- function(request) {
           bs4Dash::menuItem(
             "Export protocol",
             tabName = "Export",
-            icon = shiny::icon("download")
+            icon = shiny::icon("file-export")
           ),
           bs4Dash::sidebarHeader("Info"),
           bs4Dash::menuItem(

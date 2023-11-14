@@ -287,6 +287,33 @@ mod_Design_ui <- function(id){
                   )
             ) # Box engagement
           )
+        ),
+
+        # End of page button row
+        shiny::fluidRow(
+          shiny::column(width = 2),
+          shiny::column(width = 8,
+             # Add backward button
+             shinyWidgets::actionBttn(
+               inputId = "go_overview",
+               label = "Back to Overview",
+               style = "simple",
+               color = "primary",
+               size = "sm",
+               block = FALSE,
+               icon = shiny::icon("arrow-left")
+             ),
+             # Add forward button
+             shinyWidgets::actionBttn(
+               inputId = "go_specification",
+               label = "Continue with specification",
+               style = "simple",
+               color = "primary",
+               size = "sm",
+               block = FALSE,
+               icon = shiny::icon("arrow-right")
+             )
+          )
         )
       ) # FluidPage
   ) # TabItem
@@ -296,7 +323,7 @@ mod_Design_ui <- function(id){
 #'
 #' @importFrom shiny observe
 #' @noRd
-mod_Design_server <- function(id, results){
+mod_Design_server <- function(id, results, parentsession){
   shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 

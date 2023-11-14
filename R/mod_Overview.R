@@ -274,36 +274,46 @@ mod_Overview_ui <- function(id){
             )
           ) # End of column
         ) # End of fluid row
-      )
+      ),
 
       # uiOutput("Overview_UI")
 
       # End of page button row
-      # fluidRow(
-      #   column(width = 3),
-      #   column(width = 8,
-      #          # Add reset button
-      #          shinyWidgets::actionBttn(
-      #            inputId = ns("reset"),
-      #            label = "Clear all fields?",
-      #            style = "simple",
-      #            color = "danger",
-      #            size = "md",
-      #            block = FALSE,
-      #            icon = icon("broom")
-      #          ),
-      #          # Add forward button
-      #          shinyWidgets::actionBttn(
-      #            inputId = ns("next_design"),
-      #            label = "Continue with the design",
-      #            style = "simple",
-      #            color = "royal",
-      #            size = "md",
-      #            block = FALSE,
-      #            icon = icon("arrow-right")
-      #          )
-      #   )
-      # ) # End of fluid row for buttons
+      shiny::fluidRow(
+        shiny::column(width = 2),
+        shiny::column(width = 8,
+               # # Add reset button
+               # shinyWidgets::actionBttn(
+               #   inputId = ns("reset"),
+               #   label = "Clear all fields?",
+               #   style = "simple",
+               #   color = "danger",
+               #   size = "md",
+               #   block = FALSE,
+               #   icon = icon("broom")
+               # ),
+               # Add backward button
+               shinyWidgets::actionBttn(
+                 inputId = "go_home",
+                 label = "Back to start",
+                 style = "simple",
+                 color = "primary",
+                 size = "sm",
+                 block = FALSE,
+                 icon = shiny::icon("arrow-left")
+               ),
+               # Add forward button
+               shinyWidgets::actionBttn(
+                 inputId = "go_design",
+                 label = "Continue with the design",
+                 style = "simple",
+                 color = "primary",
+                 size = "sm",
+                 block = FALSE,
+                 icon = shiny::icon("arrow-right")
+               )
+        )
+      ) # End of fluid row for buttons
     ) # End of fluid page
   ) # End of tab
 
@@ -313,7 +323,7 @@ mod_Overview_ui <- function(id){
 #'
 #' @importFrom shiny observe observeEvent
 #' @noRd
-mod_Overview_server <- function(id, results){
+mod_Overview_server <- function(id, results, parentsession){
   shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
@@ -383,11 +393,6 @@ mod_Overview_server <- function(id, results){
     })
     # ----- #
 
-    # Bottom page buttons --------------------------------------------------------------
-    # Final observe event to continue
-    shiny::observeEvent(input$next_design, {
-      bs4Dash::updateTabItems(session, inputId = ns("sidebarmenu"), selected = "Design")
-    })
 
     # Clear all
     shiny::observeEvent(input$reset, {

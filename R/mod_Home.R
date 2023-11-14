@@ -90,7 +90,7 @@ mod_Home_ui <- function(id){
 #' Home Server Functions
 #'
 #' @noRd
-mod_Home_server <- function(id, results){
+mod_Home_server <- function(id, results, parentsession){
   shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 

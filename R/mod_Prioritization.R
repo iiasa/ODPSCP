@@ -77,6 +77,22 @@ mod_Prioritization_ui <- function(id){
                                      placeholder = 'Enter a version nr for the used algorithm',
                                      height = "45px", width = "100%", resize = "none")
                        ),
+                     # Objective functions
+                     shiny::br(),
+                     bs4Dash::box(
+                       title = "Benefit functions",
+                       closable = FALSE,
+                       width = 12,
+                       solidHeader = TRUE,
+                       status = "secondary",
+                       collapsible = FALSE,
+                       shiny::p("In many optimizations benefits can accrue in varying ways, for example
+                                through maximizing the targets achieved. If known or specific to the study,
+                                provide information on benefit function used."),
+                       shiny::textAreaInput(inputId = ns("benefitfunctions"), label = "What is being optimized and how?",
+                                            placeholder = 'If known, please provide further detail.',
+                                            height = "60px", width = "100%", resize = "vertical")
+                     ),
                      shiny::br(),
                      bs4Dash::box(
                        title = "Key parameters",
@@ -158,7 +174,34 @@ mod_Prioritization_ui <- function(id){
                        )
                      )
               ) # Column end
-            ) # Fluid row
+            ), # Fluid row
+
+            # End of page button row
+            shiny::fluidRow(
+              shiny::column(width = 2),
+              shiny::column(width = 8,
+                            # Add backward button
+                            shinyWidgets::actionBttn(
+                              inputId = "go_context",
+                              label = "Back to Context",
+                              style = "simple",
+                              color = "primary",
+                              size = "sm",
+                              block = FALSE,
+                              icon = shiny::icon("arrow-left")
+                            ),
+                            # Add forward button
+                            shinyWidgets::actionBttn(
+                              inputId = "go_export",
+                              label = "Export the protocol",
+                              style = "simple",
+                              color = "success",
+                              size = "sm",
+                              block = FALSE,
+                              icon = shiny::icon("file-export")
+                            )
+              )
+            ) # Fluidrow button end
           ) # Fluidpage
         )
 }
@@ -167,7 +210,7 @@ mod_Prioritization_ui <- function(id){
 #'
 #' @importFrom shiny observe observeEvent
 #' @noRd
-mod_Prioritization_server <- function(id, results){
+mod_Prioritization_server <- function(id, results, parentsession){
   shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
