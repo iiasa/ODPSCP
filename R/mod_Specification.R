@@ -190,12 +190,11 @@ mod_Specification_ui <- function(id){
                         shiny::conditionalPanel(
                           condition = "input.checkzones == 'Yes'",
                           ns = ns,
-                          p("Describe the zones used in the planning. Zones can be useful to prioritize
+                          shiny::p("Describe the zones used in the planning. Zones can be useful to prioritize
                             for not a single, but a set of management decisions. For example, protected area
                             managers might want to identify areas of minimal intervention ('core-areas')
                             as well as sustainable use areas.
-
-                            Reference: Watts, Matthew E., Ian R. Ball, Romola S. Stewart, Carissa J. Klein, Kerrie Wilson, Charles Steinback, Reinaldo Lourival, Lindsay Kircher, and Hugh P. Possingham. ‘Marxan with Zones: Software for Optimal Conservation Based Land- and Sea-Use Zoning’. Environmental Modelling & Software 24, no. 12 (December 2009): 1513–21. https://doi.org/10.1016/j.envsoft.2009.06.005.
+                            Reference: Watts, Matthew E., Ian R. Ball, Romola S. Stewart, Carissa J. Klein, Kerrie Wilson, Charles Steinback, Reinaldo Lourival, Lindsay Kircher, and Hugh P. Possingham. Marxan with Zones: Software for Optimal Conservation Based Land- and Sea-Use Zoning. Environmental Modelling & Software 24, no. 12 (December 2009): 1513–21. https://doi.org/10.1016/j.envsoft.2009.06.005.
 "),
                           DT::DTOutput(outputId = ns("specificzones")),
                           shiny::actionButton(inputId = ns("add_zone"), label = "Add a new zone",
