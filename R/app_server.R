@@ -46,6 +46,43 @@ app_server <- function(input, output, session) {
   })
   # ---------------------------------------------------------------------------
 
+  # Add Help popups
+  # add_protocol_help(session)
+  shiny::observeEvent(input$help_switch, {
+
+    # Load the protocol within the package
+    pp <- load_protocol()[-1]
+
+      # Loop over each group and element
+      for(gr in names(pp)){
+        sub <- pp[[gr]]
+
+        for(k in names(sub)){
+          subs <- sub[[k]]
+          # Only add if pophelp has been set
+          if("pophelp" %in% names(subs)){
+
+            if(input$help_switch){
+              print(subs[['render-id']])
+              # Now add the popovers
+              bs4Dash::addPopover(
+                id = subs[['render-id']],
+                options = list(
+                  content = subs[['popexample']],
+                  title = "Example",
+                  placement = "top",
+                  trigger = "focus" # click | hover | focus | manual.
+                )
+              )
+            } else {
+              bs4Dash::removePopover(id = subs[['render-id']])
+            }
+          }
+        }
+    }
+
+  })
+
   # title page ----------------------------------------------------------------
   # Adding module server code
   mod_Home_server("Home_1", results, session)

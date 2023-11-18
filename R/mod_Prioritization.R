@@ -56,9 +56,9 @@ mod_Prioritization_ui <- function(id){
                                        "RestOptr","oppr",
                                        "CAPTAIN","ROOT",
                                        "Custom","Other"),
-                         options = list(
-                           style = "btn-info")
-                       ),
+                           options = list(
+                             style = "btn-info")
+                         ),
                        #TODO: Show some explanation / reference for each method
                        # upon selection.
                        shiny::conditionalPanel(
@@ -89,6 +89,11 @@ mod_Prioritization_ui <- function(id){
                        shiny::p("In many optimizations benefits can accrue in varying ways, for example
                                 through maximizing the targets achieved. If known or specific to the study,
                                 provide information on benefit function used."),
+                       shiny::p("Benefit functions in prioritizations are for example those minimize marginal
+                                losses from cell removal, minimize an average shortfall or maximize the number
+                                of targets (a constraint) achieved.
+
+                                Reference: Arponen, A., Heikkinen, R. K., Thomas, C. D., & Moilanen, A. (2005). The value of biodiversity in reserve selection: representation, species weighting, and benefit functions. Conservation Biology, 19(6), 2009-2014."),
                        shiny::textAreaInput(inputId = ns("benefitfunctions"), label = "What is being optimized and how?",
                                             placeholder = 'If known, please provide further detail.',
                                             height = "60px", width = "100%", resize = "vertical")
@@ -116,14 +121,19 @@ mod_Prioritization_ui <- function(id){
                        status = "secondary",
                        collapsible = FALSE,
                        shiny::p("Not always is there a single solution to the prioritization process or
-                         where only single prioritizations run. Here we record how the
-                         final priorities (those reported in the study) were obtained."),
+                         where only single prioritizations run.",
+                         "For example, the selection frequency across multiple iterations
+                         or prioritization runs could be used to identify the set of
+                         final 'priority' areas.",
+                         "Here we record how the final priorities (those reported in the study) were obtained."),
                        shinyWidgets::pickerInput(
                          inputId = ns("identsolution"),
                          label = "Identification of solutions",
                          choices = c("","Budgets reached or costs exceeded",
                                      "Targets achieved",
+                                     "Selection frequency",
                                      "External indicator",
+                                     "Overlays",
                                      "Other")
                        ),
                        shiny::conditionalPanel(
@@ -149,7 +159,9 @@ mod_Prioritization_ui <- function(id){
                        collapsible = TRUE,
                        shiny::p("A performance evaluation determines the value or overall
                          benefits of a given prioritization output in terms of
-                         chosen representative indicators or values."),
+                         chosen representative indicators or values.",
+                         "An example would be for example summarizing the average amount of
+                         a threatened species range covered, or overlap with other spatial layers."),
                        DT::DTOutput(outputId = ns("perfidenticators")),
                        shiny::actionButton(inputId = ns("add_indicator"), label = "Add a new indicator",
                                            icon = shiny::icon("plus")),

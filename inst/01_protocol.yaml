@@ -1,10 +1,10 @@
 # Basic information
 protocol:
   name: ODPSCP
-  version: '0.1'
+  version: '0.2'
   repository: 'https://github.com/iiasa/ODPSCP'
   website: ''
-  last_updated: 2023-10-22
+  last_updated: 2023-11-17
 
 #### Overview ####
 overview:
@@ -16,6 +16,7 @@ overview:
     description: 'This field records basic information about the study and its scientific context.'
     fieldtype: 'textbox'
     mandatory: true
+    popexample: ""
 
   authors:
     render-nr: 2
@@ -25,6 +26,7 @@ overview:
     description: 'Create a list of all authors with link to their ORCID if specified.'
     fieldtype: 'multifieldselection'
     mandatory: true
+    popexample: ""
 
   corresponding:
     render-nr: 3
@@ -34,6 +36,7 @@ overview:
     description: 'The email address of the corresponding author.'
     fieldtype: 'textbox'
     mandatory: true
+    popexample: ""
 
   studylink:
     render-nr: 4
@@ -43,6 +46,7 @@ overview:
     description: 'Enter a Digital Object Identifier or any other permanent link.'
     fieldtype: 'textbox'
     mandatory: false
+    popexample: ""
 
   extent:
     render-nr: 1
@@ -58,6 +62,7 @@ overview:
       - continental
       - global
     mandatory: true
+    popexample: ""
 
   location:
     render-nr: 2
@@ -67,6 +72,7 @@ overview:
     description: 'Add text description of the study location.'
     fieldtype: 'textbox'
     mandatory: false
+    popexample: ""
 
   studytimeline:
     render-nr: 3
@@ -78,6 +84,7 @@ overview:
     fieldtype_conditional_render-id: 'otherstudytime'
     fieldtype_conditional: 'textbox'
     mandatory: false
+    popexample: ""
 
   realm:
     render-nr: 4
@@ -93,6 +100,7 @@ overview:
       - Freshwater
       - Marine
     mandatory: true
+    popexample: ""
 
   output_availability:
     render-nr: 1
@@ -104,6 +112,7 @@ overview:
     fieldtype_conditional_render-id: 'inputdata'
     fieldtype_conditional: 'textbox'
     mandatory: true
+    popexample: ""
 
   input_availability:
     render-nr: 2
@@ -115,6 +124,7 @@ overview:
     fieldtype_conditional_render-id: 'outputdata'
     fieldtype_conditional: 'textbox'
     mandatory: true
+    popexample: ""
 
   reproducibility:
     render-nr: 2
@@ -126,6 +136,7 @@ overview:
     fieldtype_conditional_render-id: 'outputcode'
     fieldtype_conditional: 'textbox'
     mandatory: true
+    popexample: ""
 
 #### Design ####
 design:
@@ -137,6 +148,7 @@ design:
     description: 'Desribe in 1-2 sentences what the study aims to achieve?'
     fieldtype: 'textbox'
     mandatory: true
+    popexample: ""
 
   framework:
     render-nr: 2
@@ -152,6 +164,7 @@ design:
     fieldtype_conditional_render-id: 'frameworkreference'
     fieldtype_conditional: 'textbox'
     mandatory: false
+    popexample: ""
 
   toc:
     render-nr: 3
@@ -161,6 +174,7 @@ design:
     description: 'Most SCP applications are applied rather than curiosity driven. The primary question here is whether the pathway to impact and influencing outcomes is clear.'
     fieldtype: 'textbox'
     mandatory: false
+    popexample: ""
 
   purpose:
     render-nr: 1
@@ -175,6 +189,7 @@ design:
       - Action-based planning
       - Monitoring and evaluation
     mandatory: true
+    popexample: ""
 
   multobj:
     render-nr: 2
@@ -186,6 +201,7 @@ design:
     fieldtype_conditional_render-id: 'multobj'
     fieldtype_conditional: 'textbox'
     mandatory: true
+    popexample: ""
 
   scenarios:
     render-nr: 3
@@ -197,6 +213,7 @@ design:
     fieldtype_conditional_render-id: 'planningscenarios'
     fieldtype_conditional: 'textbox'
     mandatory: false
+    popexample: ""
 
   stakeholders:
     render-nr: 1
@@ -214,6 +231,7 @@ design:
       - Collaborated
       - Co-design
     mandatory: true
+    popexample: ""
 
   stakeholder_type:
     render-nr: 2
@@ -230,6 +248,7 @@ design:
       - General Public
       - Youth
     mandatory: false
+    popexample: ""
 
   stakeholder_method:
     render-nr: 3
@@ -239,6 +258,7 @@ design:
     description: 'Describe in a few words how precisely stakeholder were engaged. For example when (conceptualization or start of the project) or how (workshops, interviews).'
     fieldtype: 'textbox'
     mandatory: false
+    popexample: ""
 
 #### Specification ####
 specification:
@@ -252,20 +272,27 @@ specification:
     options:
       - None
       - Gridded
-      - Vector (Point, Line, Polygon)
+      - Point
+      - Line
+      - Regular Polygon (e.g. rectangle)
+      - Irregular Polygon (e.g. hexagon)
       - Other
     fieldtype_conditional_render-id: 'othertypes'
     fieldtype_conditional: 'textbox'
     mandatory: true
+    popexample: ""
 
   grainspace:
     render-nr: 2
-    render-id: 'pu_grainspace'
+    render-id: 'pu_unit'
     render-group: 'planningunits'
     question: 'What was the spatial grain of planning?'
     description: 'Describe the grain of planning units if applicable.'
     fieldtype: 'textbox'
+    fieldtype_conditional_render-id: 'pu_grainspace'
+    fieldtype_conditional: 'textbox'
     mandatory: false
+    popexample: ""
 
   pucosts:
     render-nr: 3
@@ -281,6 +308,7 @@ specification:
     fieldtype_conditional_render-id: 'pu_costs'
     fieldtype_conditional: 'textbox'
     mandatory: true
+    popexample: ""
 
   ecosystem_specificity:
     render-nr: 1
@@ -292,6 +320,7 @@ specification:
     fieldtype_conditional_render-id: 'specificecosystem'
     fieldtype_conditional: 'textbox'
     mandatory: false
+    popexample: ""
 
   zonedefinitions:
     render-nr: 2
@@ -301,8 +330,9 @@ specification:
     description: 'Planning can be structured by multiple management or land-use zones. Here we describe them, also listing any parameters that structure their zone.'
     fieldtype: 'radio'
     fieldtype_conditional_render-id: 'specificzones'
-    fieldtype_conditional: 'textbox'
+    fieldtype_conditional: 'multifieldselection'
     mandatory: false
+    popexample: ""
 
   inclusionexclusion:
     render-nr: 3
@@ -318,6 +348,7 @@ specification:
     fieldtype_conditional_render-id: 'defaultareas'
     fieldtype_conditional: 'textbox'
     mandatory: true
+    popexample: ""
 
   featuretypes:
     render-nr: 1
@@ -341,6 +372,7 @@ specification:
     fieldtype_conditional_render-id: 'otherfeaturetype'
     fieldtype_conditional: 'textbox'
     mandatory: true
+    popexample: ""
 
   featuresaggregated:
     render-nr: 2
@@ -352,6 +384,7 @@ specification:
     fieldtype_conditional_render-id: 'featureaggregated'
     fieldtype_conditional: 'textbox'
     mandatory: false
+    popexample: ""
 
   featurelist:
     render-nr: 3
@@ -361,6 +394,7 @@ specification:
     description: 'Add the features to the list.'
     fieldtype: 'multifieldselection'
     mandatory: false
+    popexample: ""
 
   featureorigin:
     render-nr: 4
@@ -370,6 +404,7 @@ specification:
     description: 'Describe the origin of the features.'
     fieldtype: 'textbox'
     mandatory: false
+    popexample: ""
 
 #### Context ####
 context:
@@ -386,6 +421,7 @@ context:
       - Semi-continious share
       - Importance ranking
     mandatory: false
+    popexample: ""
 
   timeconditions:
     render-nr: 2
@@ -400,6 +436,7 @@ context:
       - Future conditions
       - Fully dynamic
     mandatory: false
+    popexample: ""
 
   connectivity:
     render-nr: 3
@@ -417,6 +454,7 @@ context:
       - Structural connectivity
       - Functional connectivity
     mandatory: false
+    popexample: ""
 
   connectivitydetail:
     render-nr: 4
@@ -426,6 +464,7 @@ context:
     description: 'Any other methodological detail on how connectivity was considered in the planning.'
     fieldtype: 'textbox'
     mandatory: false
+    popexample: ""
 
   constraintdetail:
     render-nr: 5
@@ -435,6 +474,7 @@ context:
     description: 'Other constraints can for example constraint lower or upper estimates on allocated land.'
     fieldtype: 'textbox'
     mandatory: false
+    popexample: ""
 
   featuretargets:
     render-nr: 1
@@ -447,10 +487,11 @@ context:
       - None
       - Flat (e.g. 30 percent),
       - Log-linear,
-      - Favourable Reference value
+      - Other
     fieldtype_conditional_render-id: 'targetdetail'
     fieldtype_conditional: 'textbox'
     mandatory: true
+    popexample: ""
 
   featureweights:
     render-nr: 2
@@ -462,6 +503,7 @@ context:
     fieldtype_conditional_render-id: 'featureweightsdetails'
     fieldtype_conditional: 'textbox'
     mandatory: true
+    popexample: ""
 
 #### Prioritization ####
 prioritization:
@@ -486,6 +528,7 @@ prioritization:
     fieldtype_conditional_render-id: 'othersoftware'
     fieldtype_conditional: 'textbox'
     mandatory: true
+    popexample: ""
 
   versionnr:
     render-nr: 2
@@ -495,6 +538,7 @@ prioritization:
     description: 'Enter a version number of the used software'
     fieldtype: 'textbox'
     mandatory: true
+    popexample: ""
 
   benefits:
     render-nr: 3
@@ -504,6 +548,7 @@ prioritization:
     description: 'Was a specific benefit function being used the optimization, or are there any specifics on how benefits were identified?'
     fieldtype: 'textbox'
     mandatory: false
+    popexample: "Benefit functions in prioritizations are for example those minimize marginal losses from cell removal, minimize an average shortfall or maximize the number of targets (a constraint) achieved. Reference: Arponen, A., Heikkinen, R. K., Thomas, C. D., & Moilanen, A. (2005). The value of biodiversity in reserve selection: representation, species weighting, and benefit functions. Conservation Biology, 19(6), 2009-2014."
 
   software_parameters:
     render-nr: 4
@@ -513,6 +558,7 @@ prioritization:
     description: 'Records any specific parameters related to the prioritization that would be useful to know.'
     fieldtype: 'textbox'
     mandatory: false
+    popexample: ""
 
   solution_identification:
     render-nr: 5
@@ -524,11 +570,14 @@ prioritization:
     options:
       - Targets achieved
       - Budgets reached or costs exceeded
+      - Selection frequency
+      - Overlays
       - External indicator
       - Other
     fieldtype_conditional_render-id: 'otheridentification'
     fieldtype_conditional: 'textbox'
     mandatory: true
+    popexample: ""
 
   performance:
     render-nr: 1
@@ -538,6 +587,7 @@ prioritization:
     description: 'Performance indicators can be used to identify the performance of the solution(s). Here we describe them.'
     fieldtype: 'multifieldselection'
     mandatory: false
+    popexample: ""
 
   otherperformance:
     render-nr: 2
@@ -547,3 +597,4 @@ prioritization:
     description: 'Any other form of performance evaluation applied?'
     fieldtype: 'textbox'
     mandatory: false
+    popexample: ""

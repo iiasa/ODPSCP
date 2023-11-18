@@ -19,7 +19,7 @@ app_ui <- function(request) {
       dark = FALSE,
       scrollToTop = TRUE,
       fullscreen = FALSE,
-      help = NULL, # Default enable tooltips
+      help = FALSE, # Default enable tooltips
       # controlbar = bs4Dash::dashboardControlbar(),
       # Define header and footer
       header = bs4Dash::dashboardHeader(

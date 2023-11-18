@@ -189,7 +189,7 @@ mod_Context_ui <- function(id){
                                               choices = c("","None",
                                                           "Flat (e.g. 30 percent)",
                                                           "Log-linear",
-                                                          "Favourable Reference value"),
+                                                          "Other"),
                                               multiple = FALSE,
                                               options = list(create = TRUE,
                                                              placeholder = "Choose from list, or type and click to add new option")),

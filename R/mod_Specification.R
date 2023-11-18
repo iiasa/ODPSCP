@@ -61,7 +61,10 @@ mod_Specification_ui <- function(id){
                              inputId = ns("pu_type"),
                              label = "Type of planning unit",
                              choices = c(
-                               "None", "Gridded", "Vector (Point, Line, Polygon)",
+                               "None", "Gridded",
+                               "Point", "Line",
+                               "Regular Polygon (e.g. rectangle)",
+                               "Irregular Polygon (e.g. hexagon)",
                                "Other"
                              ),
                              multiple = FALSE
@@ -82,11 +85,17 @@ mod_Specification_ui <- function(id){
                            solidHeader = TRUE,
                            status = "secondary",
                            collapsible = FALSE,
-                           shiny::p("Briefly describe the spatial grain of planning if applicable, for
+                           shiny::p("What is the the spatial grain of planning if applicable, for
                              example whether a planning unit was homogeneous in size."),
-                           shiny::textAreaInput(inputId = ns("pu_grainspace"), label = "",
-                                         placeholder = 'Describe the grain of planning units if applicable.',
-                                         height = "45px", width = "100%", resize = "none")
+                           shiny::textInput(inputId = ns("pu_unit"),
+                                            label = "Homogeneous planning unit area"),
+                           shiny::conditionalPanel(
+                             condition = "input.pu_unit == ''",
+                             ns = ns,
+                             shiny::textAreaInput(inputId = ns("pu_grainspace"), label = "Custom planning units",
+                                                  placeholder = 'If planning units are heterogeneous in size, explain origin here.',
+                                                  height = "45px", width = "100%", resize = "none")
+                           )
                          ),
                          shiny::br(),
                          bs4Dash::box(
@@ -181,9 +190,21 @@ mod_Specification_ui <- function(id){
                         shiny::conditionalPanel(
                           condition = "input.checkzones == 'Yes'",
                           ns = ns,
-                          shiny::textAreaInput(inputId = ns("specificzones"), label = "Zones used?",
-                                        placeholder = 'Describe the zones used in the planning.',
-                                        height = "45px", width = "100%", resize = "none")
+                          p("Describe the zones used in the planning. Zones can be useful to prioritize
+                            for not a single, but a set of management decisions. For example, protected area
+                            managers might want to identify areas of minimal intervention ('core-areas')
+                            as well as sustainable use areas.
+
+                            Reference: Watts, Matthew E., Ian R. Ball, Romola S. Stewart, Carissa J. Klein, Kerrie Wilson, Charles Steinback, Reinaldo Lourival, Lindsay Kircher, and Hugh P. Possingham. ‘Marxan with Zones: Software for Optimal Conservation Based Land- and Sea-Use Zoning’. Environmental Modelling & Software 24, no. 12 (December 2009): 1513–21. https://doi.org/10.1016/j.envsoft.2009.06.005.
+"),
+                          DT::DTOutput(outputId = ns("specificzones")),
+                          shiny::actionButton(inputId = ns("add_zone"), label = "Add a new zone",
+                                              icon = shiny::icon("plus")),
+                          shiny::actionButton(inputId = ns("remove_zone"), label = "Remove last added zone",
+                                              icon = shiny::icon("minus")),
+                          shiny::fileInput(inputId = ns('load_zones'),label = 'Alternatively upload a zone list:',
+                                           accept = c('csv', 'comma-separated-values','.csv', 'tsv', '.tsv')),
+                          shiny::p("(Doubleclick on an added row to change the input values)")
                         )
                       ),
                       shiny::br(),
@@ -377,6 +398,8 @@ mod_Specification_server <- function(id, results, parentsession){
       for(id in ids){
         if(id == "feature_table"){
           results[[id]] <- data.frame(feature_table()) |> asplit(MARGIN = 1)
+        } else if(id == "zones_table") {
+          results[[id]] <- data.frame(zones_table()) |> asplit(MARGIN = 1)
         } else {
           results[[id]] <- input[[id]]
         }
@@ -428,7 +451,57 @@ mod_Specification_server <- function(id, results, parentsession){
       # FIXME: Could do some graceful error checks here?
       feature_table(data)
     })
+
     # --- #
+    # Define the features list
+    zones_table <- shiny::reactiveVal(
+      data.frame(name = character(0),
+                 aim = character(0),
+                 costs = character(0),
+                 contributions = character(0)
+                 )
+    )
+
+    # Events for author table
+    shiny::observeEvent(input$add_zone, {
+      new_data <- zones_table() |> dplyr::add_row(
+        data.frame(name = "My zone", aim = "Zone purpose",
+                   costs = "Differing costs",
+                   contributions = "Who benefits")
+      )
+      zones_table(new_data)
+    })
+
+    shiny::observeEvent(input$remove_zone, {
+      new_data <- zones_table() |> dplyr::slice(-dplyr::n())
+      zones_table(new_data)
+    })
+
+    #output the datatable based on the dataframe (and make it editable)
+    output$specificzones <- DT::renderDT({
+      DT::datatable(zones_table(),rownames = FALSE,
+                    filter = "none", selection = "none",
+                    style = "auto",
+                    editable = TRUE)
+    })
+
+    # Manual edit
+    shiny::observeEvent(input$zones_table_cell_edit, {
+      info <- input$zones_table_cell_edit
+      modified_data <- zones_table()
+      modified_data[info$row, info$col+1] <- info$value
+      zones_table(modified_data)
+    })
+
+    # Load an external file
+    loadedzones <- shiny::reactive({
+      if(is.null(input$load_zones)){
+        return(NULL)
+      }
+      data <- readr::read_csv(input$load_zones$datapath)
+      # FIXME: Could do some graceful error checks here?
+      zones_table(data)
+    })
 
     # Events for hiding data input boxes
     shiny::observeEvent(input$featuretypes, {

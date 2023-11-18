@@ -47,10 +47,10 @@ mod_Overview_ui <- function(id){
             status = "primary",
             collapsed = FALSE,
             collapsible = TRUE,
-            # icon = icon("info"),
-            shiny::textAreaInput(inputId = ns("studyname"), label = "Study name",
-                          placeholder = 'What is the title of the conducted study?',
-                          height = "45px", width = "100%", resize = "none"),
+            shiny::textAreaInput(inputId = ns("studyname"),
+                                  label = shiny::div("Study name", "  ", shiny::icon("info") ),
+                                  placeholder = 'What is the title of the conducted study?',
+                                  height = "45px", width = "100%", resize = "none"),
           # Authors
           bs4Dash::box(
             title = "Provide a list of authors:",
@@ -316,7 +316,6 @@ mod_Overview_ui <- function(id){
       ) # End of fluid row for buttons
     ) # End of fluid page
   ) # End of tab
-
 }
 
 #' Overview Server Functions
@@ -410,6 +409,7 @@ mod_Overview_server <- function(id, results, parentsession){
     })
     # TODO
     clearall <- shiny::renderPrint(input$confirm_reset)
+
   })
 }
 

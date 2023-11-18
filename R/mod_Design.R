@@ -74,11 +74,12 @@ mod_Design_ui <- function(id){
                      # Study framework
                      shiny::p("Does the study follow an analytical framework, either explicitly
                        defined within the study or through a reference to previous
-                       work?"),
+                       work? This could for example also be a specific planning protocol."),
                      shinyWidgets::pickerInput(
                        inputId = ns("studyframework"),
                        label = "Analytical Framework",
                        choices = c("None","Defined within study","Reference"),
+                       selected = "Defined within study",
                        multiple = FALSE
                      ),
                      shiny::conditionalPanel(
