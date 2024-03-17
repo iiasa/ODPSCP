@@ -1,3 +1,7 @@
+## Version 0.3
+
+* Incorporated Expert-Feedback and updated the protocol with additional fields and explanations.
+
 ## Version 0.2
 
 * Added option to support different planning unit types for regular and irregular polygons.

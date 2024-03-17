@@ -54,7 +54,7 @@ mod_Prioritization_ui <- function(id){
                            choices = c("","Zonation","Marxan",
                                        "prioritizr","prioriactions",
                                        "RestOptr","oppr",
-                                       "CAPTAIN","ROOT",
+                                       "CAPTAIN","ROOT", "C-PLAN",
                                        "Custom","Other"),
                            options = list(
                              style = "btn-info")
@@ -73,8 +73,11 @@ mod_Prioritization_ui <- function(id){
                        shiny::conditionalPanel(
                          condition = "input.software != ''",
                          ns = ns,
-                         shiny::textAreaInput(inputId = ns("versionnr"), label = "Provide a version number",
-                                     placeholder = 'Enter a version nr for the used algorithm',
+                         shiny::p("Enter a version number of the used software.
+                                  Also provide any other information related to software
+                                  (for example if a specific solver was used for integer programming)."),
+                         shiny::textAreaInput(inputId = ns("versionnr"), label = "Provide a version number and other information related to software.",
+                                     placeholder = 'Enter free text here.',
                                      height = "45px", width = "100%", resize = "none")
                        ),
                      # Objective functions

@@ -1,9 +1,9 @@
 # Basic information
 protocol:
   name: ODPSCP
-  version: '0.2'
+  version: '0.3'
   repository: 'https://github.com/iiasa/ODPSCP'
-  website: ''
+  website: 'https://odpscp.iiasa.ac.at/'
   last_updated: 2023-11-17
 
 #### Overview ####
@@ -35,11 +35,21 @@ overview:
     question: 'Email of corresponding author.'
     description: 'The email address of the corresponding author.'
     fieldtype: 'textbox'
-    mandatory: true
+    mandatory: false
+    popexample: ""
+
+  orcid:
+    render-nr: 4
+    render-id: 'authorid'
+    render-group: 'study_box'
+    question: 'ORCID of the corresponding author if existing.'
+    description: 'A ORCID can be used as unique identifier of the lead author even if institutions and emails change.'
+    fieldtype: 'textbox'
+    mandatory: false
     popexample: ""
 
   studylink:
-    render-nr: 4
+    render-nr: 5
     render-id: 'studylink'
     render-group: 'study_box'
     question: 'Link to the published study.'
@@ -98,7 +108,9 @@ overview:
       - Terrestrial (below ground)
       - Air
       - Freshwater
-      - Marine
+      - Marine (Open Ocean)
+      - Marine (Seabed)
+      - Coastal
     mandatory: true
     popexample: ""
 
@@ -195,8 +207,11 @@ design:
     render-nr: 2
     render-id: 'checkmultobj'
     render-group: 'study_purpose'
-    question: 'Did the planning consider multiple objectives ?'
-    description: 'Were multiple, perhabs competing objectives persued in the planning for a horizontal integration, for example aligning biodiversity conservation and carbon stocks?'
+    question: 'Had the planning multiple objectives?'
+    description: 'For a given purpose and objective function there can be often multiple, sometimes
+                      competing objectives involved in the planning. For example,
+                      if one would to identify management options that can maximize
+                      both species and carbon storage as features by altering their weights.'
     fieldtype: 'radio'
     fieldtype_conditional_render-id: 'multobj'
     fieldtype_conditional: 'textbox'
@@ -243,10 +258,12 @@ design:
     options:
       - Policy makers (International)
       - Policy makers (National)
+      - Domain experts (Individuals)
       - Scientists
-      - NGOs
+      - NGO (International)
+      - NGO (National)
       - General Public
-      - Youth
+      - Property owners
     mandatory: false
     popexample: ""
 
@@ -275,7 +292,7 @@ specification:
       - Point
       - Line
       - Regular Polygon (e.g. rectangle)
-      - Irregular Polygon (e.g. hexagon)
+      - Irregular Polygon (e.g. hyrological basin)
       - Other
     fieldtype_conditional_render-id: 'othertypes'
     fieldtype_conditional: 'textbox'
@@ -363,11 +380,11 @@ specification:
       - Species (traits)
       - Ecosystems or Habitats
       - Land-cover and Land-use
-      - Socio-economic
-      - Political
-      - Biophysical
-      - Nature contribtions to people (supply)
-      - Nature contribtions to people (demand)
+      - Socio-economic (e.g. income from coastal fishing)
+      - Political (e.g. protected area)
+      - Biophysical (e.g. climate velocity)
+      - Nature contributions to people (supply)
+      - Nature contributions to people (demand)
       - Other
     fieldtype_conditional_render-id: 'otherfeaturetype'
     fieldtype_conditional: 'textbox'
@@ -418,7 +435,7 @@ context:
     options:
       - Binary allocation
       - Proportional share
-      - Semi-continious share
+      - Semi-continuous share
       - Importance ranking
     mandatory: false
     popexample: ""
@@ -487,6 +504,7 @@ context:
       - None
       - Flat (e.g. 30 percent),
       - Log-linear,
+      - Minimum Area of Suitable Habitat
       - Other
     fieldtype_conditional_render-id: 'targetdetail'
     fieldtype_conditional: 'textbox'
@@ -523,6 +541,7 @@ prioritization:
       - oppr
       - CAPTAIN
       - ROOT
+      - C-PLAN
       - Custom
       - Other
     fieldtype_conditional_render-id: 'othersoftware'
@@ -534,8 +553,8 @@ prioritization:
     render-nr: 2
     render-id: 'versionnr'
     render-group: 'study_software'
-    question: 'What is the version number of the algorithm approach?'
-    description: 'Enter a version number of the used software'
+    question: 'What is the version number of the algorithm approach or other software?'
+    description: 'Enter a version number of the used software. Also provide any other information related to software (for example if a specific solver was used for integer programming).'
     fieldtype: 'textbox'
     mandatory: true
     popexample: ""

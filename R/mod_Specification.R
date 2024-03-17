@@ -64,7 +64,7 @@ mod_Specification_ui <- function(id){
                                "None", "Gridded",
                                "Point", "Line",
                                "Regular Polygon (e.g. rectangle)",
-                               "Irregular Polygon (e.g. hexagon)",
+                               "Irregular Polygon (e.g. hyrological basin)",
                                "Other"
                              ),
                              multiple = FALSE
@@ -176,7 +176,7 @@ mod_Specification_ui <- function(id){
                         status = "secondary",
                         collapsible = FALSE,
                         shiny::p("Planning can be structured by considering multiple
-                          management or land-use objectives through zones.
+                          management or land/water-use objectives through zones.
                           Here we describe them if those are set."),
                         shinyWidgets::awesomeRadio(
                           inputId = ns("checkzones"),
@@ -270,11 +270,11 @@ mod_Specification_ui <- function(id){
                                 "Species (traits)",
                                 "Ecosystems or Habitats",
                                 "Land-cover and Land-use",
-                                "Socio-economic",
-                                "Political",
-                                "Biophysical",
-                                "Nature contribtions to people (supply)",
-                                "Nature contribtions to people (demand)",
+                                "Socio-economic (e.g. income from coastal fishing)",
+                                "Political (e.g. protected area)",
+                                "Biophysical (e.g. climate velocity)",
+                                "Nature contributions to people (supply)",
+                                "Nature contributions to people (demand)",
                                 "Other"
                               ),
                               options = list(`actions-box` = TRUE),

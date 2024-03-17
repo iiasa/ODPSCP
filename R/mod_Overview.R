@@ -80,6 +80,19 @@ mod_Overview_ui <- function(id){
                           placeholder = 'Email of the corresponding author',
                           height = "45px", width = "100%", resize = "none")
           ),
+          # Corresponding author
+          bs4Dash::box(
+            title = "Corresponding Author ID",
+            closable = FALSE,
+            width = 12,
+            solidHeader = TRUE,
+            status = "secondary",
+            collapsible = FALSE,
+            shiny::div("A ORCID can be used as unique identifier of the lead author even if institutions and emails change."),
+            shiny::textAreaInput(inputId = ns("authorid"), label = "",
+                                 placeholder = 'ORCID of the corresponding author if existing',
+                                 height = "45px", width = "100%", resize = "none")
+          ),
           # Link to study
           bs4Dash::box(
             title = "Link to study",
@@ -180,7 +193,8 @@ mod_Overview_ui <- function(id){
               inputId = ns("studyrealm"),
               label = "In what realm(s) was the study conducted?",
               choices = c("Terrestrial (above ground)","Terrestrial (below ground)",
-                          "Freshwater", "Marine", "Air"),
+                          "Freshwater", "Marine (Open Ocean)",
+                          "Marine (Seabed)", "Coastal", "Air"),
               size = "sm",
               justified = TRUE,
               checkIcon = list(yes = shiny::icon("ok", lib = "glyphicon"))

@@ -146,13 +146,13 @@ mod_Design_ui <- function(id){
                     solidHeader = TRUE,
                     status = "secondary",
                     collapsible = FALSE,
-                    shiny::p("For a given purpose there can be often multiple, sometimes
+                    shiny::p("For a given purpose and objective function there can be often multiple, sometimes
                       competing objectives involved in the planning. For example,
-                      if one would to identify management options that can maximize
-                      both species and carbon storage."),
+                      if one would to identify management options that can consider
+                      both species and carbon storage as features by altering their weights."),
                     shinyWidgets::awesomeRadio(
                       inputId = ns("checkmultobj"),
-                      label = "Were multiple objectives considered?",
+                      label = "Had the planning multiple objectives?",
                       choices = c("No", "Yes"),
                       selected = "No",
                       inline = FALSE,
@@ -264,10 +264,12 @@ mod_Design_ui <- function(id){
                                               label = "Who was engaged?",
                                               choices = c("Policy makers (International)",
                                                           "Policy makers (National)",
+                                                          "Domain experts (Individuals)",
                                                           "Scientists",
-                                                          "NGOs",
+                                                          "NGO (International)",
+                                                          "NGO (National)",
                                                           "General Public",
-                                                          "Youth"),
+                                                          "Property owners"),
                                               multiple = TRUE,
                                               options = list(create = TRUE,
                                                              placeholder = "Choose from list, or type and click to add new option."))
