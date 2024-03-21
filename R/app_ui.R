@@ -124,6 +124,11 @@ app_ui <- function(request) {
             icon = shiny::icon("newspaper")
           ),
           bs4Dash::menuItem(
+            "Glossary",
+            tabName = "Glossary",
+            icon = shiny::icon("book")
+          ),
+          bs4Dash::menuItem(
             "Issues and Feedback",
             href =  "https://github.com/iiasa/ODPSCP/issues",
             newTab = TRUE,
@@ -151,6 +156,7 @@ app_ui <- function(request) {
             mod_Prioritization_ui("Prioritization_1"),
           # News
           mod_News_ui("News_1"),
+          mod_Glossary_ui("Glossary_1"),
           # Import
           mod_Import_ui("Import_1"),
           mod_Export_ui("Export_1")

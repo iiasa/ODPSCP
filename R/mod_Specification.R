@@ -99,25 +99,39 @@ mod_Specification_ui <- function(id){
                          ),
                          shiny::br(),
                          bs4Dash::box(
-                           title = "Planning unit costs",
+                           title = "Planning unit costs or penalities",
                            closable = FALSE,
                            width = 12,
                            solidHeader = TRUE,
                            status = "secondary",
                            collapsible = FALSE,
+                           shiny::p("The decision where to allocate conservation efforts can to a large degree be determined
+                                    by economic, biophysical or socio-economic constraints. One way of including those in planning
+                                    studies is to threat them as a cost or penality, thus penalizing the selection of any outcomes
+                                    with too high costs. Typical are for example the costs of land acquistion in area-based planning."),
                            shinyWidgets::pickerInput(
                              inputId = ns("pu_checkcosts"),
-                             label = "Where there any costs of selecting a planning unit?",
-                             choices = c("No", "Area only", "Yes"),
-                             multiple = FALSE
+                             label = "Where there any costs or penalities for selecting a planning unit? Select one or multiple.",
+                             choices = c(
+                               c("Area only",
+                                 "Biophysical proxy",
+                                 "Socioeconomic proxy",
+                                 "Implementation cost",
+                                 "Acquisition cost",
+                                 "Opportunity cost",
+                                 "Management cost",
+                                 "Logistics cost",
+                                 "Sampling effort",
+                                 "Other")
+                             ),
+                             options = list(`actions-box` = TRUE),
+                             multiple = TRUE
                            ),
-                           shiny::conditionalPanel(
-                             condition = "input.pu_checkcosts == 'Yes'",
-                             ns = ns,
-                             shiny::textAreaInput(inputId = ns("pu_costs"), label = "Describe process of creating costs",
-                                           placeholder = 'Provide some detail on how costs were defined or created.',
-                                           height = "45px", width = "100%", resize = "none")
-                           )
+                           shiny::br(),
+                           # Any other cost description?
+                           shiny::textAreaInput(inputId = ns("pu_costs"), label = "Describe process of creating costs",
+                                         placeholder = 'Provide some detail on how costs were defined or created.',
+                                         height = "45px", width = "100%", resize = "none")
                          )
                     )
                 ) # End column

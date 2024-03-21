@@ -99,9 +99,10 @@ mod_Design_ui <- function(id){
                      solidHeader = TRUE,
                      status = "secondary",
                      collapsible = FALSE,
-                     shiny::p('Most SCP applications are applied rather than curiosity driven.
-                       Here we ask whether the pathway to impact and
-                       influencing outcomes is clear.'),
+                     shiny::p('Most SCP applications are applied rather than curiosity driven. However an applied
+                              focus does not necessarily mean that the work will be implemented and the pathway to
+                              impact is clear. A theory of change is a apriori process that maps the relationship between
+                              a long-term goal of a planning objective and the necessary steps required to implement it.'),
                      shiny::textAreaInput(inputId = ns("theoryofchange"), label = "",
                                    placeholder = 'Describe the theory of change if there is any.',
                                    height = "45px", width = "100%", resize = "vertical")

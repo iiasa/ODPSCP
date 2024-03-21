@@ -28,6 +28,7 @@ golem::add_module(name = "Context", with_test = FALSE) # Name of the module
 golem::add_module(name = "Planning", with_test = FALSE) # Name of the module
 
 golem::add_module(name = "News", with_test = FALSE) # Name of the module
+golem::add_module(name = "Glossary", with_test = FALSE) # Name of the module
 golem::add_module(name = "Import", with_test = FALSE) # Name of the module
 golem::add_module(name = "Export", with_test = FALSE) # Name of the module
 
@@ -47,7 +48,7 @@ golem::add_utils("format_protocol", with_test = FALSE) # Text external
 
 ## Add internal datasets ----
 ## If you have data in your package
-# usethis::use_data_raw(name = "my_dataset", open = FALSE)
+# usethis::use_data_raw(name = "glossary_table", open = FALSE)
 
 ## Tests ----
 ## Add one line by test you want to create

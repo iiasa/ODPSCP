@@ -53,7 +53,7 @@ mod_Prioritization_ui <- function(id){
                            label = "Used software",
                            choices = c("","Zonation","Marxan",
                                        "prioritizr","prioriactions",
-                                       "RestOptr","oppr",
+                                       "RestOptr","oppr", "ConsNet",
                                        "CAPTAIN","ROOT", "C-PLAN",
                                        "Custom","Other"),
                            options = list(
@@ -75,8 +75,9 @@ mod_Prioritization_ui <- function(id){
                          ns = ns,
                          shiny::p("Enter a version number of the used software.
                                   Also provide any other information related to software
-                                  (for example if a specific solver was used for integer programming)."),
-                         shiny::textAreaInput(inputId = ns("versionnr"), label = "Provide a version number and other information related to software.",
+                                  (for example if a specific solver was used for mathematical programming such as Gurobi or Symphony)."),
+                         shiny::textAreaInput(inputId = ns("versionnr"),
+                                              label = "Provide a version number and other information related to the software.",
                                      placeholder = 'Enter free text here.',
                                      height = "45px", width = "100%", resize = "none")
                        ),

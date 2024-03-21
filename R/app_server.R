@@ -94,11 +94,13 @@ app_server <- function(input, output, session) {
 
   # News
   mod_News_server("News_1")
+  mod_Glossary_server("Glossary_1")
   # Import/Export
   mod_Import_server("Import_1")
   mod_Export_server("Export_1", results)
 
   # Automatically stop a Shiny app when closing the browser tab
+  # NOTE: Disabled this as it seems to stop the instance across browsers
   # session$onSessionEnded(stopApp)
 }
 

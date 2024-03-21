@@ -315,13 +315,20 @@ specification:
     render-nr: 3
     render-id: 'pu_checkcosts'
     render-group: 'planningunits'
-    question: 'Was the decision of selecting planning units driven by some costs?'
+    question: 'Where there any costs of selecting a planning unit? Select one or multiple.'
     description: 'Describe the grain of planning units if applicable.'
-    fieldtype: 'dropdown'
+    fieldtype: 'multiplechoice'
     options:
-      - None
       - Area only
-      - Yes
+      - Biophysical proxy
+      - Socioeconomic proxy
+      - Implementation cost
+      - Acquisition cost
+      - Opportunity cost
+      - Management cost
+      - Logistics cost
+      - Sampling effort
+      - Other
     fieldtype_conditional_render-id: 'pu_costs'
     fieldtype_conditional: 'textbox'
     mandatory: true
