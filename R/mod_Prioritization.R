@@ -126,18 +126,19 @@ mod_Prioritization_ui <- function(id){
                        collapsible = FALSE,
                        shiny::p("Not always is there a single solution to the prioritization process or
                          where only single prioritizations run.",
-                         "For example, the selection frequency across multiple iterations
-                         or prioritization runs could be used to identify the set of
-                         final 'priority' areas.",
+                         "Besides factors directly included in the prioritization,
+                         it is also common to consider external or auxillary datasets,
+                         selection frequency across multiple iterations, or
+                         prioritization runs to identify a set of final 'priority' areas
+                         or actions.",
                          "Here we record how the final priorities (those reported in the study) were obtained."),
                        shinyWidgets::pickerInput(
                          inputId = ns("identsolution"),
-                         label = "Identification of solutions",
-                         choices = c("","Budgets reached or costs exceeded",
-                                     "Targets achieved",
+                         label = "Identification of priorities",
+                         choices = c("Single solution",
                                      "Selection frequency",
-                                     "External indicator",
                                      "Overlays",
+                                     "External indicator",
                                      "Other")
                        ),
                        shiny::conditionalPanel(
@@ -230,6 +231,9 @@ mod_Prioritization_server <- function(id, results, parentsession){
   shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    # Get full protocol
+    protocol <- load_protocol()$prioritization # Get all overview UI elements
+
     ids <- get_protocol_ids(group = "prioritization")
     shiny::observe({
       for(id in ids){
@@ -277,6 +281,13 @@ mod_Prioritization_server <- function(id, results, parentsession){
       indicators(modified_data)
     })
 
+    # --- #
+    # Add Tooltips for each element
+    shiny::observeEvent(parentsession$input$help_switch,{
+      # Enable tooltips if set
+      add_protocol_help(parentsession, protocol, type = "popover")
+    })
+    # --- #
   })
 }
 

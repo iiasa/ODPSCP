@@ -9,3 +9,6 @@
 .DS_Store
 .quarto
 tests/testthat/*.pdf
+
+# Shiny bookmarks
+shiny_bookmarks/

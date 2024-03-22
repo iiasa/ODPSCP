@@ -7,6 +7,13 @@ app_server <- function(input, output, session) {
   # Your application server logic
   sever::sever()
 
+  # Add bookmark button to top
+  # NOTE: For URL see also https://stackoverflow.com/questions/58396680/how-to-extract-the-url-from-the-shiny-bookmark-button-and-create-my-own-action-b
+  shiny::enableBookmarking(store = "server")
+  shiny::observeEvent(input$bookmark, {
+    session$doBookmark()
+  })
+
   # fake reload at start
   shiny::observeEvent(input$reload, {
     session$reload()
@@ -46,42 +53,20 @@ app_server <- function(input, output, session) {
   })
   # ---------------------------------------------------------------------------
 
-  # Add Help popups
-  # add_protocol_help(session)
-  shiny::observeEvent(input$help_switch, {
-
-    # Load the protocol within the package
-    pp <- load_protocol()[-1]
-
-      # Loop over each group and element
-      for(gr in names(pp)){
-        sub <- pp[[gr]]
-
-        for(k in names(sub)){
-          subs <- sub[[k]]
-          # Only add if pophelp has been set
-          if("pophelp" %in% names(subs)){
-
-            if(input$help_switch){
-              print(subs[['render-id']])
-              # Now add the popovers
-              bs4Dash::addPopover(
-                id = subs[['render-id']],
-                options = list(
-                  content = subs[['popexample']],
-                  title = "Example",
-                  placement = "top",
-                  trigger = "focus" # click | hover | focus | manual.
-                )
-              )
-            } else {
-              bs4Dash::removePopover(id = subs[['render-id']])
-            }
-          }
-        }
-    }
-
-  })
+  # Add Help popups for every entry
+  # Add Tooltips for each element
+  # for(n in names(protocol)){
+  #   sub <- protocol[[n]]
+  #   bs4Dash::addPopover(
+  #     id = sub['render-id'],
+  #     options = list(
+  #       content = sub$popexample,
+  #       title = sub$question,
+  #       placement = "auto",
+  #       trigger = "hover"
+  #     )
+  #   )
+  # }
 
   # title page ----------------------------------------------------------------
   # Adding module server code

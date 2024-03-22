@@ -4,7 +4,7 @@ protocol:
   version: '0.3'
   repository: 'https://github.com/iiasa/ODPSCP'
   website: 'https://odpscp.iiasa.ac.at/'
-  last_updated: 2023-11-17
+  last_updated: 2024-03-22
 
 #### Overview ####
 overview:
@@ -16,7 +16,7 @@ overview:
     description: 'This field records basic information about the study and its scientific context.'
     fieldtype: 'textbox'
     mandatory: true
-    popexample: ""
+    popexample: "Priority areas for the expansion of critical duck habitat in Eastern Austria."
 
   authors:
     render-nr: 2
@@ -26,7 +26,7 @@ overview:
     description: 'Create a list of all authors with link to their ORCID if specified.'
     fieldtype: 'multifieldselection'
     mandatory: true
-    popexample: ""
+    popexample: "Charles Darwin"
 
   corresponding:
     render-nr: 3
@@ -36,7 +36,7 @@ overview:
     description: 'The email address of the corresponding author.'
     fieldtype: 'textbox'
     mandatory: false
-    popexample: ""
+    popexample: "darwin@thebeagle.ac.uk"
 
   orcid:
     render-nr: 4
@@ -46,7 +46,7 @@ overview:
     description: 'A ORCID can be used as unique identifier of the lead author even if institutions and emails change.'
     fieldtype: 'textbox'
     mandatory: false
-    popexample: ""
+    popexample: "A numeric id such as 000000000000000"
 
   studylink:
     render-nr: 5
@@ -56,7 +56,7 @@ overview:
     description: 'Enter a Digital Object Identifier or any other permanent link.'
     fieldtype: 'textbox'
     mandatory: false
-    popexample: ""
+    popexample: "http:\\dx.doi.org + code"
 
   extent:
     render-nr: 1
@@ -72,7 +72,7 @@ overview:
       - continental
       - global
     mandatory: true
-    popexample: ""
+    popexample: "Local, for a study identified priority regions in sub-national area."
 
   location:
     render-nr: 2
@@ -82,7 +82,8 @@ overview:
     description: 'Add text description of the study location.'
     fieldtype: 'textbox'
     mandatory: false
-    popexample: ""
+    popexample: "The study was conducted in the state of Burgenland, Austria, focussing
+    on the surroundings of Lake Neusiedl."
 
   studytimeline:
     render-nr: 3
@@ -94,7 +95,7 @@ overview:
     fieldtype_conditional_render-id: 'otherstudytime'
     fieldtype_conditional: 'textbox'
     mandatory: false
-    popexample: ""
+    popexample: "The study objective addresses the time period from 2000 to 2020."
 
   realm:
     render-nr: 4
@@ -112,7 +113,7 @@ overview:
       - Marine (Seabed)
       - Coastal
     mandatory: true
-    popexample: ""
+    popexample: "The study was cross-realm, covering terrestrial and freshwater environment."
 
   output_availability:
     render-nr: 1
@@ -124,7 +125,7 @@ overview:
     fieldtype_conditional_render-id: 'inputdata'
     fieldtype_conditional: 'textbox'
     mandatory: true
-    popexample: ""
+    popexample: "Data are available from the original data providers here:"
 
   input_availability:
     render-nr: 2
@@ -136,7 +137,7 @@ overview:
     fieldtype_conditional_render-id: 'outputdata'
     fieldtype_conditional: 'textbox'
     mandatory: true
-    popexample: ""
+    popexample: "A link to a permanent data repository, such as Zenodo, Figshare or similar."
 
   reproducibility:
     render-nr: 2
@@ -148,7 +149,7 @@ overview:
     fieldtype_conditional_render-id: 'outputcode'
     fieldtype_conditional: 'textbox'
     mandatory: true
-    popexample: ""
+    popexample: "The analytical code for preparing input data and running the prioritization has been made available as supporting material and under the folling link: "
 
 #### Design ####
 design:
@@ -160,7 +161,7 @@ design:
     description: 'Desribe in 1-2 sentences what the study aims to achieve?'
     fieldtype: 'textbox'
     mandatory: true
-    popexample: ""
+    popexample: "Identification of joint priorities, location of new protected areas or management actions."
 
   framework:
     render-nr: 2
@@ -176,7 +177,7 @@ design:
     fieldtype_conditional_render-id: 'frameworkreference'
     fieldtype_conditional: 'textbox'
     mandatory: false
-    popexample: ""
+    popexample: "A framework outlining the decision making process and theory is described in the publication."
 
   toc:
     render-nr: 3
@@ -186,7 +187,8 @@ design:
     description: 'Most SCP applications are applied rather than curiosity driven. The primary question here is whether the pathway to impact and influencing outcomes is clear.'
     fieldtype: 'textbox'
     mandatory: false
-    popexample: ""
+    popexample: "Highlight an initial policy or stakeholder demand, continuous engagement and clear
+    process towards implementation."
 
   purpose:
     render-nr: 1
@@ -196,12 +198,12 @@ design:
     description: 'Why was the planning was conducted. A range of commonly applied responses is provided.'
     fieldtype: 'selectizedropdown'
     options:
-      - Area-based expansion
+      - Area-based allocation
       - Management improvement
       - Action-based planning
       - Monitoring and evaluation
     mandatory: true
-    popexample: ""
+    popexample: "The primary aim could be to identify area-based priorities for protected areas."
 
   multobj:
     render-nr: 2
@@ -216,7 +218,7 @@ design:
     fieldtype_conditional_render-id: 'multobj'
     fieldtype_conditional: 'textbox'
     mandatory: true
-    popexample: ""
+    popexample: "Joint priorities for both climate mitigation and biodiversity preservation were identified."
 
   scenarios:
     render-nr: 3
@@ -228,7 +230,7 @@ design:
     fieldtype_conditional_render-id: 'planningscenarios'
     fieldtype_conditional: 'textbox'
     mandatory: false
-    popexample: ""
+    popexample: "One planning outcome weighted towards biodiversity and another towards ecosystem services. Or SSP1-2.6 and SSP5-8.5, or similar"
 
   stakeholders:
     render-nr: 1
@@ -246,7 +248,7 @@ design:
       - Collaborated
       - Co-design
     mandatory: true
-    popexample: ""
+    popexample: "One study might have only informed stakeholders of the research outcomes in a webinar or similar."
 
   stakeholder_type:
     render-nr: 2
@@ -265,17 +267,17 @@ design:
       - General Public
       - Property owners
     mandatory: false
-    popexample: ""
+    popexample: "A local study might for example consider property owners, scientist and national NGOs as key stakeholders."
 
   stakeholder_method:
     render-nr: 3
     render-id: 'stakeholdermethod'
     render-group: 'study_engagement'
     question: 'How were stakeholders engaged?'
-    description: 'Describe in a few words how precisely stakeholder were engaged. For example when (conceptualization or start of the project) or how (workshops, interviews).'
+    description: 'Describe in a few words how precisely stakeholder were engaged.'
     fieldtype: 'textbox'
     mandatory: false
-    popexample: ""
+    popexample: "Should at least include if at all, when (conceptualization or start of the project) and how (workshops, interviews)."
 
 #### Specification ####
 specification:
@@ -293,26 +295,45 @@ specification:
       - Line
       - Regular Polygon (e.g. rectangle)
       - Irregular Polygon (e.g. hyrological basin)
+      - Hexagon
       - Other
     fieldtype_conditional_render-id: 'othertypes'
     fieldtype_conditional: 'textbox'
     mandatory: true
-    popexample: ""
+    popexample: "Regular gridded planning units were used."
 
   grainspace:
     render-nr: 2
-    render-id: 'pu_unit'
+    render-id: 'pu_grain'
     render-group: 'planningunits'
     question: 'What was the spatial grain of planning?'
     description: 'Describe the grain of planning units if applicable.'
-    fieldtype: 'textbox'
-    fieldtype_conditional_render-id: 'pu_grainspace'
+    fieldtype: 'numeric'
+    fieldtype_conditional_render-id: 'pu_grainunit'
     fieldtype_conditional: 'textbox'
     mandatory: false
-    popexample: ""
+    popexample: "Each planning unit had a size of 1000 m²."
+
+  grainspace_other:
+    render-nr: 3
+    render-id: 'pu_grainother'
+    render-group: 'planningunits'
+    question: 'Any other description with regards to spatial grain of PU?'
+    description: 'Leave empty if not applicable.'
+    fieldtype: 'selectizedropdown'
+    options:
+      - m²
+      - km²
+      - ha
+      - ft²,
+      - yd²,
+      - mi²
+      - acre
+    mandatory: false
+    popexample: "Each planning unit had a size of 1000 m²."
 
   pucosts:
-    render-nr: 3
+    render-nr: 4
     render-id: 'pu_checkcosts'
     render-group: 'planningunits'
     question: 'Where there any costs of selecting a planning unit? Select one or multiple.'
@@ -332,7 +353,7 @@ specification:
     fieldtype_conditional_render-id: 'pu_costs'
     fieldtype_conditional: 'textbox'
     mandatory: true
-    popexample: ""
+    popexample: "No specific cost estimates were used and all PU had equal cost (Area only)."
 
   ecosystem_specificity:
     render-nr: 1
@@ -344,7 +365,7 @@ specification:
     fieldtype_conditional_render-id: 'specificecosystem'
     fieldtype_conditional: 'textbox'
     mandatory: false
-    popexample: ""
+    popexample: "Study was conducted not on the whole landscape, but rather prioritizing only forest and features patches within them."
 
   zonedefinitions:
     render-nr: 2
@@ -356,7 +377,7 @@ specification:
     fieldtype_conditional_render-id: 'specificzones'
     fieldtype_conditional: 'multifieldselection'
     mandatory: false
-    popexample: ""
+    popexample: "Identify a set of no-take and partial-take areas to prevent overfishing, but also ensure that there still remain plenty of areas for fishing activities."
 
   inclusionexclusion:
     render-nr: 3
@@ -372,7 +393,7 @@ specification:
     fieldtype_conditional_render-id: 'defaultareas'
     fieldtype_conditional: 'textbox'
     mandatory: true
-    popexample: ""
+    popexample: "Existing protected areas were considered to be part of every solution (included)."
 
   featuretypes:
     render-nr: 1
@@ -396,7 +417,7 @@ specification:
     fieldtype_conditional_render-id: 'otherfeaturetype'
     fieldtype_conditional: 'textbox'
     mandatory: true
-    popexample: ""
+    popexample: "The study used exclusively distribution estimates of species."
 
   featuresaggregated:
     render-nr: 2
@@ -408,7 +429,7 @@ specification:
     fieldtype_conditional_render-id: 'featureaggregated'
     fieldtype_conditional: 'textbox'
     mandatory: false
-    popexample: ""
+    popexample: "Species distributions were aggregated to a species richness layer, that was then included as a feature."
 
   featurelist:
     render-nr: 3
@@ -418,7 +439,7 @@ specification:
     description: 'Add the features to the list.'
     fieldtype: 'multifieldselection'
     mandatory: false
-    popexample: ""
+    popexample: "Specify groups of features, e.g. 100 species distributions layers."
 
   featureorigin:
     render-nr: 4
@@ -428,7 +449,8 @@ specification:
     description: 'Describe the origin of the features.'
     fieldtype: 'textbox'
     mandatory: false
-    popexample: ""
+    popexample: "A description where or how the feature layers came about, if they are
+    the result of some modelling process or similar."
 
 #### Context ####
 context:
@@ -444,8 +466,8 @@ context:
       - Proportional share
       - Semi-continuous share
       - Importance ranking
-    mandatory: false
-    popexample: ""
+    mandatory: true
+    popexample: "Identify whether or not a planning unit should be fully protected."
 
   timeconditions:
     render-nr: 2
@@ -460,7 +482,7 @@ context:
       - Future conditions
       - Fully dynamic
     mandatory: false
-    popexample: ""
+    popexample: "The objective of the planning was achieved by considering current and future feature distribution."
 
   connectivity:
     render-nr: 3
@@ -478,7 +500,7 @@ context:
       - Structural connectivity
       - Functional connectivity
     mandatory: false
-    popexample: ""
+    popexample: "A neighbour constraint was included to ensure that new protected areas are close to others or existing ones."
 
   connectivitydetail:
     render-nr: 4
@@ -488,7 +510,7 @@ context:
     description: 'Any other methodological detail on how connectivity was considered in the planning.'
     fieldtype: 'textbox'
     mandatory: false
-    popexample: ""
+    popexample: "To account for structural connectivity, the effective mesh size at the landscape was included as a feature."
 
   constraintdetail:
     render-nr: 5
@@ -498,7 +520,8 @@ context:
     description: 'Other constraints can for example constraint lower or upper estimates on allocated land.'
     fieldtype: 'textbox'
     mandatory: false
-    popexample: ""
+    popexample: "A constraint was placed on the maximum amount of land possible to
+    any single action based on land-use demands."
 
   featuretargets:
     render-nr: 1
@@ -516,7 +539,7 @@ context:
     fieldtype_conditional_render-id: 'targetdetail'
     fieldtype_conditional: 'textbox'
     mandatory: true
-    popexample: ""
+    popexample: "A flat target of at least 10% of each feature was considered necessary to be in the solution."
 
   featureweights:
     render-nr: 2
@@ -528,7 +551,7 @@ context:
     fieldtype_conditional_render-id: 'featureweightsdetails'
     fieldtype_conditional: 'textbox'
     mandatory: true
-    popexample: ""
+    popexample: "Threatened species received a weight five-times as high as non-threatend species."
 
 #### Prioritization ####
 prioritization:
@@ -554,7 +577,7 @@ prioritization:
     fieldtype_conditional_render-id: 'othersoftware'
     fieldtype_conditional: 'textbox'
     mandatory: true
-    popexample: ""
+    popexample: "The software prioritizr was used for identifying a solution."
 
   versionnr:
     render-nr: 2
@@ -564,7 +587,7 @@ prioritization:
     description: 'Enter a version number of the used software. Also provide any other information related to software (for example if a specific solver was used for integer programming).'
     fieldtype: 'textbox'
     mandatory: true
-    popexample: ""
+    popexample: "version 8.0, publicly available from https://prioritizr.net/"
 
   benefits:
     render-nr: 3
@@ -574,7 +597,7 @@ prioritization:
     description: 'Was a specific benefit function being used the optimization, or are there any specifics on how benefits were identified?'
     fieldtype: 'textbox'
     mandatory: false
-    popexample: "Benefit functions in prioritizations are for example those minimize marginal losses from cell removal, minimize an average shortfall or maximize the number of targets (a constraint) achieved. Reference: Arponen, A., Heikkinen, R. K., Thomas, C. D., & Moilanen, A. (2005). The value of biodiversity in reserve selection: representation, species weighting, and benefit functions. Conservation Biology, 19(6), 2009-2014."
+    popexample: "Minimize the marginal losses from cell removal, an average shortfall or maximize the number of targets (a constraint) achieved."
 
   software_parameters:
     render-nr: 4
@@ -584,7 +607,8 @@ prioritization:
     description: 'Records any specific parameters related to the prioritization that would be useful to know.'
     fieldtype: 'textbox'
     mandatory: false
-    popexample: ""
+    popexample: "The gurobi solver (version 10.0) was used and a gap of 0.1 was applied
+    to identify near-optimal solutions."
 
   solution_identification:
     render-nr: 5
@@ -594,8 +618,7 @@ prioritization:
     description: 'Not always is there a single solution to the prioritization process. This field records how the final priorities (those reported in the study) were obtained.'
     fieldtype: 'selectizedropdown'
     options:
-      - Targets achieved
-      - Budgets reached or costs exceeded
+      - Single solution
       - Selection frequency
       - Overlays
       - External indicator
@@ -603,7 +626,7 @@ prioritization:
     fieldtype_conditional_render-id: 'otheridentification'
     fieldtype_conditional: 'textbox'
     mandatory: true
-    popexample: ""
+    popexample: "The final priorities are identified by overlaying the optimization results with priority areas identified by stakeholders."
 
   performance:
     render-nr: 1
@@ -613,7 +636,7 @@ prioritization:
     description: 'Performance indicators can be used to identify the performance of the solution(s). Here we describe them.'
     fieldtype: 'multifieldselection'
     mandatory: false
-    popexample: ""
+    popexample: "Compactness of the solutions, average number of targets achieved, avoided costs or impacts."
 
   otherperformance:
     render-nr: 2
@@ -623,4 +646,4 @@ prioritization:
     description: 'Any other form of performance evaluation applied?'
     fieldtype: 'textbox'
     mandatory: false
-    popexample: ""
+    popexample: "Acceptance by stakeholder was considered an important factor in the assessment of the results of the study."

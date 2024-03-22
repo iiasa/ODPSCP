@@ -269,6 +269,9 @@ mod_Context_server <- function(id, results, parentsession){
   shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    # Get protocol
+    protocol <- load_protocol()$context # Get all overview UI elements
+
     # Get all parameters
     ids <- get_protocol_ids(group = "context")
     shiny::observe({
@@ -287,6 +290,14 @@ mod_Context_server <- function(id, results, parentsession){
       }
     })
     # ----- #
+
+    # --- #
+    # Add Tooltips for each element
+    shiny::observeEvent(parentsession$input$help_switch,{
+      # Enable tooltips if set
+      add_protocol_help(parentsession, protocol, type = "popover")
+    })
+    # --- #
   })
 }
 

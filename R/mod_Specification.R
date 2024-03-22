@@ -65,6 +65,7 @@ mod_Specification_ui <- function(id){
                                "Point", "Line",
                                "Regular Polygon (e.g. rectangle)",
                                "Irregular Polygon (e.g. hyrological basin)",
+                               "Hexagon",
                                "Other"
                              ),
                              multiple = FALSE
@@ -85,17 +86,29 @@ mod_Specification_ui <- function(id){
                            solidHeader = TRUE,
                            status = "secondary",
                            collapsible = FALSE,
-                           shiny::p("What is the the spatial grain of planning if applicable, for
-                             example whether a planning unit was homogeneous in size."),
-                           shiny::textInput(inputId = ns("pu_unit"),
-                                            label = "Homogeneous planning unit area"),
-                           shiny::conditionalPanel(
-                             condition = "input.pu_unit == ''",
-                             ns = ns,
-                             shiny::textAreaInput(inputId = ns("pu_grainspace"), label = "Custom planning units",
-                                                  placeholder = 'If planning units are heterogeneous in size, explain origin here.',
-                                                  height = "45px", width = "100%", resize = "none")
-                           )
+                           shiny::numericInput(
+                             inputId = ns("pu_grain"),
+                             label = "Planning unit area (for example 100)",
+                             value = NA,
+                           ),
+                           shiny::selectizeInput(inputId = ns("pu_grainunit"),
+                                                 label = "Unit of the spatial grain",
+                                                 choices = c("",
+                                                             "m²","km²", "ha",
+                                                             "ft²", "yd²","mi²",
+                                                             "acre"
+                                                             ),
+                                                 multiple = FALSE,
+                                                 options = list(create = TRUE,
+                                                                placeholder = "Choose from list, or type and click to add a new option.")),
+                           shiny::br(),
+                           shiny::p("Fill the text box below if the grain of the
+                                    planning unit cannot be easily determined.
+                                    For example if planning units are agricultural field sizes."),
+                           shiny::textAreaInput(inputId = ns("pu_grainother"),
+                                                label = "Any other description with regards to spatial grain of PU.",
+                                                placeholder = 'Leave empty if not applicable.',
+                                                height = "45px", width = "100%", resize = "none")
                          ),
                          shiny::br(),
                          bs4Dash::box(
@@ -405,6 +418,9 @@ mod_Specification_server <- function(id, results, parentsession){
   shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    # Get protocol
+    protocol <- load_protocol()$specification # Get all overview UI elements
+
     # Load all parameters in specification and add
     ids <- get_protocol_ids(group = "specification")
     shiny::observe({
@@ -520,6 +536,25 @@ mod_Specification_server <- function(id, results, parentsession){
     shiny::observeEvent(input$featuretypes, {
       if('Other' %in% input$featuretypes){
         shinyjs::show("otherfeaturetype")
+      }
+    })
+
+    # --- #
+    # Add Tooltips for each element
+    shiny::observeEvent(parentsession$input$help_switch,{
+      # Enable tooltips if set
+      add_protocol_help(parentsession, protocol, type = "popover")
+    })
+    # --- #
+
+    # Show spatial grain box
+    shiny::observeEvent(input$pu_type, {
+      if(any(c('Gridded','Regular Polygon (e.g. rectangle)') %in% input$pu_type)){
+        shinyjs::show("pu_grain")
+        shinyjs::show("pu_grainunit")
+      } else {
+        shinyjs::hide("pu_grain")
+        shinyjs::hide("pu_grainunit")
       }
     })
 

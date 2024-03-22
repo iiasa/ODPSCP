@@ -75,6 +75,10 @@ mod_Design_ui <- function(id){
                      shiny::p("Does the study follow an analytical framework, either explicitly
                        defined within the study or through a reference to previous
                        work? This could for example also be a specific planning protocol."),
+                     shiny::p("Example framework references:"),
+                     shiny::p("Pressey, R. L., & Bottrill, M. C. (2009). Approaches to landscape-and seascape-scale conservation planning: convergence, contrasts and challenges. Oryx, 43(4), 464-475."),
+                     shiny::p("Álvarez-Romero, J. G., Adams, V. M., Pressey, R. L., Douglas, M., Dale, A. P., Augé, A. A., ... & Perdrisat, I. (2015). Integrated cross-realm planning: A decision-makers' perspective. Biological Conservation, 191, 799-808."),
+                     shiny::p("Niemiec, R. M., Gruby, R., Quartuch, M., Cavaliere, C. T., Teel, T. L., Crooks, K., ... & Manfredo, M. (2021). Integrating social science into conservation planning. Biological Conservation, 262, 109298."),
                      shinyWidgets::pickerInput(
                        inputId = ns("studyframework"),
                        label = "Analytical Framework",
@@ -131,7 +135,7 @@ mod_Design_ui <- function(id){
                       conservation management (e.g. Protected areas)"),
                     shiny::selectizeInput(inputId = ns("studypurpose"),
                                           label = "Identify or add a primary purpose",
-                                          choices = c("","Area-based expansion", "Management improvement",
+                                          choices = c("","Area-based allocation", "Management improvement",
                                                       "Action-based planning", "Monitoring and evaluation",
                                                       "Land-use allocation"),
                                           multiple = FALSE,
@@ -332,6 +336,8 @@ mod_Design_server <- function(id, results, parentsession){
     ns <- session$ns
 
     # Study design page --------------------------------------------------------------
+    # Get protocol
+    protocol <- load_protocol()$design # Get all overview UI elements
 
     # Load all parameters and add them to the reactive result container
     # Upon change
@@ -341,6 +347,14 @@ mod_Design_server <- function(id, results, parentsession){
         results[[id]] <- input[[id]]
       }
     })
+
+    # --- #
+    # Add Tooltips for each element
+    shiny::observeEvent(parentsession$input$help_switch,{
+      # Enable tooltips if set
+      add_protocol_help(parentsession, protocol, type = "popover")
+    })
+    # --- #
 
   })
 }

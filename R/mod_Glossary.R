@@ -18,27 +18,16 @@ mod_Glossary_ui <- function(id){
       shiny::fluidRow(
         shiny::column(width = 2),
         shiny::column(width = 12,
-                      bs4Dash::tabsetPanel(
-                        id = ns("Glossary"),
-                        type = "pills",
-                        vertical = FALSE,
-                        selected = "Glossary",
-                        # News panel
-                        shiny::tabPanel(
+                        bs4Dash::box(
                           title = "Glossary",
-                          shiny::br(),
-                          bs4Dash::box(
-                            title = "Glossary",
-                            status = "primary",
-                            solidHeader = TRUE,
-                            collapsed = FALSE,
-                            width = 12,
-                            DT::dataTableOutput('glossary_table')
-                          )
+                          status = "primary",
+                          solidHeader = TRUE,
+                          collapsed = FALSE,
+                          width = 12,
+                          DT::DTOutput(outputId = ns('glossary_table'))
                         )
                       )
-        )
-      )
+          )
     ) # End fluidpage
   ) # End of tabItem
 }
@@ -55,7 +44,9 @@ mod_Glossary_server <- function(id){
                          package = "ODPSCP",
                          mustWork = TRUE)
     output$glossary_table <- DT::renderDataTable(
-      read.csv(ppath)
+      read.csv(ppath, sep = ",",header = TRUE) |>
+        DT::datatable(filter = "none", rownames = FALSE,
+                      editable = FALSE)
     )
   })
 }

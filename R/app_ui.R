@@ -19,7 +19,7 @@ app_ui <- function(request) {
       dark = FALSE,
       scrollToTop = TRUE,
       fullscreen = FALSE,
-      help = FALSE, # Default enable tooltips
+      help = TRUE, # Default enable tooltips
       # controlbar = bs4Dash::dashboardControlbar(),
       # Define header and footer
       header = bs4Dash::dashboardHeader(
@@ -33,7 +33,18 @@ app_ui <- function(request) {
         status = "white",
         border = TRUE,
         compact = FALSE,
-        leftUi = NULL, rightUi = NULL
+        leftUi = NULL, rightUi = NULL,
+        shiny::div(style="position:relative; left:calc(65%);",
+                   shinyWidgets::actionBttn(
+                     inputId = "bookmark",
+                     label = "Save settings",
+                     style = "material-flat",
+                     color = "default",
+                     size = "xs",
+                     icon = shiny::icon("link", lib = "glyphicon")
+                   )
+                   # shiny::bookmarkButton(label = , id = "bookmark")
+        )
         ),
       footer = bs4Dash::dashboardFooter(
         fixed = FALSE,

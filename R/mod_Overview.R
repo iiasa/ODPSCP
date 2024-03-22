@@ -28,7 +28,9 @@ mod_Overview_ui <- function(id){
             intend to both uniquely identify the study, provide necessary information
             on the availability of code or data and broadly categorizes any and all studies
             based on the listed properties.
-            "
+            ",
+            shiny::br(),
+            shiny::strong("By default example popups are shown for text fields, which can be disabled through the questionmark at the top bar.")
           ),
           shiny::hr()
         )
@@ -48,7 +50,7 @@ mod_Overview_ui <- function(id){
             collapsed = FALSE,
             collapsible = TRUE,
             shiny::textAreaInput(inputId = ns("studyname"),
-                                  label = shiny::div("Study name", "  ", shiny::icon("info") ),
+                                  label = shiny::div("Study name"),
                                   placeholder = 'What is the title of the conducted study?',
                                   height = "45px", width = "100%", resize = "none"),
           # Authors
@@ -341,7 +343,7 @@ mod_Overview_server <- function(id, results, parentsession){
     ns <- session$ns
 
     #### Dynamic rendering of UI Elements ####
-    # protocol <- load_protocol()$overview # Get all overview UI elements
+    protocol <- load_protocol()$overview # Get all overview UI elements
     # output$Overview_UI = render_protocol("Overview", protocol)
     # -------------------------------------------
 
@@ -406,6 +408,28 @@ mod_Overview_server <- function(id, results, parentsession){
     })
     # ----- #
 
+    # Shiny feedback for mandatory fields
+    # FIXME: This horribly messes up the format
+    # shiny::observeEvent(input$studyname, {
+    #   if(input$studyname=="") {
+    #     shinyFeedback::showFeedback(
+    #       "studyname",
+    #       text = "This field is mandatory",
+    #       color = "#d9534f",
+    #       icon = shiny::icon("exclamation-sign", lib="glyphicon")
+    #     )
+    #   } else {
+    #     shinyFeedback::hideFeedback("studyname")
+    #   }
+    # })
+
+    # --- #
+    # Add Tooltips for each element
+    shiny::observeEvent(parentsession$input$help_switch,{
+      # Enable tooltips if set
+      add_protocol_help(parentsession, protocol, type = "popover")
+    })
+    # --- #
 
     # Clear all
     shiny::observeEvent(input$reset, {
