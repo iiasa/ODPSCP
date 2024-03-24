@@ -97,3 +97,28 @@ get_protocol_elementgroup <- function(id, path_protocol = NULL){
   return(out)
 }
 
+
+#' Check for mandatory fields to be filled
+#'
+#' @description
+#' Small convenience function that checks for mandatory fields
+#'
+#' @param protocol A filled out protocol in [`list`] format.
+#' @returns A [`vector`] of character entries that are mandatory in the protocol.
+#' @noRd
+get_protocol_mandatory <- function(path_protocol = NULL){
+  assertthat::assert_that(is.character(path_protocol) || is.null(path_protocol))
+
+  # If is null, load protocol
+  template <- load_protocol(path_protocol)
+
+  results <- vector()
+  for(gr in names(template)[-1]){
+    pp <- template[[gr]]
+    for(element in names(pp)){
+      ppp <- pp[[element]]
+      if(ppp$mandatory) results <- append(results,values = ppp[['render-id']] )
+    }
+  }
+  return(results)
+}

@@ -23,10 +23,10 @@ mod_Overview_ui <- function(id){
             width = 12,
             solidHeader = FALSE,
             collapsible = FALSE,
-            "Let's start with a new reporting protocol. In this first step we describe
+            "Let's start with a new reporting protocol. In the overview step we describe
             all the properties of the conducted planning study. The entries below
             intend to both uniquely identify the study, provide necessary information
-            on the availability of code or data and broadly categorizes any and all studies
+            on the availability of code or data and allows to categorizes the study itself
             based on the listed properties.
             ",
             shiny::br(),
@@ -61,6 +61,8 @@ mod_Overview_ui <- function(id){
             solidHeader = T,
             status = "secondary",
             collapsible = TRUE,
+            shiny::p("Add each author of the study to the table below. If a ORCID is not
+                     known or available, leave blank."),
             DT::DTOutput(outputId = ns("authors_table")),
             shiny::actionButton(inputId = ns("add_author"), label = "Add a new author row",
                                 icon = shiny::icon("plus")),
@@ -77,7 +79,7 @@ mod_Overview_ui <- function(id){
             solidHeader = TRUE,
             status = "secondary",
             collapsible = FALSE,
-            shiny::div("Who is the corresponding author?"),
+            shiny::div("Who is the corresponding author? Here contact information can be added."),
             shiny::textAreaInput(inputId = ns("authoremail"), label = "",
                           placeholder = 'Email of the corresponding author',
                           height = "45px", width = "100%", resize = "none")
@@ -103,7 +105,7 @@ mod_Overview_ui <- function(id){
             solidHeader = TRUE,
             status = "gray",
             collapsible = FALSE,
-            shiny::div("Has the study already been published? If so, pprove a reference"),
+            shiny::div("Has the study already been published? If so, provide a reference."),
             shiny::textAreaInput(inputId = ns("studylink"), label = "",
                           placeholder = 'Link to the published study such as a DOI.',
                           height = "45px", width = "100%", resize = "none")
@@ -147,6 +149,31 @@ mod_Overview_ui <- function(id){
                   title = "Scale of the conducted study?")
               )
           ),
+          # Study region
+          bs4Dash::box(
+            title = "Study region",
+            closable = FALSE,
+            width = 12,
+            solidHeader = TRUE,
+            status = "secondary",
+            collapsible = FALSE,
+            shiny::div("A geospatial dataset can be provided such as gridded or vector planning unit file.
+                       Accepted are shapefiles, geopackages or geotiffs."),
+            shiny::hr(),
+            # Input: Select a file ----
+            shiny::fileInput(
+              ns("studyregion"),
+              "Choose geospatial File",
+              multiple = FALSE,
+              accept = c(
+                ".shp", ".gpkg",
+                ".tif", ".geotiff"
+              )
+            ),
+            shiny::helpText("Note that the maximum file size is 30 MB."),
+            shiny::br(),
+            leaflet::leafletOutput(ns("studymap"))
+          ),
           # Study location
           bs4Dash::box(
             title = "Study location",
@@ -169,14 +196,16 @@ mod_Overview_ui <- function(id){
             solidHeader = TRUE,
             status = "secondary",
             collapsible = FALSE,
-            shiny::p("Define the temporal scale over which the planning applies.
-              If outside the chosen scale, please provide details in the textbox."),
+            shiny::p("Define the temporal scale over which the planning and specifically
+                     the planning objective applies. This should not be interpreted as
+                     a period of data coverage. If outside the chosen scale,
+                     please provide details in the textbox."),
             shinyWidgets::sliderTextInput(
               inputId = ns("studytime"),
               label = "Choose a range:",
               choices = 1960:2100,
               grid = TRUE,
-              selected = seq(2000,2020,1)
+              selected = seq(1990,2020,1)
             ),
             shiny::br(),
             shiny::textAreaInput(inputId = ns("otherstudytime"), label = "(Optional) Custom coverage",
@@ -218,6 +247,10 @@ mod_Overview_ui <- function(id){
             collapsed = FALSE,
             collapsible = TRUE,
             # icon = icon("magnifying-glass-chart"),
+            shiny::imageOutput(ns("peng2011"),inline = TRUE,fill = TRUE),
+            shiny::br(),
+            shiny::helpText("Source: Peng, R. D. (2011). Reproducible research in computational science. Science, 334(6060), 1226-1227."),
+            shiny::br(),
             shiny::p("This box records whether a study makes available the data - both for
             input and outputs - as well as the software code or analytical to
             reproduce the analysis."),
@@ -252,6 +285,8 @@ mod_Overview_ui <- function(id){
               solidHeader = TRUE,
               status = "gray",
               collapsible = FALSE,
+              shiny::p("Typical outputs include for example priority maps or performance indicators.
+                       Describe all outouts here and where they are stored."),
               shinyWidgets::prettyToggle(
                 inputId = ns('outputavailability'),
                 label_on = "Yes",
@@ -269,12 +304,15 @@ mod_Overview_ui <- function(id){
             shiny::br(),
             # Link to code
             bs4Dash::box(
-              title = 'Are the analytical steps to reproduce the results made available?',
+              title = 'Are the analytical code to reproduce the results made available?',
               closable = FALSE,
               width = 12,
               solidHeader = TRUE,
               status = "gray",
               collapsible = FALSE,
+              shiny::p("Preparing data for analysis and creating priority maps can be done
+                       with computer code. If such code was created, consider storing it somewhere
+                       and make it available."),
               shinyWidgets::prettyToggle(
                 inputId = ns('codeavailability'),
                 label_on = "Yes",
@@ -406,6 +444,52 @@ mod_Overview_server <- function(id, results, parentsession){
     shiny::observeEvent(input$codeavailability, {
       shinyjs::toggle("outputcode")
     })
+    # ----- #
+
+    # Reactive studyregion code
+    myregion <- shiny::eventReactive(input$studyregion, {
+      if(!is.null(input$studyregion)){
+        # Found vector
+        if(tolower( tools::file_ext(input$studyregion)) %in% c("shp","gpkg")){
+          out <- sf::st_read(input$studyregion, quiet = TRUE) |>
+            sf::st_transform(crs = sf::st_crs(4326))
+          return(out)
+      } else if(tolower( tools::file_ext(input$studyregion)) %in% c("tif","geotiff")){
+          out <- terra::rast(input$studyregion)
+          out[out>0] <- 1 # Replace all with 1
+          out <- out |> terra::as.polygons() |> sf::st_as_sf() |>
+            sf::st_transform(crs = sf::st_crs(4326))
+          return(out)
+        }
+      }
+    }, ignoreNULL = FALSE)
+
+    # Study region leaflet code
+    output$studymap <- leaflet::renderLeaflet({
+      # generate base leaflet
+      map <- leaflet::leaflet(options = leaflet::leafletOptions(zoomControl = FALSE)) |>
+        leaflet::addTiles(leaflet::providers$OpenStreetMap) |>
+        leaflet::addProviderTiles(leaflet::providers$OpenStreetMap,
+                                  group="Open Street Map")
+      map
+    })
+
+    # ----- #
+    # Send a pre-rendered image, and don't delete the image after sending it
+    output$peng2011 <- shiny::renderImage({
+      path_figure <- base::normalizePath(
+        system.file("Peng2011_Science_spectrum.png",
+                                  package = "ODPSCP",
+                                  mustWork = TRUE)
+      )
+      # Return a list containing the filename and alt text
+      list(src = path_figure,
+           width = "80%",
+           height = "50%",
+           alt = paste("Peng 2011, Reproducible Research in Computational Science, Science"))
+
+    }, deleteFile = FALSE)
+
     # ----- #
 
     # Shiny feedback for mandatory fields

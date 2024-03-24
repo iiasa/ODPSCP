@@ -21,16 +21,19 @@ Imports:
     DT,
     waiter,
     dplyr,
-    readr,
+    leaflet,
+    sf,
+    terra,
+    readr
+Suggests:
     markdown,
-    rmarkdown
+    rmarkdown,
+    spelling,
+    testthat (>= 3.0.0)
 Encoding: UTF-8
 Language: en-US
 LazyData: true
 RoxygenNote: 7.3.1
 URL: https://github.com/iiasa/ODPSCP
 BugReports: https://github.com/iiasa/ODPSCP/issues
-Suggests: 
-    spelling,
-    testthat (>= 3.0.0)
 Config/testthat/edition: 3

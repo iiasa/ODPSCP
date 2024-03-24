@@ -29,7 +29,7 @@ mod_Design_ui <- function(id){
                    design elements of the study. These elements usually do not
                    consider methodological specifications of the planning, but
                    rather the conceptual understanding of the aims, purpose, and
-                   framework underlying a study."
+                   any framework underlying a study."
                  ),
                  shiny::hr()
           )
@@ -74,10 +74,11 @@ mod_Design_ui <- function(id){
                      # Study framework
                      shiny::p("Does the study follow an analytical framework, either explicitly
                        defined within the study or through a reference to previous
-                       work? This could for example also be a specific planning protocol."),
+                       work? This could for example also be a specific planning protocol or established
+                       approaches such as structure decision making or adapative management."),
                      shiny::p("Example framework references:"),
                      shiny::p("Pressey, R. L., & Bottrill, M. C. (2009). Approaches to landscape-and seascape-scale conservation planning: convergence, contrasts and challenges. Oryx, 43(4), 464-475."),
-                     shiny::p("Álvarez-Romero, J. G., Adams, V. M., Pressey, R. L., Douglas, M., Dale, A. P., Augé, A. A., ... & Perdrisat, I. (2015). Integrated cross-realm planning: A decision-makers' perspective. Biological Conservation, 191, 799-808."),
+                     shiny::p("Alvarez-Romero, J. G., Adams, V. M., Pressey, R. L., Douglas, M., Dale, A. P., Auge, A. A., ... & Perdrisat, I. (2015). Integrated cross-realm planning: A decision-makers' perspective. Biological Conservation, 191, 799-808."),
                      shiny::p("Niemiec, R. M., Gruby, R., Quartuch, M., Cavaliere, C. T., Teel, T. L., Crooks, K., ... & Manfredo, M. (2021). Integrating social science into conservation planning. Biological Conservation, 262, 109298."),
                      shinyWidgets::pickerInput(
                        inputId = ns("studyframework"),
@@ -134,11 +135,14 @@ mod_Design_ui <- function(id){
                       such as the identification of areas to be placed under
                       conservation management (e.g. Protected areas)"),
                     shiny::selectizeInput(inputId = ns("studypurpose"),
-                                          label = "Identify or add a primary purpose",
-                                          choices = c("","Area-based allocation", "Management improvement",
-                                                      "Action-based planning", "Monitoring and evaluation",
-                                                      "Land-use allocation"),
-                                          multiple = FALSE,
+                                          label = "Identify or add primary purpose(s)",
+                                          choices = c("","Area-based allocation",
+                                                      "Management evaluation",
+                                                      "Management improvement",
+                                                      "Action-based planning",
+                                                      "Monitoring and evaluation"
+                                                      ),
+                                          multiple = TRUE,
                                           options = list(create = TRUE,
                                                          placeholder = "Choose from list, or type and click to add a new option."))
                   ),
@@ -265,6 +269,10 @@ mod_Design_ui <- function(id){
                         solidHeader = TRUE,
                         status = "secondary",
                         collapsible = FALSE,
+                        shiny::p("Select or add broad groups of who was engaged.
+                                 Note that co-authors are generally not considered stakeholders
+                                 unless co-authorship is given due to co-design of the
+                                 whole planning study."),
                         shiny::selectizeInput(inputId = ns("stakeholdertype"),
                                               label = "Who was engaged?",
                                               choices = c("Policy makers (International)",

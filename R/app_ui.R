@@ -28,13 +28,14 @@ app_ui <- function(request) {
           color = "primary",
           opacity = 0,
           href = NULL,
-          image = shiny::img(src = "www/logo.png", height = "20px")
+          image = shiny::img(src = base::normalizePath(system.file("app/www/logo.png", package = "ODPSCP")),
+                             height = "20px")
         ),
         status = "white",
         border = TRUE,
         compact = FALSE,
         leftUi = NULL, rightUi = NULL,
-        shiny::div(style="position:relative; left:calc(65%);",
+        shiny::div(style="position:relative; left:calc(5%);",
                    shinyWidgets::actionBttn(
                      inputId = "bookmark",
                      label = "Save settings",

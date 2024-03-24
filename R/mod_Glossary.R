@@ -44,7 +44,7 @@ mod_Glossary_server <- function(id){
                          package = "ODPSCP",
                          mustWork = TRUE)
     output$glossary_table <- DT::renderDataTable(
-      read.csv(ppath, sep = ",",header = TRUE) |>
+      utils::read.csv(ppath, sep = ",",header = TRUE) |>
         DT::datatable(filter = "none", rownames = FALSE,
                       editable = FALSE)
     )

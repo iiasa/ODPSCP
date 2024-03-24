@@ -74,19 +74,31 @@ overview:
     mandatory: true
     popexample: "Local, for a study identified priority regions in sub-national area."
 
-  location:
+  studyregion:
     render-nr: 2
+    render-id: 'studyregion'
+    render-group: 'study_location'
+    question: 'If available, provide a geospatial delineation of the study region.'
+    description: 'A geospatial dataset can be provided such as gridded or vector planning unit file. Note that the maximum file size is 30 MB.'
+    fieldtype: 'fileupload'
+    fieldtype_conditional_render-id: 'studymap'
+    fieldtype_conditional: 'leaflet'
+    mandatory: false
+    popexample: "Upload for example a shp file of the study area."
+
+  location:
+    render-nr: 3
     render-id: 'studylocation'
     render-group: 'study_location'
     question: 'What is the location of the study?'
     description: 'Add text description of the study location.'
     fieldtype: 'textbox'
-    mandatory: false
+    mandatory: true
     popexample: "The study was conducted in the state of Burgenland, Austria, focussing
     on the surroundings of Lake Neusiedl."
 
   studytimeline:
-    render-nr: 3
+    render-nr: 4
     render-id: 'studytime'
     render-group: 'study_location'
     question: 'What is the temporal range of the study?'
@@ -95,10 +107,11 @@ overview:
     fieldtype_conditional_render-id: 'otherstudytime'
     fieldtype_conditional: 'textbox'
     mandatory: false
-    popexample: "The study objective addresses the time period from 2000 to 2020."
+    popexample: "The study uses data from the period 2015-2020 in order to make
+    recommendations for potential protected area network in 2030. The time period is thus 2015-2030."
 
   realm:
-    render-nr: 4
+    render-nr: 5
     render-id: 'studyrealm'
     render-group: 'study_location'
     question: 'What is the biophysical realm in which the planning work was conducted?'
@@ -199,6 +212,7 @@ design:
     fieldtype: 'selectizedropdown'
     options:
       - Area-based allocation
+      - Management evaluation
       - Management improvement
       - Action-based planning
       - Monitoring and evaluation
@@ -289,7 +303,6 @@ specification:
     description: 'Describe the type of planning units used in this work.'
     fieldtype: 'dropdown'
     options:
-      - None
       - Gridded
       - Point
       - Line
@@ -322,12 +335,12 @@ specification:
     description: 'Leave empty if not applicable.'
     fieldtype: 'selectizedropdown'
     options:
-      - m²
-      - km²
+      - m2
+      - km2
       - ha
-      - ft²,
-      - yd²,
-      - mi²
+      - ft2,
+      - yd2,
+      - mi2
       - acre
     mandatory: false
     popexample: "Each planning unit had a size of 1000 m²."
@@ -439,7 +452,7 @@ specification:
     description: 'Add the features to the list.'
     fieldtype: 'multifieldselection'
     mandatory: false
-    popexample: "Specify groups of features, e.g. 100 species distributions layers."
+    popexample: "Threatened plant species, Species (distributions), 260"
 
   featureorigin:
     render-nr: 4

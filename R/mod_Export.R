@@ -27,21 +27,45 @@ mod_Export_ui <- function(id){
             width = 12,
             solidHeader = TRUE,
             collapsible = FALSE,
-            "All protocol entries can be exported in a Range of different formats
-            for further use. Currently supported are the compressed 'rData', 'csv' and
-            'yaml' format.
-            ",
+            shiny::p(
+              "All protocol entries can be exported in a range of different formats
+              for further use such as appending them to a manuscript.
+              It should be noted that only 'rData', 'csv' and 'yaml' are
+              machine-readable formats and be imported again by ODPSCP.
+              "
+            ),
+            shiny::br(),
             # Output format
             shinyWidgets::radioGroupButtons(
               inputId = ns("downloadFormat"),
               label = "Output Format",
               individual = TRUE,
+              justified = TRUE,
+              size = "lg",
               status = "info",
-              choices = c('rData', 'csv', 'yaml'),
-              selected = 'rData'
+              choices = c('docx', 'pdf', 'rData', 'csv', 'yaml'),
+              selected = 'rData',
+              checkIcon = list(
+                yes = shiny::icon("circle-down"),
+                no = NULL
+              )
             ),
             shiny::br(),
             # Conditional info
+            shiny::conditionalPanel(
+              condition = "input.downloadFormat == 'docx'",
+              ns = ns,
+              shiny::p("Protocol will be rendered as docx Word document, which
+                       can be easily modified as well. Suitabile for manuscript
+                       appendices or personal records.")
+            ),
+            shiny::conditionalPanel(
+              condition = "input.downloadFormat == 'pdf'",
+              ns = ns,
+              shiny::p("Protocol will be rendered as document and then converted
+                       to a PDF format. This is the most convenient format for
+                       appending the protocol to any publications for example.")
+            ),
             shiny::conditionalPanel(
               condition = "input.downloadFormat == 'rData'",
               ns = ns,
@@ -66,12 +90,16 @@ mod_Export_ui <- function(id){
               any text editor and loaded as lists into R via yaml::read_yaml(file).")
             ),
             shiny::br(),
+            shiny::hr(),
+            shiny::div(id = ns("missing"), class = 'missing',
+                       shiny::textOutput(outputId = ns("missingtext"))),
+            shiny::br(),
             # Button
             shiny::downloadButton(ns("downloadData"), "Download the protocol")
           )
         ),
         shiny::tabPanel(
-          title = "Render protocol",
+          title = "Render protocol table",
           icon = shiny::icon("list-alt",lib = "glyphicon"),
           bs4Dash::box(
             title = "Protocol",
@@ -107,6 +135,13 @@ mod_Export_server <- function(id, results){
                     editable = FALSE)
     })
 
+    # Get mandatory protocol entries
+    mand <- get_protocol_mandatory()
+
+    # Check for mandatory outputs and highlight them in text
+    output$missingtext <- shiny::renderText("Highlight here all entries not yet filled!")
+    # observeEvent()
+
     # Get output format
     oftype <- shiny::reactive({input$downloadFormat})
 
@@ -136,6 +171,12 @@ mod_Export_server <- function(id, results){
           protocol <- format_protocol(results, format = "list")
           yaml::write_yaml(protocol, file = file)
           # yaml::read_yaml("../../../Downloads/test.yaml")
+        } else if(oftype() == "docx"){
+          # Create document from results
+          message("Not yet implemented...")
+        } else if(oftype() == "pdf"){
+          # Create document from results
+          message("Not yet implemented...")
         }
       }
     )

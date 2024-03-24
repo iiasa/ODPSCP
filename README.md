@@ -23,9 +23,10 @@ other reporting framework such
 [ODD](https://www.jasss.org/23/2/7.html).
 
 This repository contains the shiny app behind the package and can be
-visualized on \[INSERT\] where it will remain hosted. The code has been
-created with the help of the *golem* framework for production- ready
-shiny interfaces. Further versions of the framework are planned.
+visualized on <https://odpscp.iiasa.ac.at/> where it will remain hosted.
+The code has been created with the help of the *golem* framework for
+production- ready shiny interfaces. Further versions of the framework
+are planned.
 
 Please note that the ODPSCP project is released with a [Contributor Code
 of

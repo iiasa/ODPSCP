@@ -26,7 +26,9 @@ mod_Specification_ui <- function(id){
                        shiny::p("Under the protocol entry 'Specification' we list all
                          the elements, features and datasets that are being used
                          in the planning. Basic information on their broad categorization,
-                         type and origin are recorded.")
+                         type and origin are recorded.
+                         It records what type of information is included in the planning,
+                         not how individual information sources are used (for that see context).")
                      )
               )
             ),
@@ -46,8 +48,7 @@ mod_Specification_ui <- function(id){
                          shiny::p("The principal elements of a SCP application are generally
                            called 'Planning units'. They can be for example based on a
                            gridded Raster layer or any spatial organization such as
-                           a polygon. There could also be no planning units for SCP
-                           applications that are non-spatial."),
+                           a polygon. "),
                          shiny::br(),
                          # Planning unit type
                          bs4Dash::box(
@@ -61,7 +62,7 @@ mod_Specification_ui <- function(id){
                              inputId = ns("pu_type"),
                              label = "Type of planning unit",
                              choices = c(
-                               "None", "Gridded",
+                               "Gridded",
                                "Point", "Line",
                                "Regular Polygon (e.g. rectangle)",
                                "Irregular Polygon (e.g. hyrological basin)",
@@ -94,8 +95,8 @@ mod_Specification_ui <- function(id){
                            shiny::selectizeInput(inputId = ns("pu_grainunit"),
                                                  label = "Unit of the spatial grain",
                                                  choices = c("",
-                                                             "m²","km²", "ha",
-                                                             "ft²", "yd²","mi²",
+                                                             "m2","km2", "ha",
+                                                             "ft2", "yd2","mi2",
                                                              "acre"
                                                              ),
                                                  multiple = FALSE,
@@ -220,9 +221,9 @@ mod_Specification_ui <- function(id){
                           shiny::p("Describe the zones used in the planning. Zones can be useful to prioritize
                             for not a single, but a set of management decisions. For example, protected area
                             managers might want to identify areas of minimal intervention ('core-areas')
-                            as well as sustainable use areas.
-                            Reference: Watts, Matthew E., Ian R. Ball, Romola S. Stewart, Carissa J. Klein, Kerrie Wilson, Charles Steinback, Reinaldo Lourival, Lindsay Kircher, and Hugh P. Possingham. Marxan with Zones: Software for Optimal Conservation Based Land- and Sea-Use Zoning. Environmental Modelling & Software 24, no. 12 (December 2009): 1513–21. https://doi.org/10.1016/j.envsoft.2009.06.005.
-"),
+                            as well as sustainable use areas."),
+                          shiny::p("Reference: Watts, Matthew E., Ian R. Ball, Romola S. Stewart, Carissa J. Klein, Kerrie Wilson, Charles Steinback, Reinaldo Lourival, Lindsay Kircher, and Hugh P. Possingham. Marxan with Zones: Software for Optimal Conservation Based Land- and Sea-Use Zoning. Environmental Modelling & Software 24, no. 12 (December 2009): 1513-21. https://doi.org/10.1016/j.envsoft.2009.06.005."),
+
                           DT::DTOutput(outputId = ns("specificzones")),
                           shiny::actionButton(inputId = ns("add_zone"), label = "Add a new zone",
                                               icon = shiny::icon("plus")),
@@ -350,6 +351,8 @@ mod_Specification_ui <- function(id){
                           solidHeader = T,
                           status = "secondary",
                           collapsible = TRUE,
+                          shiny::p("List all features used in the planning, their type and an approximate number.
+                                   Where possible assign groupings based on the Feature types above."),
                           DT::DTOutput(outputId = ns("featurelist")),
                           shiny::actionButton(inputId = ns("add_feature"), label = "Add a new feature row",
                                               icon = shiny::icon("plus")),
@@ -357,12 +360,12 @@ mod_Specification_ui <- function(id){
                                               icon = shiny::icon("minus")),
                           shiny::fileInput(inputId = ns('load_feature'),label = 'Alternatively upload a feature/group list:',
                                     accept = c('csv', 'comma-separated-values','.csv', 'tsv', '.tsv')),
-                          shiny::p("(Doubleclick on an added row to change the input values)")
+                          shiny::helpText("(Doubleclick on an added row to change the input values)")
                         ),
                         shiny::br(),
                         # How were features created?
                         bs4Dash::box(
-                          title = "How were features created?",
+                          title = "How were features created and what do they contain?",
                           closable = FALSE,
                           width = 12,
                           solidHeader = TRUE,
@@ -439,13 +442,14 @@ mod_Specification_server <- function(id, results, parentsession){
     # Define the features list
     feature_table <- shiny::reactiveVal(
       data.frame(name = character(0),
-                 group = character(0))
+                 group = character(0),
+                 number = numeric(0))
     )
 
     # Events for author table
     shiny::observeEvent(input$add_feature, {
       new_data <- feature_table() |> dplyr::add_row(
-        data.frame(name = "My species", group = "Species distribution")
+        data.frame(name = "Feature name", group = "Species distribution", number = 10)
       )
       feature_table(new_data)
     })

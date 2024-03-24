@@ -31,17 +31,15 @@ mod_Home_ui <- function(id){
                  from a range of scientific disciplines.",
              style= "font-size: 18px;"),
 
-              shiny::p("Area-based and action-based conservation planning are critical scientific
-                tools in reaching conservation policy objectives across scales.
-                Yet despite decades of research and numerous scientific advances
-                in Europe ",shiny::a(href = 'https://osf.io/8x2ug/', '(Jung et al. 2023)',
+              shiny::p("Area-based and action-based conservation planning are critical
+                       in reaching conservation policy objectives across scales. Yet
+                       despite decades of research and numerous scientific advances
+                       in Europe ",shiny::a(href = 'https://osf.io/8x2ug/', '(Jung et al. 2023)',
                                                     target = "_blank", .noWS = "outside"),".",
-                " and globally ",shiny::a(href = 'https://www.annualreviews.org/doi/10.1146/annurev-environ-102016-060902',
-                                   '(McIntosh et al. 2017)',
-                                   target = "_blank", .noWS = "outside"),
-                ", it often remains incomprehensible for those unfamiliar with the
-                planning how decisions where reached or what factors were considered
-                influential in determining the identified outcomes.",
+                       " and globally ",shiny::a(href = 'https://www.annualreviews.org/doi/10.1146/annurev-environ-102016-060902', '(McIntosh et al. 2017)', target = "_blank", .noWS = "outside"),
+                       ", it often remains incomprehensible for those unfamiliar with the
+                       planning how decisions where reached or what factors were considered
+                       influential in determining the identified outcomes.",
                style= "font-size: 18px;"),
 
              # img(src = "", width = "60%", style="display: block; margin-left: auto; margin-right: auto;
@@ -54,7 +52,26 @@ mod_Home_ui <- function(id){
                expert evaluation of the conducted planning. Third, it helps study
                authors and decision makers to identify key strength, but also
                weaknesses of a systematic planning exercise. ", style= "font-size: 18px;"),
-
+             # --- #
+             shiny::hr(),
+             shinyWidgets::prettyCheckboxGroup(
+               inputId = ns("eligibility"),
+               label = "In order for a planning study to be eligible for the protocol they should:",
+               choices = c("Make use of decision theoretic or multiple-criteria-based approaches!",
+                           "Are spatial, spatial-temporal or at least use spatial input!",
+                           "Have a biodiversity and/or conservation focus or angle! *",
+                           "Use an algorithic prioritization to identify best areas or actions! **"),
+               icon = shiny::icon("thumbs-up"),
+               status = "primary",
+               outline = TRUE,
+               inline = TRUE,
+               plain = TRUE,
+               animation = "jelly"
+             ),
+             shiny::helpText("* This is not say that non-biodiversity focussed planning studies (such as optimal cropland management allocation) can not be entered per se."),shiny::br(),
+             shiny::helpText("** Studies presenting methodological advances are not suitable for the protocol,
+                             unless they are demonstrated in an applied scenario."),
+             shiny::hr(),
              shiny::p("This Shiny web application helps to implement the protocol through
                an easy understandable user interface and allows export the created
                protocols in a range of formats for further usages. We encourage the

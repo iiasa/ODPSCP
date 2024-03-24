@@ -46,8 +46,9 @@ mod_Prioritization_ui <- function(id){
                          collapsible = TRUE,
                          shiny::p("There are multiple existing types of software that
                            allow users to integrate various features, constraints
-                           and targets in a single prioritization. The most
-                           commonly used SCP software solutions are listed below."),
+                           and targets in a single prioritization. Some make use of mathematical
+                           optimization, others of heuristics or multi-criteria ranking approaches.
+                           Some of the most commonly used SCP software solutions are listed below."),
                          shinyWidgets::pickerInput(
                            inputId = ns("software"),
                            label = "Used software",
@@ -59,7 +60,9 @@ mod_Prioritization_ui <- function(id){
                            options = list(
                              style = "btn-info")
                          ),
-                       #TODO: Show some explanation / reference for each method
+                         # Small
+                         shiny::textOutput(outputId = ns("software_help"),inline = TRUE),
+                         shiny::br(),
                        # upon selection.
                        shiny::conditionalPanel(
                          condition = "input.software == 'Custom' || input.software == 'Other'",
@@ -92,12 +95,11 @@ mod_Prioritization_ui <- function(id){
                        collapsible = FALSE,
                        shiny::p("In many optimizations benefits can accrue in varying ways, for example
                                 through maximizing the targets achieved. If known or specific to the study,
-                                provide information on benefit function used."),
-                       shiny::p("Benefit functions in prioritizations are for example those minimize marginal
+                                provide information on benefit function used.",
+                                "Benefit functions in prioritizations are for example those minimize marginal
                                 losses from cell removal, minimize an average shortfall or maximize the number
-                                of targets (a constraint) achieved.
-
-                                Reference: Arponen, A., Heikkinen, R. K., Thomas, C. D., & Moilanen, A. (2005). The value of biodiversity in reserve selection: representation, species weighting, and benefit functions. Conservation Biology, 19(6), 2009-2014."),
+                                of targets (a constraint) achieved."),
+                       shiny::p("Reference: Arponen, A., Heikkinen, R. K., Thomas, C. D., & Moilanen, A. (2005). The value of biodiversity in reserve selection: representation, species weighting, and benefit functions. Conservation Biology, 19(6), 2009-2014."),
                        shiny::textAreaInput(inputId = ns("benefitfunctions"), label = "What is being optimized and how?",
                                             placeholder = 'If known, please provide further detail.',
                                             height = "60px", width = "100%", resize = "vertical")
@@ -135,7 +137,7 @@ mod_Prioritization_ui <- function(id){
                        shinyWidgets::pickerInput(
                          inputId = ns("identsolution"),
                          label = "Identification of priorities",
-                         choices = c("Single solution",
+                         choices = c("","Single solution",
                                      "Selection frequency",
                                      "Overlays",
                                      "External indicator",
@@ -249,15 +251,39 @@ mod_Prioritization_server <- function(id, results, parentsession){
     indicators <- shiny::reactiveVal(
       data.frame(name = character(0),
                  description = character(0),
-                 unit = character(0),
-                 reference = character(0))
+                 unit = character(0))
     )
+
+    # --- #
+    # Render some explanatory help for the software box
+    shiny::observeEvent(input$software, {
+      if(input$software!= ""){
+        tt <- switch(input$software,
+          "Zonation" = "Zonation is a spatial prioritization software that can be used to identify priority areas to support conservation planning, land use planning, ecological impact avoidance and other similar tasks. https://zonationteam.github.io/Zonation5/",
+          "Marxan" = "Marxan is a suite of tools designed to help decision makers find good solutions to conservation planning problems. https://marxansolutions.org/",
+          "prioritizr" = "The prioritizr R package uses mixed integer linear programming (MILP) techniques to provide a flexible interface for building and solving conservation planning problems. https://prioritizr.net/",
+          "prioriactions" = "The prioriactions package allows you to create and solve conservation planning problems that involve multiple threats and actions using techniques of integer linear programming (ILP). https://prioriactions.github.io/prioriactions/",
+          "RestOptr" = "The restoptr R package provides a flexible framework for ecological restoration planning using using mathematical optimization and landscape ecology theory. https://dimitri-justeau.github.io/restoptr/",
+          "oppr" = "The oppr R package is decision support tool for prioritizing conservation projects in terms of funding and monitoring. https://prioritizr.github.io/oppr/",
+          "ConsNet" = "ConsNet is a comprehensive software package for decision support for the design of conservation area networks to represent biodiversity features while incorporating a wide range of spatial and other criteria. https://doi.org/10.1111/j.1600-0587.2008.05721.x",
+          "CAPTAIN" = "Software for conservation prioritization using reinforcement learning with the capacity to use most type of available data and resources. https://www.captain-project.net/",
+          "ROOT" = "ROOT is tool designed to facilitate multi-objective landscape planning. It uses an optimization approach to help identify opportunities to maximize cobenefits and to identify compromise solutions where required. https://natcap.github.io/ROOT/",
+          "C-PLAN" = "C-Plan is a conservation decision support software that links with GIS to map options for achieving explicit conservation targets. https://github.com/mattwatts/cplan",
+          "Custom" = "This option is for planning studies that created their own customized software or code to achieve their solutions.",
+          "Other" = "Any other software solution not listed among the options here (explain in fields below)."
+        )
+        output$software_help <- shiny::renderText(tt)
+      } else {
+        output$software_help <- shiny::renderText("")
+      }
+    })
+    # --- #
 
     # Events for author table
     shiny::observeEvent(input$add_indicator, {
       new_data <- indicators() |> dplyr::add_row(
         data.frame(name = "EDIT ME", description = "EDIT ME",
-                   unit = "EDIT ME", reference = "EDIT ME")
+                   unit = "EDIT ME")
       )
       indicators(new_data)
     })
