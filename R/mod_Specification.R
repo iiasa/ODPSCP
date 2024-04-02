@@ -176,7 +176,7 @@ mod_Specification_ui <- function(id){
                          shiny::p("Planning can be conducted on all land or sea within a given
                            region, but it can also be specific to certain ecosystems
                            or land-use types, such as for example forests.",
-                           shiny::strong("Check No if all available land or sea was considered.")),
+                           shiny::strong("Check No if all available land or sea within the study region was considered.")),
                           shinyWidgets::awesomeRadio(
                             inputId = ns("checkecosystem"),
                             label = "Was there any ecosystem specificity?",
@@ -263,6 +263,98 @@ mod_Specification_ui <- function(id){
                      )
                ) # Column end
              ), # Fluid row end
+            shiny::br(),
+            # Entries #
+            shiny::fluidRow(
+              shiny::column(width = 2),
+              shiny::column(width = 12,
+                            # Threats
+                            bs4Dash::box(
+                              title = 'Threats and pressures',
+                              closable = FALSE,
+                              width = 12,
+                              solidHeader = TRUE,
+                              status = "primary",
+                              collapsible = TRUE,
+                              shiny::p("Select any threats or pressures that were targeted in the planning
+                                       or that, directly or indirectly, shape the planning outcome.
+                                       The threat description broadly follows the IUCN Threat categorization system."),
+                              shiny::br(),
+                              shiny::helpText("IUCN Threat classification: https://www.iucnredlist.org/resources/threat-classification-scheme"),
+                            # Threat types
+                            bs4Dash::box(
+                              title = "Threat or pressure types",
+                              closable = FALSE,
+                              width = 12,
+                              solidHeader = TRUE,
+                              status = "secondary",
+                              collapsible = FALSE,
+                              shinyWidgets::pickerInput(
+                                inputId = ns("threattypes"),
+                                label = "Select/deselect all options",
+                                choices = c(
+                                  "None",
+                                  "Residential & commercial development",
+                                  "Agriculture & Aquaculture",
+                                  "Energy production & Mining",
+                                  "Transportation & Traffic",
+                                  "Biological Resource Use (fishing, harvesting, logging)",
+                                  "Human Intrusions & Disturbance (recreation, war)",
+                                  "Natural system modification (Fire, Dams)",
+                                  "Invasive species, genes or diseases",
+                                  "Pollution (Waste water, pollutants)",
+                                  "Climate Change and severe weather (droughts, flooding)",
+                                  "Geological events (Earthquakes)",
+                                  "Other"
+                                ),
+                                options = list(`actions-box` = TRUE),
+                                multiple = TRUE
+                              ),
+                              shiny::br(),
+                              # Any other types?
+                              shiny::conditionalPanel(
+                                condition = "input.threattypes == 'Other'",
+                                ns = ns,
+                                shiny::textAreaInput(inputId = ns("otherthreattype"), label = "Other types",
+                                                     placeholder = 'Any other type of threat or pressure not considered? Describe',
+                                                     height = "45px", width = "100%", resize = "none")
+                                )
+                          ), # Threat type box end
+                          shiny::br(),
+                          # How were Threats considered/included?
+                          bs4Dash::box(
+                            title = "How were threats considered in the planning?",
+                            closable = FALSE,
+                            width = 12,
+                            solidHeader = TRUE,
+                            status = "secondary",
+                            collapsible = FALSE,
+                            shiny::p('There are multiple ways of including threats and pressures, for example
+                                     by considering them as risk factor in the prioritization,
+                                     as cost or penalty in selecting a solution.
+                                     Here we record these various options.'),
+                            shinyWidgets::pickerInput(
+                              inputId = ns("threatinclusion"),
+                              label = "Select/deselect all options",
+                              choices = c(
+                                "Feature (aggregated risk)",
+                                "Feature (individual)",
+                                "Cost layer",
+                                "Selection penalty",
+                                "Exclusion area",
+                                "Management zone or feature contribution",
+                                "Other"
+                              ),
+                              options = list(`actions-box` = TRUE),
+                              multiple = TRUE
+                            ),
+                            shiny::textAreaInput(inputId = ns("threatdetail"), label = "Threat details",
+                                                 placeholder = 'Elaborate on other ways of including threats in the planning',
+                                                 height = "60px", width = "100%", resize = "vertical")
+                          )
+                  ) # Threats and pressures box end
+              ) # Fluid column end
+             ), # Fluidrow end
              shiny::br(),
              # Entries #
              shiny::fluidRow(

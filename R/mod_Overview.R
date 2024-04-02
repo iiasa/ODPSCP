@@ -247,7 +247,7 @@ mod_Overview_ui <- function(id){
             collapsed = FALSE,
             collapsible = TRUE,
             # icon = icon("magnifying-glass-chart"),
-            shiny::imageOutput(ns("peng2011"),inline = TRUE,fill = TRUE),
+            shiny::imageOutput(ns("peng2011"),inline = TRUE,fill = FALSE),
             shiny::br(),
             shiny::helpText("Source: Peng, R. D. (2011). Reproducible research in computational science. Science, 334(6060), 1226-1227."),
             shiny::br(),
@@ -484,8 +484,8 @@ mod_Overview_server <- function(id, results, parentsession){
       )
       # Return a list containing the filename and alt text
       list(src = path_figure,
-           width = "80%",
-           height = "50%",
+           width = "300px",
+           height = "120px",
            alt = paste("Peng 2011, Reproducible Research in Computational Science, Science"))
 
     }, deleteFile = FALSE)

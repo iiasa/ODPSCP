@@ -59,7 +59,7 @@ mod_Home_ui <- function(id){
                label = "In order for a planning study to be eligible for the protocol they should:",
                choices = c("Make use of decision theoretic or multiple-criteria-based approaches!",
                            "Are spatial, spatial-temporal or at least use spatial input!",
-                           "Have a biodiversity and/or conservation focus or angle! *",
+                           "Have a biodiversity and/or conservation objective! *",
                            "Use an algorithic prioritization to identify best areas or actions! **"),
                icon = shiny::icon("thumbs-up"),
                status = "primary",

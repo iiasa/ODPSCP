@@ -169,7 +169,8 @@ mod_Prioritization_ui <- function(id){
                          chosen representative indicators or values.",
                          "An example would be for example summarizing the average amount of
                          a threatened species range covered, or overlap with other spatial layers."),
-                       DT::DTOutput(outputId = ns("perfidenticators")),
+                       shiny::br(),
+                       DT::DTOutput(outputId = ns("evalperformance")),
                        shiny::actionButton(inputId = ns("add_indicator"), label = "Add a new indicator",
                                            icon = shiny::icon("plus")),
                        shiny::actionButton(inputId = ns("remove_indicator"), label = "Remove last indicator",
@@ -239,7 +240,7 @@ mod_Prioritization_server <- function(id, results, parentsession){
     ids <- get_protocol_ids(group = "prioritization")
     shiny::observe({
       for(id in ids){
-        if(id == "perfidenticators"){
+        if(id == "evalperformance"){
           results[[id]] <- data.frame(indicators()) |> asplit(MARGIN = 1)
         } else {
           results[[id]] <- input[[id]]
@@ -293,15 +294,15 @@ mod_Prioritization_server <- function(id, results, parentsession){
     })
 
     #output the datatable based on the dataframe (and make it editable)
-    output$perfidenticators <- DT::renderDT({
+    output$evalperformance <- DT::renderDT({
       DT::datatable(indicators(),rownames = FALSE,
                     filter = "none", selection = "none",
                     style = "auto",
                     editable = TRUE)
     })
 
-    shiny::observeEvent(input$perfidenticators_cell_edit, {
-      info <- input$perfidenticators_cell_edit
+    shiny::observeEvent(input$evalperformance_cell_edit, {
+      info <- input$evalperformance_cell_edit
       modified_data <- indicators()
       modified_data[info$row, info$col+1] <- info$value
       indicators(modified_data)

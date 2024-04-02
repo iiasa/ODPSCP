@@ -203,6 +203,7 @@ golem_add_external_resources <- function() {
     sever::useSever(),
     waiter::use_waiter(),
     shinyFeedback::useShinyFeedback(),
+    shinyWidgets::useSweetAlert(),
     shinyjs::useShinyjs()
   )
 }

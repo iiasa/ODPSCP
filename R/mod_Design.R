@@ -189,7 +189,12 @@ mod_Design_ui <- function(id){
                       parameters or input data. Examples include planning approaches
                       that account for various climate scenarios or assumptions regarding
                       constraints. Please record whether there multiple scenarios
-                      or variants have been explored."),
+                      or variants have been explored and how"),
+                    shiny::br(),
+                    shiny::helpText("What does not qualify here: 'Scenarios' that
+                                    are essentially sensitivity checks or parameter
+                                    calibrations. Only select Yes if multiple outputs are
+                                    presented in the work."),
                     shinyWidgets::awesomeRadio(
                       inputId = ns("checkscenarios"),
                       label = "Are there multiple variants or scenarios explored in the planning?",
@@ -254,7 +259,7 @@ mod_Design_ui <- function(id){
                         shinyWidgets::pickerInput(
                           inputId = ns("stakeholderint"),
                           label = "Types of stakeholder interactions:",
-                          choices = c("Informed","Consulted","Involved",
+                          choices = c("Informed","Consulted","Dialogue","Involved",
                                       "Collaborated","Co-design"),
                           multiple = TRUE,
                           options = list(

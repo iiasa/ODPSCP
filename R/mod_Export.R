@@ -139,8 +139,15 @@ mod_Export_server <- function(id, results){
     mand <- get_protocol_mandatory()
 
     # Check for mandatory outputs and highlight them in text
-    output$missingtext <- shiny::renderText("Highlight here all entries not yet filled!")
-    # observeEvent()
+    shiny::observeEvent(input$downloadData, {
+        # # Check the value of all mandatory fields
+        # output$missingtext <- shiny::renderText({
+        #   # validate(
+        #   #   need(input$sldr > 5,"Require > 5")
+        #   # )
+        #   test
+        # })
+    })
 
     # Get output format
     oftype <- shiny::reactive({input$downloadFormat})

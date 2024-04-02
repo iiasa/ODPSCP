@@ -258,6 +258,7 @@ design:
     conditional_options:
       - Informed
       - Consulted
+      - Dialogue
       - Involved
       - Collaborated
       - Co-design
@@ -338,8 +339,8 @@ specification:
       - m2
       - km2
       - ha
-      - ft2,
-      - yd2,
+      - ft2
+      - yd2
       - mi2
       - acre
     mandatory: false
@@ -408,6 +409,54 @@ specification:
     mandatory: true
     popexample: "Existing protected areas were considered to be part of every solution (included)."
 
+  threattypes:
+    render-nr: 1
+    render-id: 'threattypes'
+    render-group: 'threatpressures'
+    question: 'What types of threats or pressures are included in the planning?'
+    description: 'Select any threats or pressures that were targeted in the planning or that, directly or indirectly, shape the planning outcome. The threat description broadly follows the IUCN Threat categorization system.'
+    fieldtype: 'multiplechoice'
+    options:
+      - None
+      - Residential & commercial development
+      - Agriculture & Aquaculture
+      - Energy production & Mining
+      - Transportation & Traffic
+      - Biological Resource Use (fishing, harvesting, logging)
+      - Human Intrusions & Disturbance (recreation, war)
+      - Natural system modification (Fire, Dams)
+      - Invasive species, genes or diseases
+      - Pollution (Waste water, pollutants)
+      - Climate Change and severe weather (droughts, flooding)
+      - Geological events (Earthquakes)
+      - Other
+    fieldtype_conditional_render-id: 'otherthreattype'
+    fieldtype_conditional: 'textbox'
+    mandatory: true
+    popexample: "Select any type of pressure or threat considered in this work."
+
+  threatinclusion:
+    render-nr: 2
+    render-id: 'threatinclusion'
+    render-group: 'threatpressures'
+    question: 'How were threats considered in the planning?'
+    description: 'There are multiple ways of including threats and pressures, for example
+    by considering them as risk factor in the prioritization, as cost or penalty in selecting
+    a solution. Here we record these various options.'
+    fieldtype: 'multiplechoice'
+    options:
+      - Feature (aggregated risk)
+      - Feature (individual)
+      - Cost layer
+      - Selection penalty
+      - Exclusion area
+      - Management zone or feature contribution
+      - Other
+    fieldtype_conditional_render-id: 'threatdetail'
+    fieldtype_conditional: 'textbox'
+    mandatory: false
+    popexample: "Anthropogenic land-use pressures were considered as a selection penalty"
+
   featuretypes:
     render-nr: 1
     render-id: 'featuretypes'
@@ -464,6 +513,8 @@ specification:
     mandatory: false
     popexample: "A description where or how the feature layers came about, if they are
     the result of some modelling process or similar."
+
+
 
 #### Context ####
 context:
@@ -545,8 +596,8 @@ context:
     fieldtype: 'selectizedropdown'
     options:
       - None
-      - Flat (e.g. 30 percent),
-      - Log-linear,
+      - Flat (e.g. 30 percent)
+      - Log-linear
       - Minimum Area of Suitable Habitat
       - Other
     fieldtype_conditional_render-id: 'targetdetail'

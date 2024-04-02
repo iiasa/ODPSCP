@@ -66,7 +66,8 @@ format_protocol <- function(results, format = "data.frame",path_protocol = NULL)
 #' List to table
 #'
 #' @description
-#' A helper function that converted
+#' A helper function that converts a list to a table. Used internally
+#' by format_protocol.
 #'
 #' @param protocol A filled out protocol in [`list`] format.
 #' @return The return value, if any, from executing the utility.
