@@ -437,7 +437,7 @@ mod_Specification_ui <- function(id){
                         shiny::br(),
                         # List the features
                         bs4Dash::box(
-                          title = "Provide a list of all features:",
+                          title = "Provide a summary of all features:",
                           closable = FALSE,
                           width = 12,
                           solidHeader = T,
@@ -569,12 +569,26 @@ mod_Specification_server <- function(id, results, parentsession){
 
     # Load an external file
     loadedfeatures <- shiny::reactive({
-      if(is.null(input$load_feature)){
-        return(NULL)
-      }
-      data <- readr::read_csv(input$load_feature$datapath)
-      # FIXME: Could do some graceful error checks here?
-      feature_table(data)
+      file <- input$load_feature$datapath
+      req(file)
+
+      data <- readr::read_csv(file,show_col_types = FALSE)
+      # Do some checks?
+      shiny::validate(
+        shiny::need(ncol(data)!=3, "Uploaded data requires exactly 3 columns")
+      )
+      names(data) <- c("name", "group", "number")
+      return(data)
+    })
+
+    # Observe event to update data table
+    shiny::observeEvent(loadedfeatures(), {
+      output$featurelist <- DT::renderDT({
+        DT::datatable(loadedfeatures(), rownames = FALSE,
+                      filter = "none", selection = "none",
+                      style = "auto",
+                      editable = TRUE)
+      })
     })
 
     # --- #
@@ -620,12 +634,27 @@ mod_Specification_server <- function(id, results, parentsession){
 
     # Load an external file
     loadedzones <- shiny::reactive({
+      file <- input$load_zones$datapath
+      req(file)
+
+      data <- readr::read_csv(file,show_col_types = FALSE)
+
       if(is.null(input$load_zones)){
         return(NULL)
       }
-      data <- readr::read_csv(input$load_zones$datapath)
-      # FIXME: Could do some graceful error checks here?
-      zones_table(data)
+      data <- readr::read_csv(file, show_col_types = FALSE)
+      names(data) <- c("name", "aim", "costs", "contributions")
+      return(data)
+    })
+    # Automatically render the loadedzones
+    # Observe event to update data table
+    shiny::observeEvent(loadedzones(), {
+      output$specificzones <- DT::renderDT({
+        DT::datatable(loadedzones(), rownames = FALSE,
+                      filter = "none", selection = "none",
+                      style = "auto",
+                      editable = TRUE)
+      })
     })
 
     # Events for hiding data input boxes

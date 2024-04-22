@@ -157,22 +157,67 @@ mod_Overview_ui <- function(id){
             solidHeader = TRUE,
             status = "secondary",
             collapsible = FALSE,
-            shiny::div("A geospatial dataset can be provided such as gridded or vector planning unit file.
-                       Accepted are shapefiles, geopackages or geotiffs."),
+            shiny::div("Here the planning unit grid can be provided as geospatial dataset. Currently
+                       supported is the upload of gridded or vector planning unit files.
+                       Accepted formats are shapefiles, geopackages or geotiffs."),
+            # shiny::div("Alternatively a boundary box (longitude-latitude) can be provided."),
             shiny::hr(),
-            # Input: Select a file ----
-            shiny::fileInput(
-              ns("studyregion"),
-              "Choose geospatial File",
-              multiple = FALSE,
-              accept = c(
-                ".shp", ".gpkg",
-                ".tif", ".geotiff"
-              )
+            # --- #
+            shinyWidgets::radioGroupButtons(
+              inputId = ns("spatial_selector"),
+              label = "",
+              choices = c(#"Bounding box",
+                          "Spatial file"),
+              individual = TRUE,
+              checkIcon = list(
+                yes = tags$i(class = "fa fa-circle",
+                             style = "color: steelblue"),
+                no = tags$i(class = "fa fa-circle-o",
+                            style = "color: steelblue"))
             ),
-            shiny::helpText("Note that the maximum file size is 30 MB."),
+            # shiny::conditionalPanel(
+            #   condition = "input.spatial_selector == 'Bounding box'",
+            #   ns = ns,
+            #   shiny::p("Enter minimum and maximum longitude (x) and latitude (y) coordinates:"),
+            #   shiny::fluidRow(
+            #     shiny::splitLayout(
+            #       shiny::column(8,
+            #                     shiny::numericInput(inputId = ns("studyregion_bbox_xmin"),value = NULL,
+            #                                         label = "xmin",min = -180,max = 180, width = "100px"),
+            #                     shiny::numericInput(inputId = ns("studyregion_bbox_ymin"),value = NULL,
+            #                                         label = "ymin",min = -90,max = 90, width = "100px")
+            #       ),
+            #       shiny::column(8,
+            #                     shiny::numericInput(inputId = ns("studyregion_bbox_xmax"),value = NULL,
+            #                                         label = "xmax",min = -180,max = 180, width = "100px"),
+            #                     shiny::numericInput(inputId = ns("studyregion_bbox_ymax"),value = NULL,
+            #                                         label = "ymax",min = -89.99999,max = 90, width = "100px")
+            #                     )
+            #     )
+            #   )
+            # ),
+            shiny::conditionalPanel(
+              condition = "input.spatial_selector == 'Spatial file'",
+              ns = ns,
+              # Input: Select a spatial filefile ----
+              shiny::fileInput(
+                ns("studyregion"),
+                "Choose geospatial File",
+                multiple = FALSE,
+                accept = c(
+                  ".shp", ".gpkg",
+                  ".tif", ".geotiff"
+                )
+              ),
+              shiny::helpText("Note that the maximum file size is 30 MB and larger files might take a while to render.")
+            ),
             shiny::br(),
-            leaflet::leafletOutput(ns("studymap"))
+            leaflet::leafletOutput(ns("studymap")),
+            shiny::actionButton(inputId = ns("updatemap"),
+                                label = "Update View", icon = shiny::icon("refresh")),
+            shiny::actionButton(inputId = ns("clearmap"),
+                                label = "Clear map", icon = shiny::icon("broom"))
+
           ),
           # Study location
           bs4Dash::box(
@@ -380,10 +425,8 @@ mod_Overview_server <- function(id, results, parentsession){
   shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    #### Dynamic rendering of UI Elements ####
     protocol <- load_protocol()$overview # Get all overview UI elements
     # output$Overview_UI = render_protocol("Overview", protocol)
-    # -------------------------------------------
 
     # Study overview page --------------------------------------------------------------
 
@@ -444,32 +487,114 @@ mod_Overview_server <- function(id, results, parentsession){
     shiny::observeEvent(input$codeavailability, {
       shinyjs::toggle("outputcode")
     })
-    # ----- #
 
-    # Reactive studyregion code
-    myregion <- shiny::eventReactive(input$studyregion, {
+    # ----- #
+    #### Studyregion updates ####
+
+    # Gather study region from bounding box
+    # xmin <- shiny::reactive(input$studyregion_bbox_xmin)
+    # ymin <- shiny::reactive(input$studyregion_bbox_ymin)
+    # xmax <- shiny::reactive(input$studyregion_bbox_xmax)
+    # ymax <- shiny::reactive(input$studyregion_bbox_ymax)
+    # if(input$spatial_selector == 'Bounding box'){
+    #   # xmin <- 40; ymin <- 20; xmax <- 70; ymax <- 30
+    #   out <- sf::st_bbox(c(xmin = rv(xmin), xmax = rv(xmax),
+    #                        ymin = rv(ymin), ymax = rv(ymax))) |>
+    #     sf::st_as_sfc() |> sf::st_as_sf(crs = sf::st_crs(4326))
+    #   assertthat::assert_that(sf::st_is_valid(out))
+    # } else {
+    # }
+
+    # Test default
+    myregion <- shiny::reactive({
+      # Get the studypath
+      file <- input$studyregion$datapath
+      req(file)
+
       if(!is.null(input$studyregion)){
         # Found vector
-        if(tolower( tools::file_ext(input$studyregion)) %in% c("shp","gpkg")){
-          out <- sf::st_read(input$studyregion, quiet = TRUE) |>
+        if(tolower( tools::file_ext(file)) %in% c("shp","gpkg")){
+          out <- sf::st_read(file, quiet = TRUE) |>
             sf::st_transform(crs = sf::st_crs(4326))
-          return(out)
-      } else if(tolower( tools::file_ext(input$studyregion)) %in% c("tif","geotiff")){
-          out <- terra::rast(input$studyregion)
+        } else if(tolower( tools::file_ext(file)) %in% c("tif","geotiff")){
+          out <- terra::rast(file)
           out[out>0] <- 1 # Replace all with 1
           out <- out |> terra::as.polygons() |> sf::st_as_sf() |>
+            sf::st_cast("MULTIPOLYGON") |>
             sf::st_transform(crs = sf::st_crs(4326))
-          return(out)
         }
+        return(out)
+      } else {
+        return(NULL)
       }
-    }, ignoreNULL = FALSE)
+    })
 
-    # Study region leaflet code
-    output$studymap <- leaflet::renderLeaflet({
-      # generate base leaflet
-      map <- leaflet::leaflet(options = leaflet::leafletOptions(zoomControl = FALSE)) |>
+    # Observe Event to automatically draw uploaded file
+    shiny::observeEvent(myregion(), {
+      if(inherits(myregion(), "sf")){
+        # Try to redraw
+        map <- leaflet::leafletProxy("studymap", session) |>
+          leaflet::clearShapes() |>
+          leaflet::addPolygons(data = myregion(),
+                               stroke = TRUE,
+                               color = "darkred")
+        # Calculate centroid and zoom in
+        cent <- cbind(
+          mean( sf::st_coordinates( myregion() )[,1] ),
+          mean( sf::st_coordinates( myregion() )[,2] )
+        )
+        map <- map |>
+          leaflet::setView(
+            lng = cent[,1],
+            lat = cent[,2],
+            zoom = 7
+          )
+        map
+      }
+    })
+
+    # Reactive studyregion redraw
+    shiny::observeEvent(input$updatemap, {
+      if(inherits(myregion(), "sf")){
+        # If my region is not null, update
+        map <- leaflet::leafletProxy("studymap", session) |>
+          leaflet::clearShapes() |>
+          leaflet::addPolygons(data = myregion(),
+                               stroke = TRUE,
+                               color = "darkred")
+
+        # Calculate centroid and zoom in
+        cent <- cbind(
+          mean( sf::st_coordinates( myregion() )[,1] ),
+          mean( sf::st_coordinates( myregion() )[,2] )
+        )
+        map <- map |>
+          leaflet::setView(
+            lng = cent[,1],
+            lat = cent[,2],
+            zoom = 7
+            )
+        map
+      }
+    })
+
+    # Clean map
+    shiny::observeEvent(input$clearmap, {
+      map <- leaflet::leaflet(options = leaflet::leafletOptions(zoomControl = TRUE)) |>
         leaflet::addTiles(leaflet::providers$OpenStreetMap) |>
         leaflet::addProviderTiles(leaflet::providers$OpenStreetMap,
+                                  options = leaflet::providerTileOptions(noWrap = TRUE),
+                                  group="Open Street Map")
+      output$studymap <- leaflet::renderLeaflet({map})
+    })
+
+    # Render default study region leaflet code
+    output$studymap <- leaflet::renderLeaflet({
+      # generate base leaflet
+      map <- leaflet::leaflet(options = leaflet::leafletOptions(zoomControl = TRUE)) |>
+        leaflet::addTiles(leaflet::providers$OpenStreetMap) |>
+        leaflet::addProviderTiles(leaflet::providers$OpenStreetMap,
+                                  options = leaflet::providerTileOptions(noWrap = TRUE),
                                   group="Open Street Map")
       map
     })
