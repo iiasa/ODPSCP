@@ -16,6 +16,7 @@ Imports:
     shinyWidgets,
     shinyjs,
     shinyFeedback,
+    shinylogs,
     sever,
     fresh,
     DT,

@@ -14,6 +14,12 @@ app_server <- function(input, output, session) {
     session$doBookmark()
   })
 
+  # Enable shinylogs
+  # shinylogs::read_rds_logs("logs")
+  shinylogs::track_usage(what = c("session", "input", "output", "error"),
+                         storage_mode = shinylogs::store_rds(path = "logs/")
+                         )
+
   # fake reload at start
   shiny::observeEvent(input$reload, {
     session$reload()
