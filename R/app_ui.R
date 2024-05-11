@@ -16,7 +16,7 @@ app_ui <- function(request) {
           waiter::spin_balance(), "Loading ..."), color = "#3c8dbc"),
       # freshTheme =  odpscp_theme(), # Theme designed with fresh
       # Other options
-      dark = FALSE,
+      dark = NULL,
       scrollToTop = TRUE,
       fullscreen = FALSE,
       help = TRUE, # Default enable tooltips

@@ -514,8 +514,6 @@ specification:
     popexample: "A description where or how the feature layers came about, if they are
     the result of some modelling process or similar."
 
-
-
 #### Context ####
 context:
   decisionvariable:
@@ -655,10 +653,10 @@ prioritization:
 
   benefits:
     render-nr: 3
-    render-id: 'benefitfunctions'
+    render-id: 'outcomefunctions'
     render-group: 'study_software'
-    question: 'What is being optimized and how?'
-    description: 'Was a specific benefit function being used the optimization, or are there any specifics on how benefits were identified?'
+    question: 'What is being identified and how?'
+    description: 'Was a specific benefit or objectiv function being used in the prioritization, or are there any specifics on how outcomes were identified?'
     fieldtype: 'textbox'
     mandatory: false
     popexample: "Minimize the marginal losses from cell removal, an average shortfall or maximize the number of targets (a constraint) achieved."
@@ -690,7 +688,7 @@ prioritization:
     fieldtype_conditional_render-id: 'otheridentification'
     fieldtype_conditional: 'textbox'
     mandatory: true
-    popexample: "The final priorities are identified by overlaying the optimization results with priority areas identified by stakeholders."
+    popexample: "The final priorities are identified by overlaying individual optimization results with priority areas identified by stakeholders."
 
   performance:
     render-nr: 1

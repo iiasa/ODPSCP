@@ -140,13 +140,13 @@ mod_Export_server <- function(id, results){
 
     # Check for mandatory outputs and highlight them in text
     shiny::observeEvent(input$downloadData, {
-        # # Check the value of all mandatory fields
-        # output$missingtext <- shiny::renderText({
-        #   # validate(
-        #   #   need(input$sldr > 5,"Require > 5")
-        #   # )
-        #   test
-        # })
+      # # Check the value of all mandatory fields
+      # output$missingtext <- shiny::renderText({
+      #   # validate(
+      #   #   need(input$sldr > 5,"Require > 5")
+      #   # )
+      #   test
+      # })
     })
 
     # Get output format
@@ -179,19 +179,15 @@ mod_Export_server <- function(id, results){
           yaml::write_yaml(protocol, file = file)
           # yaml::read_yaml("../../../Downloads/test.yaml")
         } else if(oftype() == "docx"){
-          # Create document from results
-          message("Not yet implemented...")
+          # Create document from results, everything handled by function
+          protocol_to_document(results,file = file,format = "docx")
+          # saveRDS(protocol, "test.rds")
         } else if(oftype() == "pdf"){
           # Create document from results
-          message("Not yet implemented...")
+          protocol_to_document(results,file = file,format = "pdf")
         }
       }
     )
-
-    # Render the whole protocol
-    # output$protocolmarkdown <- renderUI(
-    #   {includeMarkdown(knitr::knit("protocol_preview.Rmd", quiet = T))}
-    #   )
 
   })
 }

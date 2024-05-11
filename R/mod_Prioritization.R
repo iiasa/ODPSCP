@@ -48,7 +48,9 @@ mod_Prioritization_ui <- function(id){
                            allow users to integrate various features, constraints
                            and targets in a single prioritization. Some make use of mathematical
                            optimization, others of heuristics or multi-criteria ranking approaches.
-                           Some of the most commonly used SCP software solutions are listed below."),
+                           Some of the most commonly used SCP software solutions are listed below.
+                           If the software for this study is not found in the list below,
+                                  please select 'Other'."),
                          shinyWidgets::pickerInput(
                            inputId = ns("software"),
                            label = "Used software",
@@ -87,20 +89,23 @@ mod_Prioritization_ui <- function(id){
                      # Objective functions
                      shiny::br(),
                      bs4Dash::box(
-                       title = "Benefit functions",
+                       title = "Outcome identification",
                        closable = FALSE,
                        width = 12,
                        solidHeader = TRUE,
                        status = "secondary",
                        collapsible = FALSE,
-                       shiny::p("In many optimizations benefits can accrue in varying ways, for example
-                                through maximizing the targets achieved. If known or specific to the study,
-                                provide information on benefit function used.",
-                                "Benefit functions in prioritizations are for example those minimize marginal
-                                losses from cell removal, minimize an average shortfall or maximize the number
-                                of targets (a constraint) achieved."),
-                       shiny::p("Reference: Arponen, A., Heikkinen, R. K., Thomas, C. D., & Moilanen, A. (2005). The value of biodiversity in reserve selection: representation, species weighting, and benefit functions. Conservation Biology, 19(6), 2009-2014."),
-                       shiny::textAreaInput(inputId = ns("benefitfunctions"), label = "What is being optimized and how?",
+                       shiny::p("In most prioritization exercises the way outcomes are identified is
+                       usually determined by the used algorithm approach (e.g. heuristic, optimization) and
+                       the question that is being asked for the decision variable."),
+                       shiny::p("In this field we record - if known - how the software makes decisions,
+                                e.g. what is being optimized or ranked and how. A typical example is the use
+                                of minimum set problems (in Marxan and others) to identify those areas where
+                                all feature targets are reached while minimizing a cost (area, opportunity cost, ...)"),
+                       shiny::strong("References:"),
+                       shiny::br("Arponen, A., Heikkinen, R. K., Thomas, C. D., & Moilanen, A. (2005). The value of biodiversity in reserve selection: representation, species weighting, and benefit functions. Conservation Biology, 19(6), 2009-2014."),
+                       shiny::br("Schuster, R., Hanson, J. O., Strimas-Mackey, M., & Bennett, J. R. (2020). Exact integer linear programming solvers outperform simulated annealing for solving conservation planning problems. PeerJ, 8, e9258."),
+                       shiny::textAreaInput(inputId = ns("outcomefunctions"), label = "How are prioritization outcomes identified?",
                                             placeholder = 'If known, please provide further detail.',
                                             height = "60px", width = "100%", resize = "vertical")
                      ),

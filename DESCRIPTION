@@ -29,6 +29,7 @@ Imports:
 Suggests:
     markdown,
     rmarkdown,
+    officer,
     spelling,
     testthat (>= 3.0.0)
 Encoding: UTF-8

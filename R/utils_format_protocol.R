@@ -4,12 +4,11 @@
 #' A utility function to format a filled out protocal into a different format.
 #' Supported options are:
 #' * data.frame
-#' * html
 #'
 #' @param results A filled out protocol in [`list`] or reactive format.
 #' @param format The output format that the results should have. Available options
 #' include \code{"data.frame"} or \code{"list"}.
-#' @param path_protocol The filepath to the actual protocol template
+#' @param path_protocol The filepath to the actual protocol template.
 #' @return The return value, if any, from executing the utility.
 #'
 #' @noRd
@@ -69,7 +68,7 @@ format_protocol <- function(results, format = "data.frame",path_protocol = NULL)
 #' A helper function that converts a list to a table. Used internally
 #' by format_protocol.
 #'
-#' @param protocol A filled out protocol in [`list`] format.
+#' @param path_protocol A filled out protocol in [`list`] format.
 #' @return The return value, if any, from executing the utility.
 #'
 #' @noRd
@@ -106,4 +105,124 @@ protocol_to_table <- function(path_protocol = NULL){
     }
   }
   return(results)
+}
+
+#' Format a results list to document
+#'
+#' @description
+#' This helper function create a markdown document that is then rendered in
+#' different outputs using the \code{"pandoc"} R-package.
+#'
+#' Most documentation and helper texts are taken from the protocol text with
+#' only the results being entered in this sheet.
+#'
+#' @param results A filled out protocol in [`list`] format.
+#' @param file A [`character`] with the output file name.
+#' @param format A [`character`] indicating the output format. Either \code{"html"},
+#' \code{"docx"} or \code{"pdf"}.
+#' @return NULL
+#'
+#' @noRd
+protocol_to_document <- function(results, file, format = "docx", path_protocol = NULL){
+  assertthat::assert_that(is.character(path_protocol) || is.null(path_protocol))
+  # Check for other inputs
+  assertthat::assert_that(is.list(results),
+                          is.character(file))
+  # Match the format
+  format <- match.arg(format, c("html", "docx", "pdf"), several.ok = FALSE)
+  if(tools::file_ext(file) != "docx") file <- paste0(tools::file_path_sans_ext(file), ".", "docx")
+
+  # If is null, load protocol
+  template <- load_protocol(path_protocol)
+
+  # Formatted document header
+  fpar <- officer::fpar(
+    officer::ftext(text = paste0(template$protocol$name, " Protocol Version: ", template$protocol$version),
+                   prop = officer::fp_text(font.size = 24,bold = TRUE))
+  )
+
+  # Create basic file
+  doc <- officer::read_docx() |>
+    officer::body_add_fpar(value = fpar) |>
+    officer::body_add_fpar(value = officer::fpar( officer::ftext(text = paste0("Created through ", template$protocol$repository),
+                                                                   prop = officer::fp_text(font.size = 14,bold = FALSE)) )) |>
+    officer::body_add_fpar(value = officer::fpar( officer::ftext(text = paste0("Generated on ", Sys.Date() ),
+                                                  prop = officer::fp_text(font.size = 14,bold = FALSE)))) |>
+    officer::body_add_par("Protocol content", style = "heading 1") |>
+    officer::body_add_toc(level = 2) |>
+    officer::body_add_break()
+
+  # Now per group and element add to output
+  for(g in names(results)){ # g = names(results)[1]
+
+    # Add a new header for group
+    doc <- doc |> officer::body_add_par(value = tools::toTitleCase(g), style = "heading 1")
+
+    for(el in names(results[[g]])){ # el = names(results[[g]])[1]
+
+      # Get the name and description of the target element
+      w <- get_protocol_elementgroup(el)
+      if(is.null(w)) next() # Skip?
+      sub <- template[[w[['group']]]][[w[['element']]]]
+
+      # --- #
+      ## Now add to output specifically
+      # The question
+      fpar <- officer::fpar(
+        officer::ftext(text = paste0(sub$question),
+                       prop = officer::fp_text(font.size = 14, bold = TRUE))
+      )
+      doc <- doc |> officer::body_add_fpar(value = fpar)
+      # A description there in
+      fpar <- officer::fpar(
+        officer::ftext(text = paste0(sub$description),
+                       prop = officer::fp_text(font.size = 10,italic = TRUE))
+      )
+      doc <- doc |> officer::body_add_fpar(value = fpar)
+
+      # Small linebreak
+      doc <- doc |> officer::body_add_par(value = "", style = "Normal")
+
+      # --- #
+      # Parse the result
+      res <- results[[g]][[el]]
+      if(is.list(res)) {
+        if(length(res)>0){
+          # Tables
+          ft <- flextable::flextable(res) |>
+                flextable::set_table_properties(layout = "autofit")
+          doc <- doc |> officer::body_add_flextable(value = ft)
+        } else {
+          res <- "Not specified"
+        }
+      }
+      # If multiple entries, paste together via -
+      if(length(res)>1) res <- paste(res, collapse = " - ")
+
+      if(is.logical(res)) res <- ifelse(res, "Yes", "No")
+      if(is.na(res)) res <- "Not specified"
+
+      fpar <- officer::fpar(
+        officer::ftext(text = res,
+                       prop = officer::fp_text(font.size = 12,italic = FALSE))
+      )
+      doc <- doc |> officer::body_add_fpar(value = fpar)
+
+      # Small linebreak
+      doc <- doc |> officer::body_add_par(value = "", style = "Normal")
+
+    }
+  }
+
+  # Generate output to file
+  doc |> print(target = file)
+
+  # Transform the output to different type depending on setting
+  if(format != "docx"){
+    rmarkdown::pandoc_convert(
+      input = file,
+      to = format,
+      output = paste0(tools::file_path_sans_ext(file), ".", format)
+    )
+  }
 }
