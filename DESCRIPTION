@@ -25,7 +25,8 @@ Imports:
     leaflet,
     sf,
     terra,
-    readr
+    readr,
+    pkgload
 Suggests:
     markdown,
     rmarkdown,
