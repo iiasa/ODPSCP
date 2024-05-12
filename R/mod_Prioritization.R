@@ -89,7 +89,7 @@ mod_Prioritization_ui <- function(id){
                      # Objective functions
                      shiny::br(),
                      bs4Dash::box(
-                       title = "Outcome identification",
+                       title = "(Optional) Outcome identification",
                        closable = FALSE,
                        width = 12,
                        solidHeader = TRUE,
@@ -111,7 +111,7 @@ mod_Prioritization_ui <- function(id){
                      ),
                      shiny::br(),
                      bs4Dash::box(
-                       title = "Key parameters",
+                       title = "(Optional) Key parameters",
                        closable = FALSE,
                        width = 12,
                        solidHeader = TRUE,

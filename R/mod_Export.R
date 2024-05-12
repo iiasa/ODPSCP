@@ -91,7 +91,7 @@ mod_Export_ui <- function(id){
             ),
             shiny::br(),
             shiny::hr(),
-            shiny::div(id = ns("missing"), class = 'missing',
+            shiny::div(id = ns("missing"),style = "color: red",
                        shiny::textOutput(outputId = ns("missingtext"))),
             shiny::br(),
             # Button
@@ -127,7 +127,7 @@ mod_Export_server <- function(id, results){
 
     # Format the results table to a data.frame
     output$results_table <- DT::renderDT({
-      DT::datatable(format_protocol(results, format = "data.frame") |>
+      DT::datatable(format_protocol(results, format = "data.frame", studyregiondummy=TRUE) |>
                       dplyr::select(-element),
                     rownames = FALSE,
                     filter = "top", selection = "none",
@@ -138,16 +138,21 @@ mod_Export_server <- function(id, results){
     # Get mandatory protocol entries
     mand <- get_protocol_mandatory()
 
-    # Check for mandatory outputs and highlight them in text
-    shiny::observeEvent(input$downloadData, {
-      # # Check the value of all mandatory fields
-      # output$missingtext <- shiny::renderText({
-      #   # validate(
-      #   #   need(input$sldr > 5,"Require > 5")
-      #   # )
-      #   test
-      # })
-    })
+    # # Check for mandatory outputs and highlight them in text
+    # test <- shiny::reactive({
+    #   req(results)
+    #   results
+    # })
+    #
+    # # Check the value of all mandatory fields
+    # shiny::observeEvent(test(), {
+    #   # miss <- check_protocol_mandatory(file, mand)
+    #   # output$missingtext <- shiny::renderText({
+    #   #   paste0("No entry found for mandatory fields:", miss)
+    #   # })
+    #   print("test")
+    #   shinyjs::toggle("downloadData")
+    # })
 
     # Get output format
     oftype <- shiny::reactive({input$downloadFormat})
@@ -180,11 +185,13 @@ mod_Export_server <- function(id, results){
           # yaml::read_yaml("../../../Downloads/test.yaml")
         } else if(oftype() == "docx"){
           # Create document from results, everything handled by function
-          protocol_to_document(results,file = file,format = "docx")
+          protocol <- format_protocol(results, format = "list")
+          protocol_to_document(protocol, file = file, format = "docx")
           # saveRDS(protocol, "test.rds")
         } else if(oftype() == "pdf"){
           # Create document from results
-          protocol_to_document(results,file = file,format = "pdf")
+          protocol <- format_protocol(results, format = "list")
+          protocol_to_document(protocol, file = file,format = "pdf")
         }
       }
     )

@@ -145,7 +145,7 @@ mod_Context_ui <- function(id){
                       shiny::br(),
                       # Any other constraints
                       bs4Dash::box(
-                        title = "Other constraints",
+                        title = "(Optional) Other constraints",
                         closable = FALSE,
                         width = 12,
                         solidHeader = TRUE,

@@ -570,7 +570,7 @@ mod_Specification_server <- function(id, results, parentsession){
     # Load an external file
     loadedfeatures <- shiny::reactive({
       file <- input$load_feature$datapath
-      req(file)
+      shiny::req(file)
 
       data <- readr::read_csv(file,show_col_types = FALSE)
       # Do some checks?
@@ -635,7 +635,7 @@ mod_Specification_server <- function(id, results, parentsession){
     # Load an external file
     loadedzones <- shiny::reactive({
       file <- input$load_zones$datapath
-      req(file)
+      shiny::req(file)
 
       data <- readr::read_csv(file,show_col_types = FALSE)
 

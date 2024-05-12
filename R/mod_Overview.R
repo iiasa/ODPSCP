@@ -86,7 +86,7 @@ mod_Overview_ui <- function(id){
           ),
           # Corresponding author
           bs4Dash::box(
-            title = "Corresponding Author ID",
+            title = "(Optional) Corresponding Author ID",
             closable = FALSE,
             width = 12,
             solidHeader = TRUE,
@@ -99,7 +99,7 @@ mod_Overview_ui <- function(id){
           ),
           # Link to study
           bs4Dash::box(
-            title = "Link to study",
+            title = "(Optional) Link to study",
             closable = FALSE,
             width = 12,
             solidHeader = TRUE,
@@ -151,7 +151,7 @@ mod_Overview_ui <- function(id){
           ),
           # Study region
           bs4Dash::box(
-            title = "Study region",
+            title = "(Optional) Study region",
             closable = FALSE,
             width = 12,
             solidHeader = TRUE,
@@ -250,7 +250,7 @@ mod_Overview_ui <- function(id){
               label = "Choose a range:",
               choices = 1960:2100,
               grid = TRUE,
-              selected = seq(1990,2020,1)
+              selected = c(2000,2020)
             ),
             shiny::br(),
             shiny::textAreaInput(inputId = ns("otherstudytime"), label = "(Optional) Custom coverage",
@@ -509,7 +509,7 @@ mod_Overview_server <- function(id, results, parentsession){
     myregion <- shiny::reactive({
       # Get the studypath
       file <- input$studyregion$datapath
-      req(file)
+      shiny::req(file)
 
       if(!is.null(input$studyregion)){
         # Found vector

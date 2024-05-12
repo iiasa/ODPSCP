@@ -8,13 +8,16 @@
 #' @param results A filled out protocol in [`list`] or reactive format.
 #' @param format The output format that the results should have. Available options
 #' include \code{"data.frame"} or \code{"list"}.
+#' @param studyregiondummy A [`logical`] flag of whether the studyregion should be replaced with a dummy?
 #' @param path_protocol The filepath to the actual protocol template.
 #' @return The return value, if any, from executing the utility.
 #'
 #' @noRd
-format_protocol <- function(results, format = "data.frame",path_protocol = NULL){
+format_protocol <- function(results, format = "data.frame",
+                            studyregiondummy = FALSE, path_protocol = NULL){
   assertthat::assert_that(is.list(results),
                           is.character(format),
+                          is.logical(studyregiondummy),
                           is.character(path_protocol) || is.null(path_protocol))
   # Match output format
   format <- match.arg(format, c("data.frame", "list"), several.ok = FALSE)
@@ -33,7 +36,15 @@ format_protocol <- function(results, format = "data.frame",path_protocol = NULL)
       if(any(exportVals[i] %in% protocol$render_id)) {
         val <- results[[exportVals[i]]]
         if(length(val)>0){
-          if(is.data.frame(val)){
+          # For studyregion:
+          if(utils::hasName(val, "datapath")){
+            if(studyregiondummy){
+              val <- "Study region provided!"
+            } else {
+              # Format EPSG and WKT to text
+              val <- format_studyregion_to_text(val)
+            }
+          } else if(is.data.frame(val)){
             val <- paste(val$forename, paste0(val$surename, " (",val$orcid,") "), sep = ",", collapse = "; ")
           }
           # Time slide correction
@@ -56,12 +67,39 @@ format_protocol <- function(results, format = "data.frame",path_protocol = NULL)
       # Get group
       gr <- get_protocol_elementgroup(exportVals[i])
       if(is.null(gr)) next()
-      protocol[[gr$group]][[exportVals[i]]] <- results[[exportVals[i]]]
+      # Get result
+      val <- results[[exportVals[i]]]
+      if(utils::hasName(val, "datapath")){
+        val <- format_studyregion_to_text(val)
+      }
+      protocol[[gr$group]][[exportVals[i]]] <- val
     }
   }
   return(protocol)
 }
 
+#' Small helper for spatial conversion to wkt
+#' @param val A [`list`] with the datapath for the spatial file
+#' @noRd
+format_studyregion_to_text <- function(val){
+  assertthat::assert_that(utils::hasName(val, "datapath"))
+  # Assume as sf and load as such
+  val <- try({
+    sf::st_as_sfc(
+      sf::st_read(val$datapath,quiet = TRUE)
+    )
+  },silent = TRUE)
+  if(inherits(val,"try-error")){
+    val <- "Studyregion could not be loaded?"
+  } else {
+    val <- paste0(
+      # Also append SRID in front
+      sf::st_crs(val) |> sf::st_as_text(),";",
+      sf::st_as_text(val)
+    )
+  }
+  return(val)
+}
 #' List to table
 #'
 #' @description
@@ -186,27 +224,41 @@ protocol_to_document <- function(results, file, format = "docx", path_protocol =
       # --- #
       # Parse the result
       res <- results[[g]][[el]]
-      if(is.list(res)) {
-        if(length(res)>0){
-          # Tables
-          ft <- flextable::flextable(res) |>
-                flextable::set_table_properties(layout = "autofit")
-          doc <- doc |> officer::body_add_flextable(value = ft)
-        } else {
-          res <- "Not specified"
+      # Specific function for studyregion rendering
+      if(el == "studyregion"){
+        # Render studyregion
+        sp <- strsplit(res,";") # Split SRID off
+        sp <- sp[[1]][2] |> sf::st_as_sfc() |> sf::st_sf(crs = sp[[1]][1])
+        g <- ggplot2::ggplot() +
+          ggplot2::geom_sf(data = sp) +
+          ggplot2::labs(title = "Outline of studyregion")
+        # Add to document
+        doc <- doc |> officer::body_add_gg(value = g)
+        try({ rm(g, sp) },silent = TRUE)
+      } else {
+        # All other entries
+        if(is.list(res)) {
+          if(length(res)>0){
+            # Tables
+            ft <- flextable::flextable(res) |>
+              flextable::set_table_properties(layout = "autofit")
+            doc <- doc |> flextable::body_add_flextable(value = ft)
+          } else {
+            res <- "Not specified"
+          }
         }
+        # If multiple entries, paste together via -
+        if(length(res)>1) res <- paste(res, collapse = " - ")
+
+        if(is.logical(res)) res <- ifelse(res, "Yes", "No")
+        if(is.na(res)) res <- "Not specified"
+
+        fpar <- officer::fpar(
+          officer::ftext(text = res,
+                         prop = officer::fp_text(font.size = 12,italic = FALSE))
+        )
+        doc <- doc |> officer::body_add_fpar(value = fpar)
       }
-      # If multiple entries, paste together via -
-      if(length(res)>1) res <- paste(res, collapse = " - ")
-
-      if(is.logical(res)) res <- ifelse(res, "Yes", "No")
-      if(is.na(res)) res <- "Not specified"
-
-      fpar <- officer::fpar(
-        officer::ftext(text = res,
-                       prop = officer::fp_text(font.size = 12,italic = FALSE))
-      )
-      doc <- doc |> officer::body_add_fpar(value = fpar)
 
       # Small linebreak
       doc <- doc |> officer::body_add_par(value = "", style = "Normal")

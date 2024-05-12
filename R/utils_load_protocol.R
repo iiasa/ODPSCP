@@ -103,7 +103,7 @@ get_protocol_elementgroup <- function(id, path_protocol = NULL){
 #' @description
 #' Small convenience function that checks for mandatory fields
 #'
-#' @param protocol A filled out protocol in [`list`] format.
+#' @param path_protocol A [`character`] pointing to the destination of the protocol.
 #' @returns A [`vector`] of character entries that are mandatory in the protocol.
 #' @noRd
 get_protocol_mandatory <- function(path_protocol = NULL){
@@ -121,4 +121,40 @@ get_protocol_mandatory <- function(path_protocol = NULL){
     }
   }
   return(results)
+}
+
+#' Check mandatory fields in results
+#'
+#' @description
+#' This small helper check whether mandatory entries in the results have been filled.
+#' @param results A [`list`] with the protocol results.
+#' @param mand A [`vector`] with [`character`] entries of the mandatory fields.
+#' @param path_protocol A [`character`] pointing to the destination of the protocol.
+#' @returns A [`vector`] of mandatory character entries that missing.
+#' @noRd
+check_protocol_mandatory <- function(results, mand, path_protocol = NULL){
+  # Checks protocol
+  assertthat::assert_that(is.character(path_protocol) || is.null(path_protocol))
+  assertthat::assert_that(is.character(mand) || missing(mand))
+  assertthat::assert_that(is.list(results))
+
+  # If is null, load protocol
+  template <- load_protocol(path_protocol)
+
+  # If missing, load again
+  if(missing(mand)) mand <- get_protocol_mandatory(path_protocol)
+
+  out <- vector()
+  for(gr in names(template)[-1]){
+    pp <- template[[gr]]
+    for(element in names(pp)){
+      ppp <- pp[[element]]
+      # Now check if present in results
+      op <- results[[gr]][[element]]$value
+      if(is.null(op) || op==""){
+        if(ppp[['render-id']] %in% mand) out <- append(out, ppp[['render-id']])
+      }
+    }
+  }
+  return(out)
 }

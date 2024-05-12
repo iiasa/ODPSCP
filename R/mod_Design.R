@@ -64,7 +64,7 @@ mod_Design_ui <- function(id){
                    ),
                    shiny::br(),
                    bs4Dash::box(
-                     title = 'Analytical Framework',
+                     title = '(Optional) Analytical Framework',
                      closable = FALSE,
                      width = 12,
                      solidHeader = TRUE,

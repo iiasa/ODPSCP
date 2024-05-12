@@ -30,6 +30,8 @@ Suggests:
     markdown,
     rmarkdown,
     officer,
+    ggplot2,
+    flextable,
     spelling,
     testthat (>= 3.0.0)
 Encoding: UTF-8

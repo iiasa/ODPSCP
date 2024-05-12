@@ -35,7 +35,7 @@ overview:
     question: 'Email of corresponding author.'
     description: 'The email address of the corresponding author.'
     fieldtype: 'textbox'
-    mandatory: false
+    mandatory: true
     popexample: "darwin@thebeagle.ac.uk"
 
   orcid:
@@ -106,7 +106,7 @@ overview:
     fieldtype: 'slider'
     fieldtype_conditional_render-id: 'otherstudytime'
     fieldtype_conditional: 'textbox'
-    mandatory: false
+    mandatory: true
     popexample: "The study uses data from the period 2015-2020 in order to make
     recommendations for potential protected area network in 2030. The time period is thus 2015-2030."
 
@@ -510,7 +510,7 @@ specification:
     question: 'How were features created?'
     description: 'Describe the origin of the features.'
     fieldtype: 'textbox'
-    mandatory: false
+    mandatory: true
     popexample: "A description where or how the feature layers came about, if they are
     the result of some modelling process or similar."
 
