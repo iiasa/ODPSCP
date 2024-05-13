@@ -229,12 +229,12 @@ protocol_to_document <- function(results, file, format = "docx", path_protocol =
         # Render studyregion
         sp <- strsplit(res,";") # Split SRID off
         sp <- sp[[1]][2] |> sf::st_as_sfc() |> sf::st_sf(crs = sp[[1]][1])
-        g <- ggplot2::ggplot() +
+        gg <- ggplot2::ggplot() +
           ggplot2::geom_sf(data = sp) +
           ggplot2::labs(title = "Outline of studyregion")
         # Add to document
-        doc <- doc |> officer::body_add_gg(value = g)
-        try({ rm(g, sp) },silent = TRUE)
+        doc <- doc |> officer::body_add_gg(value = gg)
+        try({ rm(gg, sp) },silent = TRUE)
       } else {
         # All other entries
         if(is.list(res)) {
