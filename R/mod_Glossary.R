@@ -45,6 +45,8 @@ mod_Glossary_server <- function(id){
                          mustWork = TRUE)
     output$glossary_table <- DT::renderDataTable(
       utils::read.csv(ppath, sep = ",",header = TRUE) |>
+        # Sort alphabetically
+        dplyr::arrange(Term) |>
         DT::datatable(filter = "none", rownames = FALSE,
                       editable = FALSE)
     )

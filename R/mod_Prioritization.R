@@ -172,7 +172,7 @@ mod_Prioritization_ui <- function(id){
                        shiny::p("A performance evaluation determines the value or overall
                          benefits of a given prioritization output in terms of
                          chosen representative indicators or values.",
-                         "An example would be for example summarizing the average amount of
+                         "An example would be summarizing the average amount of
                          a threatened species range covered, or overlap with other spatial layers."),
                        shiny::br(),
                        DT::DTOutput(outputId = ns("evalperformance")),

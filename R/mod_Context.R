@@ -129,13 +129,15 @@ mod_Context_ui <- function(id){
                           ),
                           shiny::br(),
                           bs4Dash::box(
-                            title = "Other connectivity details",
+                            title = "(Optional) Other connectivity details",
                             closable = FALSE,
                             width = 12,
                             solidHeader = TRUE,
                             status = "secondary",
                             collapsible = FALSE,
-                            shiny::p("Any other methodological detail on how connectivity was considered in the planning."),
+                            shiny::p("Any other methodological detail - if any -  on how connectivity was considered in the planning.
+                                     For example, connectivity between PU could have been assessed using https://marxanconnect.ca/
+                                     or through other custom entries."),
                             shiny::textAreaInput(inputId = ns("otherconnectivity"), label = "Connectivity method",
                                           placeholder = 'Describe the methodology',
                                           height = "60px", width = "100%", resize = "none")

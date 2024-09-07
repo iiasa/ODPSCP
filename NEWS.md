@@ -1,3 +1,8 @@
+## Version 0.4
+
+* Updated with further description and suggested edits by experts.
+* Updated and shortened preface description page.
+
 ## Version 0.3
 
 * Incorporated Expert-Feedback and updated the protocol with additional fields and explanations.

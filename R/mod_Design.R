@@ -75,7 +75,7 @@ mod_Design_ui <- function(id){
                      shiny::p("Does the study follow an analytical framework, either explicitly
                        defined within the study or through a reference to previous
                        work? This could for example also be a specific planning protocol or established
-                       approaches such as structure decision making or adapative management."),
+                       approaches such as structure decision making or adaptive management."),
                      shiny::p("Example framework references:"),
                      shiny::p("Pressey, R. L., & Bottrill, M. C. (2009). Approaches to landscape-and seascape-scale conservation planning: convergence, contrasts and challenges. Oryx, 43(4), 464-475."),
                      shiny::p("Alvarez-Romero, J. G., Adams, V. M., Pressey, R. L., Douglas, M., Dale, A. P., Auge, A. A., ... & Perdrisat, I. (2015). Integrated cross-realm planning: A decision-makers' perspective. Biological Conservation, 191, 799-808."),
@@ -108,8 +108,15 @@ mod_Design_ui <- function(id){
                               focus does not necessarily mean that the work will be implemented and the pathway to
                               impact is clear. A theory of change is a apriori process that maps the relationship between
                               a long-term goal of a planning objective and the necessary steps required to implement it.'),
-                     shiny::textAreaInput(inputId = ns("theoryofchange"), label = "",
-                                   placeholder = 'Describe the theory of change if there is any.',
+                     shinyWidgets::materialSwitch(
+                       inputId = ns("theoryofchange"),
+                       label = "Did the study use a theory of change concept?",
+                       right = TRUE,
+                       value = FALSE, # Default values
+                       status = "default"
+                     ),
+                     shiny::textAreaInput(inputId = ns("theoryofchange_text"), label = "",
+                                   placeholder = 'Describe the theory of change used.',
                                    height = "45px", width = "100%", resize = "vertical")
                    )
                 ), # End study aims box
@@ -286,6 +293,7 @@ mod_Design_ui <- function(id){
                                                           "Scientists",
                                                           "NGO (International)",
                                                           "NGO (National)",
+                                                          "Resource users",
                                                           "General Public",
                                                           "Property owners"),
                                               multiple = TRUE,
@@ -359,6 +367,12 @@ mod_Design_server <- function(id, results, parentsession){
       for(id in ids){
         results[[id]] <- input[[id]]
       }
+    })
+
+    # ----- #
+    # Events for hiding data input boxes
+    shiny::observeEvent(input$theoryofchange, {
+      shinyjs::toggle("theoryofchange_text")
     })
 
     # --- #

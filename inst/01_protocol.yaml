@@ -1,10 +1,10 @@
 # Basic information
 protocol:
   name: ODPSCP
-  version: '0.3'
+  version: '0.4'
   repository: 'https://github.com/iiasa/ODPSCP'
   website: 'https://odpscp.iiasa.ac.at/'
-  last_updated: 2024-03-22
+  last_updated: 2024-09-01
 
 #### Overview ####
 overview:
@@ -56,7 +56,7 @@ overview:
     description: 'Enter a Digital Object Identifier or any other permanent link.'
     fieldtype: 'textbox'
     mandatory: false
-    popexample: "http:\\dx.doi.org + code"
+    popexample: "For example https://doi.org/XXXX/YYYY ."
 
   extent:
     render-nr: 1
@@ -122,7 +122,7 @@ overview:
       - Terrestrial (below ground)
       - Air
       - Freshwater
-      - Marine (Open Ocean)
+      - Marine (Pelagic)
       - Marine (Seabed)
       - Coastal
     mandatory: true
@@ -134,7 +134,7 @@ overview:
     render-group: 'data_availability'
     question: 'Are the used input data made available and if so where?'
     description: 'If applicable please enter a link to the data storage repository.'
-    fieldtype: 'checkbox'
+    fieldtype: 'toggle'
     fieldtype_conditional_render-id: 'inputdata'
     fieldtype_conditional: 'textbox'
     mandatory: true
@@ -146,7 +146,7 @@ overview:
     render-group: 'data_availability'
     question: 'Are the created outputs made openly available and if so where?'
     description: 'If set to true, please enter a link to the data storage repository.'
-    fieldtype: 'checkbox'
+    fieldtype: 'toggle'
     fieldtype_conditional_render-id: 'outputdata'
     fieldtype_conditional: 'textbox'
     mandatory: true
@@ -158,7 +158,7 @@ overview:
     render-group: 'data_availability'
     question: 'Have analytical scripts or steps to reproduce the results been made available?'
     description: 'If set to true, please enter a link to the code repository'
-    fieldtype: 'checkbox'
+    fieldtype: 'toggle'
     fieldtype_conditional_render-id: 'outputcode'
     fieldtype_conditional: 'textbox'
     mandatory: true
@@ -198,7 +198,9 @@ design:
     render-group: 'study_design'
     question: 'Is there a theory of change underlying this work?'
     description: 'Most SCP applications are applied rather than curiosity driven. The primary question here is whether the pathway to impact and influencing outcomes is clear.'
-    fieldtype: 'textbox'
+    fieldtype: 'toggle'
+    fieldtype_conditional_render-id: 'theoryofchange_text'
+    fieldtype_conditional: 'textbox'
     mandatory: false
     popexample: "Highlight an initial policy or stakeholder demand, continuous engagement and clear
     process towards implementation."
@@ -279,6 +281,7 @@ design:
       - Scientists
       - NGO (International)
       - NGO (National)
+      - Resource users
       - General Public
       - Property owners
     mandatory: false
@@ -307,9 +310,8 @@ specification:
       - Gridded
       - Point
       - Line
-      - Regular Polygon (e.g. rectangle)
-      - Irregular Polygon (e.g. hyrological basin)
-      - Hexagon
+      - Regular Polygon (e.g. hexagon)
+      - Irregular Polygon (e.g. hydrological basin)
       - Other
     fieldtype_conditional_render-id: 'othertypes'
     fieldtype_conditional: 'textbox'
@@ -468,8 +470,10 @@ specification:
       - Species (distributions)
       - Species (abundance)
       - Species (traits)
+      - Species (genetic)
       - Ecosystems or Habitats
-      - Land-cover and Land-use
+      - Connectivity
+      - Land or water cover and use
       - Socio-economic (e.g. income from coastal fishing)
       - Political (e.g. protected area)
       - Biophysical (e.g. climate velocity)

@@ -269,16 +269,17 @@ mod_Overview_ui <- function(id){
               inputId = ns("studyrealm"),
               label = "In what realm(s) was the study conducted?",
               choices = c("Terrestrial (above ground)","Terrestrial (below ground)",
-                          "Freshwater", "Marine (Open Ocean)",
+                          "Freshwater", "Marine (Pelagic)",
                           "Marine (Seabed)", "Coastal", "Air"),
               size = "sm",
               justified = TRUE,
               checkIcon = list(yes = shiny::icon("ok", lib = "glyphicon"))
-             )
+              )
             )
           )
         ) # Column end
       ),
+      # Data and code availability ----
       shiny::fluidRow(
         shiny::column(width = 2),
         shiny::column(width = 12,
@@ -307,20 +308,16 @@ mod_Overview_ui <- function(id){
                 solidHeader = TRUE,
                 status = "gray",
                 collapsible = FALSE,
-                shinyWidgets::prettyToggle(
-                  inputId = ns('inputavailability'),
-                  label_on = "Yes",
-                  icon_on = shiny::icon("check"),
-                  status_on = "success",
-                  status_off = "danger",
-                  label_off = "No",
-                  icon_off = shiny::icon("remove")
-                ),
+                shiny::p("If applicable please enter a link to the data storage repository."),
+                shinyWidgets::materialSwitch(
+                    inputId = ns('inputavailability'),
+                    value = FALSE, # Default values
+                    status = "success"
+                  ),
                 shiny::textAreaInput(inputId = ns('inputdata'), label = "Input data",
                               placeholder = 'If applicable please enter a link to the data storage repository.',
                               height = "45px", width = "100%", resize = "none")
-
-                ),
+            ),
             shiny::br(),
             # Link to output data
             bs4Dash::box(
@@ -332,19 +329,14 @@ mod_Overview_ui <- function(id){
               collapsible = FALSE,
               shiny::p("Typical outputs include for example priority maps or performance indicators.
                        Describe all outouts here and where they are stored."),
-              shinyWidgets::prettyToggle(
+              shinyWidgets::materialSwitch(
                 inputId = ns('outputavailability'),
-                label_on = "Yes",
-                icon_on = shiny::icon("check"),
-                status_on = "success",
-                status_off = "danger",
-                label_off = "No",
-                icon_off = shiny::icon("remove")
+                value = FALSE, # Default values
+                status = "success"
               ),
               shiny::textAreaInput(inputId = ns('outputdata'), label = "Output data",
                             placeholder = 'If applicable please enter a link to the data storage repository.',
                             height = "45px", width = "100%", resize = "none")
-
             ),
             shiny::br(),
             # Link to code
@@ -358,15 +350,11 @@ mod_Overview_ui <- function(id){
               shiny::p("Preparing data for analysis and creating priority maps can be done
                        with computer code. If such code was created, consider storing it somewhere
                        and make it available."),
-              shinyWidgets::prettyToggle(
+              shinyWidgets::materialSwitch(
                 inputId = ns('codeavailability'),
-                label_on = "Yes",
-                icon_on = shiny::icon("check"),
-                status_on = "success",
-                status_off = "danger",
-                label_off = "No",
-                icon_off = shiny::icon("remove")
-              ),
+                value = FALSE, # Default values
+                status = "success"
+                ),
               shiny::textAreaInput(inputId = ns('outputcode'), label = "Analysis code",
                             placeholder = 'If applicable please enter a link to the code storage repository.',
                             height = "45px", width = "100%", resize = "none")
@@ -444,15 +432,15 @@ mod_Overview_server <- function(id, results, parentsession){
 
     # Authors
     authors <- shiny::reactiveVal(
-      data.frame(forename = character(0),
-                 surename = character(0),
+      data.frame(firstname = character(0),
+                 surname = character(0),
                  orcid = character(0))
     )
 
     # Events for author table
     shiny::observeEvent(input$add_author, {
       new_data <- authors() |> dplyr::add_row(
-        data.frame(forename = "EDIT ME", surename = "EDIT ME", orcid = "EDIT ME")
+        data.frame(firstname = "EDIT ME", surname = "EDIT ME", orcid = "EDIT ME")
       )
       authors(new_data)
     })

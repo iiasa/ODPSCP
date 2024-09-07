@@ -20,35 +20,36 @@ mod_Home_ui <- function(id){
       shiny::fluidRow(
         shiny::column(width = 2),
         shiny::column(width = 8,
-               shiny::p("A reporting protocol for SCP", style = "padding-top: 10px; font-size: 30px; font-weight:bold;"),
+               shiny::p("A reporting protocol for systematic conservation pSCP", style = "padding-top: 10px; font-size: 30px; font-weight:bold;"),
 
-               shiny::p("Systematic conservation planning (SCP) usually make use of
-                 decision theoretical approaches to decide - given all available evidence - where,
-                 when and/or what to do so that outcomes are most beneficial for biodiversity conservation.
+               shiny::p("Systematic conservation planning (SCP) typically uses decision-theoretic approaches
+               to decide - given all available evidence - where,
+                 when and/or what to achieve the most beneficial for biodiversity conservation.
                  SCP can be applied at the identification, planning, implementation and
-                 monitoring phase of a conservation project. It usually is a multidisciplinary
+                 monitoring stages of a conservation project. It is usually an interdisciplinary
                  approach integrating both qualitative and quantitative data and methodologies
                  from a range of scientific disciplines.",
              style= "font-size: 18px;"),
 
-              shiny::p("Area-based and action-based conservation planning are critical
-                       in reaching conservation policy objectives across scales. Yet
+              shiny::p("Area-based and action-based conservation planning is crucial for
+                       achieving conservation policy objectives across scales. Yet
                        despite decades of research and numerous scientific advances
-                       in Europe ",shiny::a(href = 'https://osf.io/8x2ug/', '(Jung et al. 2023)',
+                       in Europe ",shiny::a(href = 'https://doi.org/10.1098/rstb.2023.0015', '(Jung et al. 2024)',
                                                     target = "_blank", .noWS = "outside"),".",
                        " and globally ",shiny::a(href = 'https://www.annualreviews.org/doi/10.1146/annurev-environ-102016-060902', '(McIntosh et al. 2017)', target = "_blank", .noWS = "outside"),
-                       ", it often remains incomprehensible for those unfamiliar with the
-                       planning how decisions where reached or what factors were considered
+                       ", it often remains hard to graps for those unfamiliar with the
+                       planning how decisions where made or what factors were considered
                        influential in determining the identified outcomes.",
                style= "font-size: 18px;"),
 
              # img(src = "", width = "60%", style="display: block; margin-left: auto; margin-right: auto;
              #     min-width:500px;"), br(),
 
-             shiny::p("The ODPSCP protocol serves three main purposes. First, it provides a
-               checklist for authors to detail all key steps in their planning work.
+             shiny::p("The Overview and Design Protocol for Systematic Conservation Planning (ODPSCP) serves
+             three main purposes. First, it provides a
+               checklist for researchers and practitioners to outline all key steps in their planning work.
                Second, it introduces a standard approach to documentation that ensures
-               transparency and reproducibility, facilitating peer review and
+               transparency and reproducibility, thus facilitating peer review and
                expert evaluation of the conducted planning. Third, it helps study
                authors and decision makers to identify key strength, but also
                weaknesses of a systematic planning exercise. ", style= "font-size: 18px;"),
@@ -56,11 +57,10 @@ mod_Home_ui <- function(id){
              shiny::hr(),
              shinyWidgets::prettyCheckboxGroup(
                inputId = ns("eligibility"),
-               label = "In order for a planning study to be eligible for the protocol they should:",
-               choices = c("Make use of decision theoretic or multiple-criteria-based approaches!",
-                           "Are spatial, spatial-temporal or at least use spatial input!",
-                           "Have a biodiversity and/or conservation objective! *",
-                           "Use an algorithic prioritization to identify best areas or actions! **"),
+               label = "In order for a planning study to be eligible for the protocol it should:",
+               choices = c("Use decision theoretic or multiple-criteria algorithmic approaches!*",
+                           "Be spatial, spatial-temporal or at least use spatial input!",
+                           "Have a biodiversity and/or conservation objective! **"),
                icon = shiny::icon("thumbs-up"),
                status = "primary",
                outline = TRUE,
@@ -68,13 +68,12 @@ mod_Home_ui <- function(id){
                plain = TRUE,
                animation = "jelly"
              ),
-             shiny::helpText("* This is not say that non-biodiversity focussed planning studies (such as optimal cropland management allocation) can not be entered per se."),shiny::br(),
-             shiny::helpText("** Studies presenting methodological advances are not suitable for the protocol,
-                             unless they are demonstrated in an applied scenario."),
+             shiny::helpText("* Studies presenting methodological advances are not suitable for the protocol, unless they are demonstrated in an applied scenario."),
+             shiny::helpText("** This is not to say that non-biodiversity focused planning studies (such as optimal cropland management allocation) can not be entered per se."), shiny::br(),
              shiny::hr(),
              shiny::p("This Shiny web application helps to implement the protocol through
-               an easy understandable user interface and allows export the created
-               protocols in a range of formats for further usages. We encourage the
+               an easy understand user interface and allows to export the created
+               protocols in a range of formats for further use. We encourage the
                scientific community, publishers and editors and policy makers to make
                use of this protocol.",
                style= "font-size: 18px;"),

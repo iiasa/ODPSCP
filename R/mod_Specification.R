@@ -48,7 +48,7 @@ mod_Specification_ui <- function(id){
                          shiny::p("The principal elements of a SCP application are generally
                            called 'Planning units'. They can be for example based on a
                            gridded Raster layer or any spatial organization such as
-                           a polygon. "),
+                           a polygon. A regular polygon has equal sides and angles."),
                          shiny::br(),
                          # Planning unit type
                          bs4Dash::box(
@@ -64,9 +64,8 @@ mod_Specification_ui <- function(id){
                              choices = c(
                                "Gridded",
                                "Point", "Line",
-                               "Regular Polygon (e.g. rectangle)",
-                               "Irregular Polygon (e.g. hyrological basin)",
-                               "Hexagon",
+                               "Regular Polygon (e.g. hexagon)",
+                               "Irregular Polygon (e.g. hydrological basin)",
                                "Other"
                              ),
                              multiple = FALSE
@@ -121,7 +120,7 @@ mod_Specification_ui <- function(id){
                            collapsible = FALSE,
                            shiny::p("The decision where to allocate conservation efforts can to a large degree be determined
                                     by economic, biophysical or socio-economic constraints. One way of including those in planning
-                                    studies is to threat them as a cost or penality, thus penalizing the selection of any outcomes
+                                    studies is to treat them as a cost or penality, thus penalizing the selection of any outcomes
                                     with too high costs. Typical are for example the costs of land acquistion in area-based planning."),
                            shinyWidgets::pickerInput(
                              inputId = ns("pu_checkcosts"),
@@ -356,7 +355,7 @@ mod_Specification_ui <- function(id){
               ) # Fluid column end
              ), # Fluidrow end
              shiny::br(),
-             # Entries #
+             # Feature entries ----
              shiny::fluidRow(
                shiny::column(width = 2),
                shiny::column(width = 12,
@@ -388,8 +387,10 @@ mod_Specification_ui <- function(id){
                                 "Species (distributions)",
                                 "Species (abundance)",
                                 "Species (traits)",
+                                "Species (genetic)",
+                                "Connectivity",
                                 "Ecosystems or Habitats",
-                                "Land-cover and Land-use",
+                                "Land or water cover and use",
                                 "Socio-economic (e.g. income from coastal fishing)",
                                 "Political (e.g. protected area)",
                                 "Biophysical (e.g. climate velocity)",
@@ -450,6 +451,8 @@ mod_Specification_ui <- function(id){
                                               icon = shiny::icon("plus")),
                           shiny::actionButton(inputId = ns("remove_feature"), label = "Remove last feature row",
                                               icon = shiny::icon("minus")),
+                          shiny::p("Alternatively upload a grouped feature table in csv or tsv format.
+                                   Note that this table needs to have exactly 3 columns with the name | group | number"),
                           shiny::fileInput(inputId = ns('load_feature'),label = 'Alternatively upload a feature/group list:',
                                     accept = c('csv', 'comma-separated-values','.csv', 'tsv', '.tsv')),
                           shiny::helpText("(Doubleclick on an added row to change the input values)")
@@ -533,16 +536,18 @@ mod_Specification_server <- function(id, results, parentsession){
     # --- #
     # Define the features list
     feature_table <- shiny::reactiveVal(
-      data.frame(name = character(0),
+      data.frame(rowid = integer(0),
+                 name = character(0),
                  group = character(0),
                  number = numeric(0))
     )
 
     # Events for author table
     shiny::observeEvent(input$add_feature, {
-      new_data <- feature_table() |> dplyr::add_row(
-        data.frame(name = "Feature name", group = "Species distribution", number = 10)
-      )
+      new_row <- tibble::tibble(
+        name = "Feature name", group = "Species distribution", number = 10
+        )
+      new_data <- dplyr::bind_rows( feature_table(), new_row )
       feature_table(new_data)
     })
 
@@ -636,8 +641,6 @@ mod_Specification_server <- function(id, results, parentsession){
     loadedzones <- shiny::reactive({
       file <- input$load_zones$datapath
       shiny::req(file)
-
-      data <- readr::read_csv(file,show_col_types = FALSE)
 
       if(is.null(input$load_zones)){
         return(NULL)
