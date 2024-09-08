@@ -434,7 +434,7 @@ mod_Overview_server <- function(id, results, parentsession){
     authors <- shiny::reactiveVal(
       data.frame(firstname = character(0),
                  surname = character(0),
-                 orcid = character(0))
+                 orcid = character(0) )
     )
 
     # Events for author table
@@ -445,13 +445,20 @@ mod_Overview_server <- function(id, results, parentsession){
       authors(new_data)
     })
     shiny::observeEvent(input$remove_author, {
-      new_data <- authors() |> dplyr::slice(-dplyr::n())
-      authors(new_data)
+      new_data <- authors()
+      if(nrow(new_data)==0){
+        shiny::showNotification("No authors added yet!",
+                                duration = 2, type = "warning")
+      } else {
+        new_data <- new_data |> dplyr::slice(-dplyr::n())
+        authors(new_data)
+      }
     })
 
     #output the datatable based on the dataframe (and make it editable)
-    output$authors_table <- DT::renderDT({
+    output$authors_table <- DT::renderDataTable({
       DT::datatable(authors(),rownames = FALSE,
+                    colnames = c("First name", "Surname", "ORCID"),
                     filter = "none", selection = "none",
                     style = "auto",
                     editable = TRUE)

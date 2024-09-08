@@ -20,7 +20,7 @@ mod_Home_ui <- function(id){
       shiny::fluidRow(
         shiny::column(width = 2),
         shiny::column(width = 8,
-               shiny::p("A reporting protocol for systematic conservation pSCP", style = "padding-top: 10px; font-size: 30px; font-weight:bold;"),
+               shiny::p("A reporting protocol for systematic conservation planning", style = "padding-top: 10px; font-size: 30px; font-weight:bold;"),
 
                shiny::p("Systematic conservation planning (SCP) typically uses decision-theoretic approaches
                to decide - given all available evidence - where,

@@ -101,7 +101,9 @@ mod_Prioritization_ui <- function(id){
                        shiny::p("In this field we record - if known - how the software makes decisions,
                                 e.g. what is being optimized or ranked and how. A typical example is the use
                                 of minimum set problems (in Marxan and others) to identify those areas where
-                                all feature targets are reached while minimizing a cost (area, opportunity cost, ...)"),
+                                all feature targets are reached while minimizing a cost (area, opportunity cost, ...).
+                                While Zonation users should indicate the specific benefit function used for identifying
+                                value gain in the prioritization."),
                        shiny::strong("References:"),
                        shiny::br("Arponen, A., Heikkinen, R. K., Thomas, C. D., & Moilanen, A. (2005). The value of biodiversity in reserve selection: representation, species weighting, and benefit functions. Conservation Biology, 19(6), 2009-2014."),
                        shiny::br("Schuster, R., Hanson, J. O., Strimas-Mackey, M., & Bennett, J. R. (2020). Exact integer linear programming solvers outperform simulated annealing for solving conservation planning problems. PeerJ, 8, e9258."),
@@ -131,8 +133,8 @@ mod_Prioritization_ui <- function(id){
                        solidHeader = TRUE,
                        status = "secondary",
                        collapsible = FALSE,
-                       shiny::p("Not always is there a single solution to the prioritization process or
-                         where only single prioritizations run.",
+                       shiny::p("Not always is there a single solution to the prioritization process and
+                         often more than one single prioritization is run.",
                          "Besides factors directly included in the prioritization,
                          it is also common to consider external or auxillary datasets,
                          selection frequency across multiple iterations, or

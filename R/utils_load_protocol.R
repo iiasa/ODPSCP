@@ -67,6 +67,7 @@ get_protocol_version <- function(path_protocol = NULL){
 #'
 #' @description
 #' Utility function to get the group for a render-id
+#' @param id A character with the id for which options are to be queried.
 #' @param path_protocol A [`character`] pointing to the destination of the protocol.
 #' @return A [`data.frame`] with the group and element
 #'
@@ -97,6 +98,34 @@ get_protocol_elementgroup <- function(id, path_protocol = NULL){
   return(out)
 }
 
+#' Get protocol options if specified
+#' @description
+#' Utility function to get the options if ounds for a render-id
+#' @param id A character with the render_id.
+#' @param path_protocol The filepath to the actual protocol template (Default: \code{NULL})
+#' @returns Either \code{NULL} or a vector with found options.
+#' @examples
+#' /dontrun{
+#'  get_protocol_options('featuretypes')
+#' }
+#'
+#' @noRd
+get_protocol_options <- function(id, path_protocol = NULL){
+  assertthat::assert_that(is.character(id),
+                          is.character(path_protocol) || is.null(path_protocol))
+
+  # If is null, load protocol
+  template <- load_protocol(path_protocol)
+
+  check <- get_protocol_elementgroup(id)
+  if(!is.null(check)){
+    # Get the actual options
+    if("options" %in% names(template[[check$group]][[check$element]])){
+      check <- template[[check$group]][[check$element]]$options
+    } else { check <- NULL }
+  }
+  return(check)
+}
 
 #' Check for mandatory fields to be filled
 #'

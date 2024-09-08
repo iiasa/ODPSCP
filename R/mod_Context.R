@@ -153,7 +153,8 @@ mod_Context_ui <- function(id){
                         solidHeader = TRUE,
                         status = "secondary",
                         collapsible = FALSE,
-                        shiny::p("Any other constraints used in the planning?"),
+                        shiny::p("Any other constraints used in the planning? For example (administrative) masks
+                                 other areas indicating that some planning units are not to be selected?"),
                         shiny::textAreaInput(inputId = ns("otherconstraints"), label = "Constraints",
                                       placeholder = 'If any, shortly describe how they are defined.',
                                       height = "60px", width = "100%", resize = "vertical")

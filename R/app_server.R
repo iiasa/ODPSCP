@@ -9,7 +9,7 @@ app_server <- function(input, output, session) {
 
   # Add bookmark button to top
   # NOTE: For URL see also https://stackoverflow.com/questions/58396680/how-to-extract-the-url-from-the-shiny-bookmark-button-and-create-my-own-action-b
-  shiny::enableBookmarking(store = "server")
+  shiny::enableBookmarking(store = "url")
   shiny::observeEvent(input$bookmark, {
     session$doBookmark()
   })

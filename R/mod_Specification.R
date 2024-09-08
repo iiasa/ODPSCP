@@ -46,7 +46,7 @@ mod_Specification_ui <- function(id){
                          status = "primary",
                          collapsible = TRUE,
                          shiny::p("The principal elements of a SCP application are generally
-                           called 'Planning units'. They can be for example based on a
+                           called 'Planning units' (but see Glossary). They can be for example based on a
                            gridded Raster layer or any spatial organization such as
                            a polygon. A regular polygon has equal sides and angles."),
                          shiny::br(),
@@ -149,9 +149,10 @@ mod_Specification_ui <- function(id){
                     )
                 ) # End column
               ), # End row
-            shiny::fluidRow(
-              shiny::column(width = 2),
-              shiny::column(width = 12,
+            # Zones and groups ----
+                    shiny::fluidRow(
+                    shiny::column(width = 2),
+                    shiny::column(width = 12,
                      # Planning units
                      bs4Dash::box(
                        title = 'Zones and specific groups',
@@ -263,7 +264,7 @@ mod_Specification_ui <- function(id){
                ) # Column end
              ), # Fluid row end
             shiny::br(),
-            # Entries #
+            # Threats and pressures ----
             shiny::fluidRow(
               shiny::column(width = 2),
               shiny::column(width = 12,
@@ -451,11 +452,12 @@ mod_Specification_ui <- function(id){
                                               icon = shiny::icon("plus")),
                           shiny::actionButton(inputId = ns("remove_feature"), label = "Remove last feature row",
                                               icon = shiny::icon("minus")),
+                          shiny::helpText("(Doubleclick on an added row to change the input values)"),
+                          shiny::br(),
                           shiny::p("Alternatively upload a grouped feature table in csv or tsv format.
                                    Note that this table needs to have exactly 3 columns with the name | group | number"),
                           shiny::fileInput(inputId = ns('load_feature'),label = 'Alternatively upload a feature/group list:',
-                                    accept = c('csv', 'comma-separated-values','.csv', 'tsv', '.tsv')),
-                          shiny::helpText("(Doubleclick on an added row to change the input values)")
+                                    accept = c('csv', 'comma-separated-values','.csv', 'tsv', '.tsv'))
                         ),
                         shiny::br(),
                         # How were features created?
@@ -524,9 +526,9 @@ mod_Specification_server <- function(id, results, parentsession){
     shiny::observe({
       for(id in ids){
         if(id == "feature_table"){
-          results[[id]] <- data.frame(feature_table()) |> asplit(MARGIN = 1)
+          results[[id]] <- data.frame(feature_table$df) |> asplit(MARGIN = 1)
         } else if(id == "zones_table") {
-          results[[id]] <- data.frame(zones_table()) |> asplit(MARGIN = 1)
+          results[[id]] <- data.frame(zones_table$df) |> asplit(MARGIN = 1)
         } else {
           results[[id]] <- input[[id]]
         }
@@ -535,41 +537,66 @@ mod_Specification_server <- function(id, results, parentsession){
 
     # --- #
     # Define the features list
-    feature_table <- shiny::reactiveVal(
-      data.frame(rowid = integer(0),
-                 name = character(0),
+    feature_table <- shiny::reactiveValues(
+      df = data.frame(name = character(0),
                  group = character(0),
-                 number = numeric(0))
+                 number = numeric(0L))
     )
 
-    # Events for author table
+    # Get feature groups for event
+    featoptions <- get_protocol_options('featuretypes')
+    # Events for feature table
     shiny::observeEvent(input$add_feature, {
-      new_row <- tibble::tibble(
-        name = "Feature name", group = "Species distribution", number = 10
+      shiny::showModal(
+        shiny::modalDialog(title = "Add new feature", footer = NULL, easyClose = T,
+                    shiny::textInput(ns("name"), "Feature name"),
+                    shiny::selectInput(ns("group"), "Feature group",choices = featoptions),
+                    shiny::numericInput(ns("number"), "Total number",value = 1, min = 1),
+                    shiny::actionButton(ns("save_new_feature"), "Add new feature")
         )
-      new_data <- dplyr::bind_rows( feature_table(), new_row )
-      feature_table(new_data)
+      )
+    })
+
+    shiny::observeEvent(input$save_new_feature, {
+      if(input$name == "" | input$group == ""){
+        shiny::showNotification("Please provide a Feature and select a group", duration = 2, type = "warning")
+      } else {
+        new_feature = data.frame("name" = input$name, "group" = input$group, "number" = input$number,
+                                 stringsAsFactors = F)
+        new_data <- feature_table$df |> dplyr::add_row(new_feature)
+        feature_table$df <- new_data
+        shiny::removeModal()
+      }
     })
 
     shiny::observeEvent(input$remove_feature, {
-      new_data <- feature_table() |> dplyr::slice(-dplyr::n())
-      feature_table(new_data)
+      new_data <- feature_table$df
+      if(nrow(new_data)==0){
+        shiny::showNotification("No features added yet!",
+                                duration = 2, type = "warning")
+      } else {
+        new_data <- new_data |> dplyr::slice(-dplyr::n())
+        feature_table$df <- new_data
+      }
     })
 
     #output the datatable based on the dataframe (and make it editable)
-    output$featurelist <- DT::renderDT({
-      DT::datatable(feature_table(),rownames = FALSE,
+    output$featurelist <- DT::renderDataTable({
+      features = feature_table$df
+      features_dt <- DT::datatable(features, rownames = FALSE,
+                    colnames = c("Feature name", "Feature group", "Total number"),
                     filter = "none", selection = "none",
                     style = "auto",
                     editable = TRUE)
+      return(features_dt)
     })
 
     # Manual edit
-    shiny::observeEvent(input$feature_table_cell_edit, {
-      info <- input$feature_table_cell_edit
-      modified_data <- feature_table()
+    shiny::observeEvent(input$featurelist_cell_edit, {
+      info <- input$featurelist_cell_edit
+      modified_data <- feature_table$df
       modified_data[info$row, info$col+1] <- info$value
-      feature_table(modified_data)
+      feature_table$df <- modified_data
     })
 
     # Load an external file
@@ -577,7 +604,7 @@ mod_Specification_server <- function(id, results, parentsession){
       file <- input$load_feature$datapath
       shiny::req(file)
 
-      data <- readr::read_csv(file,show_col_types = FALSE)
+      data <- readr::read_csv(file, show_col_types = FALSE)
       # Do some checks?
       shiny::validate(
         shiny::need(ncol(data)!=3, "Uploaded data requires exactly 3 columns")
@@ -590,6 +617,7 @@ mod_Specification_server <- function(id, results, parentsession){
     shiny::observeEvent(loadedfeatures(), {
       output$featurelist <- DT::renderDT({
         DT::datatable(loadedfeatures(), rownames = FALSE,
+                      colnames = c("Feature name", "Feature group", "Total number"),
                       filter = "none", selection = "none",
                       style = "auto",
                       editable = TRUE)
@@ -598,8 +626,8 @@ mod_Specification_server <- function(id, results, parentsession){
 
     # --- #
     # Define the features list
-    zones_table <- shiny::reactiveVal(
-      data.frame(name = character(0),
+    zones_table <- shiny::reactiveValues(
+      df = data.frame(name = character(0),
                  aim = character(0),
                  costs = character(0),
                  contributions = character(0)
@@ -608,33 +636,40 @@ mod_Specification_server <- function(id, results, parentsession){
 
     # Events for author table
     shiny::observeEvent(input$add_zone, {
-      new_data <- zones_table() |> dplyr::add_row(
+      new_data <- zones_table$df |> dplyr::add_row(
         data.frame(name = "My zone", aim = "Zone purpose",
                    costs = "Differing costs",
                    contributions = "Who benefits")
       )
-      zones_table(new_data)
+      zones_table$df <- new_data
     })
 
     shiny::observeEvent(input$remove_zone, {
-      new_data <- zones_table() |> dplyr::slice(-dplyr::n())
-      zones_table(new_data)
+      new_data <- zones_table$df
+      if(nrow(new_data)==0){
+        shiny::showNotification("No zones added yet!",
+                                duration = 2, type = "warning")
+      } else {
+        new_data <- new_data |> dplyr::slice(-dplyr::n())
+        zones_table$df <- new_data
+      }
     })
 
     #output the datatable based on the dataframe (and make it editable)
     output$specificzones <- DT::renderDT({
-      DT::datatable(zones_table(),rownames = FALSE,
+      DT::datatable(zones_table$df,rownames = FALSE,
+                    colnames = c("Zone name", "Purpose", "Costs", "Who benefits"),
                     filter = "none", selection = "none",
                     style = "auto",
                     editable = TRUE)
     })
 
     # Manual edit
-    shiny::observeEvent(input$zones_table_cell_edit, {
-      info <- input$zones_table_cell_edit
-      modified_data <- zones_table()
+    shiny::observeEvent(input$specificzones_cell_edit, {
+      info <- input$specificzones_cell_edit
+      modified_data <- zones_table$df
       modified_data[info$row, info$col+1] <- info$value
-      zones_table(modified_data)
+      zones_table$df <- modified_data
     })
 
     # Load an external file
@@ -646,6 +681,10 @@ mod_Specification_server <- function(id, results, parentsession){
         return(NULL)
       }
       data <- readr::read_csv(file, show_col_types = FALSE)
+      # Do some checks?
+      shiny::validate(
+        shiny::need(ncol(data)!=4, "Uploaded data requires exactly 4 columns")
+      )
       names(data) <- c("name", "aim", "costs", "contributions")
       return(data)
     })

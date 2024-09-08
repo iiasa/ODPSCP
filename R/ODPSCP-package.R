@@ -10,5 +10,6 @@
 "_PACKAGE"
 
 globalVariables(c(
-  "element"
+  "element",
+  "Term"
 ))

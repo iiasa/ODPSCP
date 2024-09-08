@@ -43,7 +43,7 @@ mod_Export_ui <- function(id){
               justified = TRUE,
               size = "lg",
               status = "info",
-              choices = c('docx', 'pdf', 'rData', 'csv', 'yaml'),
+              choices = c('docx', 'pdf', 'csv', 'yaml'),
               selected = 'rData',
               checkIcon = list(
                 yes = shiny::icon("circle-down"),

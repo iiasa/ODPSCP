@@ -1,44 +1,46 @@
 Package: ODPSCP
 Title: A standard reporting protocol for conservation planning
-Version: 0.2
-Authors@R: person('Martin', 'Jung', email = 'jung@iiasa.ac.at', role = c('cre', 'aut'))
-Description: This repository contains the environment and shiny code underlying the reporting protocol.
+Version: 0.4
+Authors@R: 
+    person("Martin", "Jung", , "jung@iiasa.ac.at", role = c("cre", "aut"))
+Description: This repository contains the environment and shiny code
+    underlying the reporting protocol.
 License: CC BY 4.0
-Depends:
-    R (>= 4.0.0),
-    shiny (>= 1.7.5),
-    bs4Dash
-Imports:
-    config (>= 0.3.2),
-    golem (>= 0.4.1),
-    yaml,
-    assertthat,
-    shinyWidgets,
-    shinyjs,
-    shinyFeedback,
-    shinylogs,
-    sever,
-    fresh,
-    DT,
-    waiter,
-    dplyr,
-    leaflet,
-    sf,
-    terra,
-    readr,
-    pkgload
-Suggests:
-    markdown,
-    rmarkdown,
-    officer,
-    ggplot2,
-    flextable,
-    spelling,
-    testthat (>= 3.0.0)
-Encoding: UTF-8
-Language: en-US
-LazyData: true
-RoxygenNote: 7.3.2
 URL: https://github.com/iiasa/ODPSCP
 BugReports: https://github.com/iiasa/ODPSCP/issues
+Depends:
+    bs4Dash,
+    R (>= 4.0.0),
+    shiny (>= 1.7.5)
+Imports:
+    assertthat,
+    config (>= 0.3.2),
+    dplyr,
+    DT,
+    flextable,
+    fresh,
+    ggplot2,
+    golem (>= 0.4.1),
+    leaflet,
+    officer,
+    readr,
+    markdown,
+    rmarkdown,
+    sever,
+    sf,
+    shinyFeedback,
+    shinyjs,
+    shinylogs,
+    shinyWidgets,
+    terra,
+    tools,
+    utils,
+    waiter,
+    yaml
+Suggests:
+    spelling,
+    testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Encoding: UTF-8
+Language: en-US
+RoxygenNote: 7.3.2
