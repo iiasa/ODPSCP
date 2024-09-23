@@ -134,7 +134,7 @@ overview:
     render-group: 'data_availability'
     question: 'Are the used input data made available and if so where?'
     description: 'If applicable please enter a link to the data storage repository.'
-    fieldtype: 'toggle'
+    fieldtype: 'radio'
     fieldtype_conditional_render-id: 'inputdata'
     fieldtype_conditional: 'textbox'
     mandatory: true
@@ -146,7 +146,7 @@ overview:
     render-group: 'data_availability'
     question: 'Are the created outputs made openly available and if so where?'
     description: 'If set to true, please enter a link to the data storage repository.'
-    fieldtype: 'toggle'
+    fieldtype: 'radio'
     fieldtype_conditional_render-id: 'outputdata'
     fieldtype_conditional: 'textbox'
     mandatory: true
@@ -158,7 +158,7 @@ overview:
     render-group: 'data_availability'
     question: 'Have analytical scripts or steps to reproduce the results been made available?'
     description: 'If set to true, please enter a link to the code repository'
-    fieldtype: 'toggle'
+    fieldtype: 'radio'
     fieldtype_conditional_render-id: 'outputcode'
     fieldtype_conditional: 'textbox'
     mandatory: true
@@ -198,7 +198,7 @@ design:
     render-group: 'study_design'
     question: 'Is there a theory of change underlying this work?'
     description: 'Most SCP applications are applied rather than curiosity driven. The primary question here is whether the pathway to impact and influencing outcomes is clear.'
-    fieldtype: 'toggle'
+    fieldtype: 'radio'
     fieldtype_conditional_render-id: 'theoryofchange_text'
     fieldtype_conditional: 'textbox'
     mandatory: false
@@ -414,9 +414,9 @@ specification:
   threattypes:
     render-nr: 1
     render-id: 'threattypes'
-    render-group: 'threatpressures'
-    question: 'What types of threats or pressures are included in the planning?'
-    description: 'Select any threats or pressures that were targeted in the planning or that, directly or indirectly, shape the planning outcome. The threat description broadly follows the IUCN Threat categorization system.'
+    render-group: 'threats'
+    question: 'What types of threats are included in the planning?'
+    description: 'Select any threats that were targeted in the planning or that, directly or indirectly, shape the planning outcome. The threat description broadly follows the IUCN Threat categorization system.'
     fieldtype: 'multiplechoice'
     options:
       - None
@@ -435,14 +435,14 @@ specification:
     fieldtype_conditional_render-id: 'otherthreattype'
     fieldtype_conditional: 'textbox'
     mandatory: true
-    popexample: "Select any type of pressure or threat considered in this work."
+    popexample: "Select any type of threat considered in this work."
 
   threatinclusion:
     render-nr: 2
     render-id: 'threatinclusion'
-    render-group: 'threatpressures'
+    render-group: 'threats'
     question: 'How were threats considered in the planning?'
-    description: 'There are multiple ways of including threats and pressures, for example
+    description: 'There are multiple ways of including threats, for example
     by considering them as risk factor in the prioritization, as cost or penalty in selecting
     a solution. Here we record these various options.'
     fieldtype: 'multiplechoice'
@@ -457,7 +457,7 @@ specification:
     fieldtype_conditional_render-id: 'threatdetail'
     fieldtype_conditional: 'textbox'
     mandatory: false
-    popexample: "Anthropogenic land-use pressures were considered as a selection penalty"
+    popexample: "Anthropogenic land-uses were considered as a selection penalty for avoiding high impact regions."
 
   featuretypes:
     render-nr: 1
@@ -696,13 +696,15 @@ prioritization:
 
   performance:
     render-nr: 1
-    render-id: 'evalperformance'
+    render-id: 'checkperformance'
     render-group: 'perfidenticators'
-    question: 'How was the performance of the obtained solution evaluated?'
-    description: 'Performance indicators can be used to identify the performance of the solution(s). Here we describe them.'
-    fieldtype: 'multifieldselection'
-    mandatory: false
-    popexample: "Compactness of the solutions, average number of targets achieved, avoided costs or impacts."
+    question: 'Was the performance of the study in anyway evaluated?'
+    description: 'Most studies describe their outputs in terms of what is gained by the solutions.'
+    fieldtype: 'radio'
+    mandatory: true
+    fieldtype_conditional_render-id: 'evalidentification'
+    fieldtype_conditional: 'multifieldselection'
+    popexample: "Common examples are the compactness of the solutions, average number of targets achieved, avoided costs or impacts."
 
   otherperformance:
     render-nr: 2
@@ -712,4 +714,4 @@ prioritization:
     description: 'Any other form of performance evaluation applied?'
     fieldtype: 'textbox'
     mandatory: false
-    popexample: "Acceptance by stakeholder was considered an important factor in the assessment of the results of the study."
+    popexample: "Acceptance by stakeholder was considered an important factor in the assessment of appropriateness of the planning."

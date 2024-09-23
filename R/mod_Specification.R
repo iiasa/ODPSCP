@@ -264,26 +264,26 @@ mod_Specification_ui <- function(id){
                ) # Column end
              ), # Fluid row end
             shiny::br(),
-            # Threats and pressures ----
+            # Threats  ----
             shiny::fluidRow(
               shiny::column(width = 2),
               shiny::column(width = 12,
                             # Threats
                             bs4Dash::box(
-                              title = 'Threats and pressures',
+                              title = 'Threats',
                               closable = FALSE,
                               width = 12,
                               solidHeader = TRUE,
                               status = "primary",
                               collapsible = TRUE,
-                              shiny::p("Select any threats or pressures that were targeted in the planning
+                              shiny::p("Select any threats that were targeted in the planning
                                        or that, directly or indirectly, shape the planning outcome.
                                        The threat description broadly follows the IUCN Threat categorization system."),
                               shiny::br(),
                               shiny::helpText("IUCN Threat classification: https://www.iucnredlist.org/resources/threat-classification-scheme"),
                             # Threat types
                             bs4Dash::box(
-                              title = "Threat or pressure types",
+                              title = "Threat types",
                               closable = FALSE,
                               width = 12,
                               solidHeader = TRUE,
@@ -316,7 +316,7 @@ mod_Specification_ui <- function(id){
                                 condition = "input.threattypes == 'Other'",
                                 ns = ns,
                                 shiny::textAreaInput(inputId = ns("otherthreattype"), label = "Other types",
-                                                     placeholder = 'Any other type of threat or pressure not considered? Describe',
+                                                     placeholder = 'Any other type of threat not considered? Describe',
                                                      height = "45px", width = "100%", resize = "none")
                                 )
                           ), # Threat type box end
@@ -329,7 +329,7 @@ mod_Specification_ui <- function(id){
                             solidHeader = TRUE,
                             status = "secondary",
                             collapsible = FALSE,
-                            shiny::p('There are multiple ways of including threats and pressures, for example
+                            shiny::p('There are multiple ways of including threats, for example
                                      by considering them as risk factor in the prioritization,
                                      as cost or penalty in selecting a solution.
                                      Here we record these various options.'),
@@ -352,7 +352,7 @@ mod_Specification_ui <- function(id){
                                                  placeholder = 'Elaborate on other ways of including threats in the planning',
                                                  height = "60px", width = "100%", resize = "vertical")
                           )
-                  ) # Threats and pressures box end
+                  ) # Threats box end
               ) # Fluid column end
              ), # Fluidrow end
              shiny::br(),

@@ -108,19 +108,24 @@ mod_Design_ui <- function(id){
                               focus does not necessarily mean that the work will be implemented and the pathway to
                               impact is clear. A theory of change is a apriori process that maps the relationship between
                               a long-term goal of a planning objective and the necessary steps required to implement it.'),
-                     shinyWidgets::materialSwitch(
+                     shinyWidgets::awesomeRadio(
                        inputId = ns("theoryofchange"),
                        label = "Did the study use a theory of change concept?",
-                       right = TRUE,
-                       value = FALSE, # Default values
-                       status = "default"
+                       choices = c("No", "Yes"),
+                       selected = "No",
+                       inline = FALSE,
+                       checkbox = TRUE
                      ),
-                     shiny::textAreaInput(inputId = ns("theoryofchange_text"), label = "",
-                                   placeholder = 'Describe the theory of change used.',
-                                   height = "45px", width = "100%", resize = "vertical")
+                     shiny::br(),
+                     shiny::conditionalPanel(
+                       condition = "input.theoryofchange == 'Yes'",
+                       ns = ns,
+                       shiny::textAreaInput(inputId = ns("theoryofchange_text"), label = "",
+                                            placeholder = 'Describe the theory of change used.',
+                                            height = "45px", width = "100%", resize = "vertical")
+                     )
                    )
                 ), # End study aims box
-
                 # Study purpose overall box
                 bs4Dash::box(
                   title = 'Purpose of planning',
@@ -367,12 +372,6 @@ mod_Design_server <- function(id, results, parentsession){
       for(id in ids){
         results[[id]] <- input[[id]]
       }
-    })
-
-    # ----- #
-    # Events for hiding data input boxes
-    shiny::observeEvent(input$theoryofchange, {
-      shinyjs::toggle("theoryofchange_text")
     })
 
     # --- #

@@ -177,27 +177,40 @@ mod_Prioritization_ui <- function(id){
                          "An example would be summarizing the average amount of
                          a threatened species range covered, or overlap with other spatial layers."),
                        shiny::br(),
-                       DT::DTOutput(outputId = ns("evalperformance")),
-                       shiny::actionButton(inputId = ns("add_indicator"), label = "Add a new indicator",
-                                           icon = shiny::icon("plus")),
-                       shiny::actionButton(inputId = ns("remove_indicator"), label = "Remove last indicator",
-                                           icon = shiny::icon("minus")),
-                       shiny::pre("(Doubleclick on an added row to change the input values)"),
+                       shinyWidgets::awesomeRadio(
+                         inputId = ns("checkperformance"),
+                         label = "Was the performance of the study in anyway evaluated?",
+                         choices = c("No", "Yes"),
+                         selected = "Yes",
+                         inline = FALSE,
+                         checkbox = TRUE
+                       ),
                        shiny::br(),
-                       shiny::br(),
-                       # Any other performance evaluation conducted?
-                       bs4Dash::box(
-                         title = "Other performance evaluation",
-                         closable = FALSE,
-                         width = 12,
-                         solidHeader = TRUE,
-                         status = "secondary",
-                         collapsible = FALSE,
+                       shiny::conditionalPanel(
+                         condition = "input.checkperformance == 'Yes'",
+                         ns = ns,
+                         DT::DTOutput(outputId = ns("evalperformance")),
+                         shiny::actionButton(inputId = ns("add_indicator"), label = "Add a new indicator",
+                                             icon = shiny::icon("plus")),
+                         shiny::actionButton(inputId = ns("remove_indicator"), label = "Remove last indicator",
+                                             icon = shiny::icon("minus")),
+                         shiny::pre("(Doubleclick on an added row to change the input values)"),
                          shiny::br(),
-                         shiny::textAreaInput(inputId = ns("otherperformance"),
-                                       label = "Was there any other form of evaluation of the prioritization?",
-                                       placeholder = 'If applicable, elaborate',
-                                       height = "60px", width = "100%", resize = "vertical")
+                         shiny::br(),
+                         # Any other performance evaluation conducted?
+                         bs4Dash::box(
+                           title = "Other performance evaluation",
+                           closable = FALSE,
+                           width = 12,
+                           solidHeader = TRUE,
+                           status = "secondary",
+                           collapsible = FALSE,
+                           shiny::br(),
+                           shiny::textAreaInput(inputId = ns("otherperformance"),
+                                                label = "Was there any other form of evaluation of the prioritization?",
+                                                placeholder = 'If applicable, elaborate',
+                                                height = "60px", width = "100%", resize = "vertical")
+                         )
                        )
                      )
               ) # Column end

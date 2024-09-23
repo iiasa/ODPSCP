@@ -51,6 +51,8 @@ rsconnect::deployApp(
     "R/",
     "inst/",
     "NAMESPACE",
+    "NEWS.md",
+    "README.Rmd",
     "DESCRIPTION",
     "app.R"
   ),

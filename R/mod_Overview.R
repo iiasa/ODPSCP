@@ -309,14 +309,22 @@ mod_Overview_ui <- function(id){
                 status = "gray",
                 collapsible = FALSE,
                 shiny::p("If applicable please enter a link to the data storage repository."),
-                shinyWidgets::materialSwitch(
-                    inputId = ns('inputavailability'),
-                    value = FALSE, # Default values
-                    status = "success"
-                  ),
-                shiny::textAreaInput(inputId = ns('inputdata'), label = "Input data",
-                              placeholder = 'If applicable please enter a link to the data storage repository.',
-                              height = "45px", width = "100%", resize = "none")
+                shinyWidgets::awesomeRadio(
+                  inputId = ns('inputavailability'),
+                  label = "Is the input data provided with the study?",
+                  choices = c("No", "Yes"),
+                  selected = "No",
+                  inline = FALSE,
+                  checkbox = TRUE
+                ),
+                shiny::br(),
+                shiny::conditionalPanel(
+                  condition = "input.inputavailability == 'Yes'",
+                  ns = ns,
+                  shiny::textAreaInput(inputId = ns('inputdata'), label = "Input data",
+                                       placeholder = 'If applicable please enter a link to the data storage repository.',
+                                       height = "45px", width = "100%", resize = "none")
+                )
             ),
             shiny::br(),
             # Link to output data
@@ -329,19 +337,27 @@ mod_Overview_ui <- function(id){
               collapsible = FALSE,
               shiny::p("Typical outputs include for example priority maps or performance indicators.
                        Describe all outouts here and where they are stored."),
-              shinyWidgets::materialSwitch(
+              shinyWidgets::awesomeRadio(
                 inputId = ns('outputavailability'),
-                value = FALSE, # Default values
-                status = "success"
+                label = "Are the outputs of the planning provided with the study?",
+                choices = c("No", "Yes"),
+                selected = "No",
+                inline = FALSE,
+                checkbox = TRUE
               ),
-              shiny::textAreaInput(inputId = ns('outputdata'), label = "Output data",
-                            placeholder = 'If applicable please enter a link to the data storage repository.',
-                            height = "45px", width = "100%", resize = "none")
+              shiny::br(),
+              shiny::conditionalPanel(
+                condition = "input.outputavailability == 'Yes'",
+                ns = ns,
+                shiny::textAreaInput(inputId = ns('outputdata'), label = "Output data",
+                                     placeholder = 'If applicable please enter a link to the data storage repository.',
+                                     height = "45px", width = "100%", resize = "none")
+              )
             ),
             shiny::br(),
             # Link to code
             bs4Dash::box(
-              title = 'Are the analytical code to reproduce the results made available?',
+              title = 'Has the analytical code to reproduce the results been made available?',
               closable = FALSE,
               width = 12,
               solidHeader = TRUE,
@@ -350,14 +366,22 @@ mod_Overview_ui <- function(id){
               shiny::p("Preparing data for analysis and creating priority maps can be done
                        with computer code. If such code was created, consider storing it somewhere
                        and make it available."),
-              shinyWidgets::materialSwitch(
+              shinyWidgets::awesomeRadio(
                 inputId = ns('codeavailability'),
-                value = FALSE, # Default values
-                status = "success"
-                ),
-              shiny::textAreaInput(inputId = ns('outputcode'), label = "Analysis code",
-                            placeholder = 'If applicable please enter a link to the code storage repository.',
-                            height = "45px", width = "100%", resize = "none")
+                label = "Has the analytical code for making the outputs been made available?",
+                choices = c("No", "Yes"),
+                selected = "No",
+                inline = FALSE,
+                checkbox = TRUE
+              ),
+              shiny::br(),
+              shiny::conditionalPanel(
+                condition = "input.codeavailability == 'Yes'",
+                ns = ns,
+                shiny::textAreaInput(inputId = ns('outputcode'), label = "Analysis code",
+                                     placeholder = 'If applicable please enter a link to the code storage repository.',
+                                     height = "45px", width = "100%", resize = "none")
+              )
             )
           ) # End of column
         ) # End of fluid row
@@ -444,6 +468,7 @@ mod_Overview_server <- function(id, results, parentsession){
       )
       authors(new_data)
     })
+
     shiny::observeEvent(input$remove_author, {
       new_data <- authors()
       if(nrow(new_data)==0){
@@ -469,18 +494,6 @@ mod_Overview_server <- function(id, results, parentsession){
       modified_data <- authors()
       modified_data[info$row, info$col+1] <- info$value
       authors(modified_data)
-    })
-
-    # ----- #
-    # Events for hiding data input boxes
-    shiny::observeEvent(input$inputavailability, {
-      shinyjs::toggle("inputdata")
-    })
-    shiny::observeEvent(input$outputavailability, {
-      shinyjs::toggle("outputdata")
-    })
-    shiny::observeEvent(input$codeavailability, {
-      shinyjs::toggle("outputcode")
     })
 
     # ----- #
@@ -609,23 +622,6 @@ mod_Overview_server <- function(id, results, parentsession){
            alt = paste("Peng 2011, Reproducible Research in Computational Science, Science"))
 
     }, deleteFile = FALSE)
-
-    # ----- #
-
-    # Shiny feedback for mandatory fields
-    # FIXME: This horribly messes up the format
-    # shiny::observeEvent(input$studyname, {
-    #   if(input$studyname=="") {
-    #     shinyFeedback::showFeedback(
-    #       "studyname",
-    #       text = "This field is mandatory",
-    #       color = "#d9534f",
-    #       icon = shiny::icon("exclamation-sign", lib="glyphicon")
-    #     )
-    #   } else {
-    #     shinyFeedback::hideFeedback("studyname")
-    #   }
-    # })
 
     # --- #
     # Add Tooltips for each element
