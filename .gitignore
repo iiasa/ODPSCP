@@ -19,5 +19,3 @@ deploy/
 # Shiny bookmarks
 shiny_bookmarks/
 
-# Ignore log files
-logs/
