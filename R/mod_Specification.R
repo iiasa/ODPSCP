@@ -280,7 +280,7 @@ mod_Specification_ui <- function(id){
                                        or that, directly or indirectly, shape the planning outcome.
                                        The threat description broadly follows the IUCN Threat categorization system."),
                               shiny::br(),
-                              shiny::helpText("IUCN Threat classification: https://www.iucnredlist.org/resources/threat-classification-scheme"),
+                              shiny::p("IUCN Threat classification: https://www.iucnredlist.org/resources/threat-classification-scheme"),
                             # Threat types
                             bs4Dash::box(
                               title = "Threat types",
@@ -312,13 +312,9 @@ mod_Specification_ui <- function(id){
                               ),
                               shiny::br(),
                               # Any other types?
-                              shiny::conditionalPanel(
-                                condition = "input.threattypes == 'Other'",
-                                ns = ns,
-                                shiny::textAreaInput(inputId = ns("otherthreattype"), label = "Other types",
-                                                     placeholder = 'Any other type of threat not considered? Describe',
-                                                     height = "45px", width = "100%", resize = "none")
-                                )
+                              shiny::textAreaInput(inputId = ns("otherthreattype"), label = "Other types",
+                                                   placeholder = 'Any other type of threat not considered? Describe',
+                                                   height = "45px", width = "100%", resize = "none")
                           ), # Threat type box end
                           shiny::br(),
                           # How were Threats considered/included?
@@ -417,8 +413,8 @@ mod_Specification_ui <- function(id){
                           solidHeader = TRUE,
                           status = "secondary",
                           collapsible = FALSE,
-                          shiny::p("An example is the use of Overall Species richness as
-                            aggregated sum of species distributions in the planning"),
+                          shiny::p("An common example is the use of 'stacked' distribution
+                          layers and subsequent inclusion of species richness in the prioritization."),
                           shinyWidgets::prettyToggle(
                             inputId = ns('checkaggregated'),
                             label_on = "Yes",
@@ -474,7 +470,9 @@ mod_Specification_ui <- function(id){
                             describe how input features were created.'),
                           shiny::textAreaInput(inputId = ns("featureorigin"), label = "",
                                            placeholder = 'Describe the origin of the input features',
-                                           height = "60px", width = "100%", resize = "vertical")
+                                           height = "60px", width = "100%", resize = "vertical"),
+                          shiny::br(),
+                          shiny::helpText("(Please be brief and where possible refer to existing text or other protocols)")
                         )
                       )
                   ) # Fluid column end

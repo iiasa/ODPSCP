@@ -146,7 +146,7 @@ get_protocol_mandatory <- function(path_protocol = NULL){
     pp <- template[[gr]]
     for(element in names(pp)){
       ppp <- pp[[element]]
-      if(ppp$mandatory) results <- append(results,values = ppp[['render-id']] )
+      if(ppp$mandatory) results <- append(results, values = ppp[['render-id']] )
     }
   }
   return(results)
@@ -157,21 +157,19 @@ get_protocol_mandatory <- function(path_protocol = NULL){
 #' @description
 #' This small helper check whether mandatory entries in the results have been filled.
 #' @param results A [`list`] with the protocol results.
-#' @param mand A [`vector`] with [`character`] entries of the mandatory fields.
 #' @param path_protocol A [`character`] pointing to the destination of the protocol.
 #' @returns A [`vector`] of mandatory character entries that missing.
 #' @noRd
-check_protocol_mandatory <- function(results, mand, path_protocol = NULL){
+check_protocol_mandatory <- function(results, path_protocol = NULL){
   # Checks protocol
   assertthat::assert_that(is.character(path_protocol) || is.null(path_protocol))
-  assertthat::assert_that(is.character(mand) || missing(mand))
   assertthat::assert_that(is.list(results))
 
   # If is null, load protocol
   template <- load_protocol(path_protocol)
 
   # If missing, load again
-  if(missing(mand)) mand <- get_protocol_mandatory(path_protocol)
+  mand <- get_protocol_mandatory(path_protocol)
 
   out <- vector()
   for(gr in names(template)[-1]){
@@ -186,4 +184,60 @@ check_protocol_mandatory <- function(results, mand, path_protocol = NULL){
     }
   }
   return(out)
+}
+
+#' Validate loaded protocol results
+#'
+#' @description
+#' This small helper check whether a loaded results file is actually valid.
+#' In the case it is not
+#' @param results A [`list`] with the protocol results.
+#' @param path_protocol A [`character`] pointing to the destination of the protocol.
+#' @returns Either \code{NULL} in case of no issues or a [`character`] with a error message.
+#' @noRd
+validate_protocol_results <- function(results, path_protocol = NULL){
+  # Checks protocol
+  assertthat::assert_that(is.character(path_protocol) || is.null(path_protocol))
+  assertthat::assert_that(is.list(results) || is.data.frame(results),
+                          length(results)>1)
+
+  # If is null, load protocol
+  template <- load_protocol(path_protocol)
+
+  # --- #
+  # Entries missing
+  if(is.data.frame(results)){
+    if(!all(results$group %in% names(template))){
+      return("The loaded file is missing the protocol groups!")
+    }
+  } else {
+    if(!all(names(results) %in% names(template))){
+      return("The loaded file is missing the protocol groups!")
+    }
+  }
+
+  # Check specifically for data.frame
+  if(is.data.frame(results)){
+    if(!utils::hasName(results, "group") || !utils::hasName(results, "render_id")){
+      return("Necessary entries not found in uploaded data.frame!")
+    }
+  }
+
+  # Check file ids
+  if(is.data.frame(results)){
+    ids <- results$render_id
+  } else {
+    ids <- lapply(results, function(z) names(z)) |> unlist()
+  }
+  # Check that ids actually exist
+  if(!all(ids %in% get_protocol_ids(path_protocol = path_protocol))){
+    return("Not all ids in the protocol file do exist in the current protocol!")
+  }
+
+  # Check mandatory entries
+  if(!all(get_protocol_mandatory(path_protocol = path_protocol)) %in% ids){
+    return("Exported protocol does not contain all mandatory groups!")
+  }
+  # --- #
+  return(NULL)
 }

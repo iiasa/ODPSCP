@@ -83,6 +83,7 @@ mod_Context_ui <- function(id){
                                                           "Current conditions",
                                                           "Future conditions",
                                                           "Fully dynamic"),
+                                              selected = "Current conditions",
                                               multiple = TRUE,
                                               options = list(create = FALSE,
                                                              placeholder = "Choose single or multiple from list"))

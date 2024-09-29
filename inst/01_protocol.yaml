@@ -4,7 +4,7 @@ protocol:
   version: '0.4'
   repository: 'https://github.com/iiasa/ODPSCP'
   website: 'https://odpscp.iiasa.ac.at/'
-  last_updated: 2024-09-01
+  last_updated: 2024-09-30
 
 #### Overview ####
 overview:
@@ -38,18 +38,8 @@ overview:
     mandatory: true
     popexample: "darwin@thebeagle.ac.uk"
 
-  orcid:
-    render-nr: 4
-    render-id: 'authorid'
-    render-group: 'study_box'
-    question: 'ORCID of the corresponding author if existing.'
-    description: 'A ORCID can be used as unique identifier of the lead author even if institutions and emails change.'
-    fieldtype: 'textbox'
-    mandatory: false
-    popexample: "A numeric id such as 000000000000000"
-
   studylink:
-    render-nr: 5
+    render-nr: 4
     render-id: 'studylink'
     render-group: 'study_box'
     question: 'Link to the published study.'
@@ -397,8 +387,8 @@ specification:
 
   inclusionexclusion:
     render-nr: 3
-    render-id: 'zones'
-    render-group: 'inclusionexclusion'
+    render-id: 'inclusionexclusion'
+    render-group: 'checkzones'
     question: 'Any areas or actions that were included or excluded by default?'
     description: 'In a planning project, certain areas or actions can be included or excluded by default. '
     fieldtype: 'dropdown'

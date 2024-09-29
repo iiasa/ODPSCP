@@ -7,12 +7,32 @@ app_server <- function(input, output, session) {
   # Your application server logic
   sever::sever()
 
+  # --- #
   # Add bookmark button to top
   # NOTE: For URL see also https://stackoverflow.com/questions/58396680/how-to-extract-the-url-from-the-shiny-bookmark-button-and-create-my-own-action-b
-  shiny::enableBookmarking(store = "url")
+  # shiny::enableBookmarking(store = "url")
   shiny::observeEvent(input$bookmark, {
-    session$doBookmark()
+    # session$doBookmark()
+    # Use manuall bookmarking instead owing to the complexity
+    shiny::showNotification("Export the current protocol as yaml. Then import later...",
+                            duration = 5,closeButton = TRUE, type = "message")
+    bs4Dash::updateTabItems(session, inputId = "sidebarmenu", selected = "Export")
   })
+
+  # Save bookmark time too
+  shiny::onBookmark(function(state) {
+    savedTime <- as.character(Sys.time())
+    cat("Last saved at", savedTime, "\n")
+    # state is a mutable reference object, and we can add arbitrary values to
+    # it.
+    state$values$time <- savedTime
+  })
+
+  # On restore
+  shiny::onRestore(function(state) {
+    cat("Restoring from state bookmarked at", state$values$time, "\n")
+  })
+  # --- #
 
   # Enable shinylogs
   # shinylogs::read_rds_logs("logs")
@@ -30,49 +50,51 @@ app_server <- function(input, output, session) {
   results <- shiny::reactiveValues()
 
   # Bottom page buttons -------------------------------------------------------
+  # Javascript to be rendered with shinyjs
+  jscode <- "function() {document.body.scrollTop = 0;}"
   shiny::observeEvent(input$start_new_protocol, {
     bs4Dash::updateTabItems(session,
                             inputId = "sidebarmenu", selected = "Overview")
+    # Jump to top
+    shinyjs::runjs(jscode)
   })
 
   # Final observer events for continue buttons
   shiny::observeEvent(input$go_home, {
     bs4Dash::updateTabItems(session, inputId = "sidebarmenu", selected = "Home")
+    # Jump to top
+    shinyjs::runjs(jscode)
   })
   shiny::observeEvent(input$go_overview, {
     bs4Dash::updateTabItems(session, inputId = "sidebarmenu", selected = "Overview")
+    # Jump to top
+    shinyjs::runjs(jscode)
   })
   shiny::observeEvent(input$go_design, {
     bs4Dash::updateTabItems(session, inputId = "sidebarmenu", selected = "Design")
+    # Jump to top
+    shinyjs::runjs(jscode)
   })
   shiny::observeEvent(input$go_specification, {
     bs4Dash::updateTabItems(session, inputId = "sidebarmenu", selected = "Specification")
+    # Jump to top
+    shinyjs::runjs(jscode)
   })
   shiny::observeEvent(input$go_context, {
     bs4Dash::updateTabItems(session, inputId = "sidebarmenu", selected = "Context")
+    # Jump to top
+    shinyjs::runjs(jscode)
   })
   shiny::observeEvent(input$go_prioritization, {
     bs4Dash::updateTabItems(session, inputId = "sidebarmenu", selected = "Prioritization")
+    # Jump to top
+    shinyjs::runjs(jscode)
   })
   shiny::observeEvent(input$go_export, {
     bs4Dash::updateTabItems(session, inputId = "sidebarmenu", selected = "Export")
+    # Jump to top
+    shinyjs::runjs(jscode)
   })
-  # ---------------------------------------------------------------------------
-
-  # Add Help popups for every entry
-  # Add Tooltips for each element
-  # for(n in names(protocol)){
-  #   sub <- protocol[[n]]
-  #   bs4Dash::addPopover(
-  #     id = sub['render-id'],
-  #     options = list(
-  #       content = sub$popexample,
-  #       title = sub$question,
-  #       placement = "auto",
-  #       trigger = "hover"
-  #     )
-  #   )
-  # }
 
   # title page ----------------------------------------------------------------
   # Adding module server code

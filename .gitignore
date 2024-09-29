@@ -19,3 +19,5 @@ deploy/
 # Shiny bookmarks
 shiny_bookmarks/
 
+# Log files
+logs/*.rds

@@ -77,9 +77,9 @@ mod_Design_ui <- function(id){
                        work? This could for example also be a specific planning protocol or established
                        approaches such as structure decision making or adaptive management."),
                      shiny::p("Example framework references:"),
-                     shiny::p("Pressey, R. L., & Bottrill, M. C. (2009). Approaches to landscape-and seascape-scale conservation planning: convergence, contrasts and challenges. Oryx, 43(4), 464-475."),
-                     shiny::p("Alvarez-Romero, J. G., Adams, V. M., Pressey, R. L., Douglas, M., Dale, A. P., Auge, A. A., ... & Perdrisat, I. (2015). Integrated cross-realm planning: A decision-makers' perspective. Biological Conservation, 191, 799-808."),
-                     shiny::p("Niemiec, R. M., Gruby, R., Quartuch, M., Cavaliere, C. T., Teel, T. L., Crooks, K., ... & Manfredo, M. (2021). Integrating social science into conservation planning. Biological Conservation, 262, 109298."),
+                     shiny::p("Pressey, R. L., & Bottrill, M. C. (2009). Approaches to landscape-and seascape-scale conservation planning: convergence, contrasts and challenges. Oryx, 43(4), 464-475. DOI: https://doi.org/10.1017/S0030605309990500"),
+                     shiny::p("Alvarez-Romero, J. G., Adams, V. M., Pressey, R. L., Douglas, M., Dale, A. P., Auge, A. A., ... & Perdrisat, I. (2015). Integrated cross-realm planning: A decision-makers' perspective. Biological Conservation, 191, 799-808. DOI: https://doi.org/10.1016/j.biocon.2015.07.003"),
+                     shiny::p("Niemiec, R. M., Gruby, R., Quartuch, M., Cavaliere, C. T., Teel, T. L., Crooks, K., ... & Manfredo, M. (2021). Integrating social science into conservation planning. Biological Conservation, 262, 109298. DOI: https://doi.org/10.1016/j.biocon.2021.109298"),
                      shinyWidgets::pickerInput(
                        inputId = ns("studyframework"),
                        label = "Analytical Framework",
@@ -303,7 +303,8 @@ mod_Design_ui <- function(id){
                                                           "Property owners"),
                                               multiple = TRUE,
                                               options = list(create = TRUE,
-                                                             placeholder = "Choose from list, or type and click to add new option."))
+                                                             placeholder = "Choose from list, or type and click to add new option.")
+                                              )
                       ),
                       shiny::br(),
                       bs4Dash::box(

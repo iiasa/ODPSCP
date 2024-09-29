@@ -100,6 +100,7 @@ format_studyregion_to_text <- function(val){
   }
   return(val)
 }
+
 #' List to table
 #'
 #' @description
@@ -168,6 +169,7 @@ protocol_to_document <- function(results, file, format = "docx", path_protocol =
                           is.character(file))
   # Match the format
   format <- match.arg(format, c("html", "docx", "pdf"), several.ok = FALSE)
+  # Add docx by default (also for pandoc)
   if(tools::file_ext(file) != "docx") file <- paste0(tools::file_path_sans_ext(file), ".", "docx")
 
   # If is null, load protocol
@@ -235,37 +237,41 @@ protocol_to_document <- function(results, file, format = "docx", path_protocol =
         # Add to document
         doc <- doc |> officer::body_add_gg(value = gg)
         try({ rm(gg, sp) },silent = TRUE)
-      } else {
-        # All other entries
+      } else if(el %in% c("authors_table","featurelist",
+                          "evalidentification","specificzones")) {
+
+        # Lists for example for table
         if(is.list(res)) {
           if(length(res)>0){
             # Tables
-            ft <- flextable::flextable(res) |>
+            ft <- flextable::flextable( dplyr::bind_rows(res) ) |>
               flextable::set_table_properties(layout = "autofit")
             doc <- doc |> flextable::body_add_flextable(value = ft)
           } else {
             res <- "Not specified"
           }
         }
+      } else {
+        # All other entries
+        if(all(is.logical(res))) res <- ifelse(res, "Yes", "No")
+        if(all(is.na(res))) res <- "Not specified"
+
         # If multiple entries, paste together via -
         if(length(res)>1) res <- paste(res, collapse = " - ")
 
-        if(is.logical(res)) res <- ifelse(res, "Yes", "No")
-        if(is.na(res)) res <- "Not specified"
-
+        # Add to body
         fpar <- officer::fpar(
           officer::ftext(text = res,
                          prop = officer::fp_text(font.size = 12,italic = FALSE))
         )
         doc <- doc |> officer::body_add_fpar(value = fpar)
-      }
 
+      }
       # Small linebreak
       doc <- doc |> officer::body_add_par(value = "", style = "Normal")
 
     }
   }
-
   # Generate output to file
   doc |> print(target = file)
 

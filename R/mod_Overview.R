@@ -17,20 +17,20 @@ mod_Overview_ui <- function(id){
     shiny::fluidPage(
       shiny::fluidRow(
         shiny::column(width = 12,
-               bs4Dash::box(
-            title = "Provide an overview of the conducted work",
-            closable = FALSE,
-            width = 12,
-            solidHeader = FALSE,
-            collapsible = FALSE,
-            "Let's start with a new reporting protocol. In the overview step we describe
-            all the properties of the conducted planning study. The entries below
-            intend to both uniquely identify the study, provide necessary information
-            on the availability of code or data and allows to categorizes the study itself
-            based on the listed properties.
-            ",
-            shiny::br(),
-            shiny::strong("By default example popups are shown for text fields, which can be disabled through the questionmark at the top bar.")
+            bs4Dash::box(
+              title = "Provide an overview of the conducted work",
+              closable = FALSE,
+              width = 12,
+              solidHeader = FALSE,
+              collapsible = FALSE,
+              "Let's start with a new reporting protocol. In the overview step we describe
+              all the properties of the conducted planning study. The entries below
+              intend to both uniquely identify the study, provide necessary information
+              on the availability of code or data and allows to categorizes the study itself
+              based on the listed properties.
+              ",
+              shiny::br(),
+              shiny::strong("By default example popups are shown for text fields, which can be disabled through the questionmark at the top bar.")
           ),
           shiny::hr()
         )
@@ -83,19 +83,6 @@ mod_Overview_ui <- function(id){
             shiny::textAreaInput(inputId = ns("authoremail"), label = "",
                           placeholder = 'Email of the corresponding author',
                           height = "45px", width = "100%", resize = "none")
-          ),
-          # Corresponding author
-          bs4Dash::box(
-            title = "(Optional) Corresponding Author ID",
-            closable = FALSE,
-            width = 12,
-            solidHeader = TRUE,
-            status = "secondary",
-            collapsible = FALSE,
-            shiny::div("A ORCID can be used as unique identifier of the lead author even if institutions and emails change."),
-            shiny::textAreaInput(inputId = ns("authorid"), label = "",
-                                 placeholder = 'ORCID of the corresponding author if existing',
-                                 height = "45px", width = "100%", resize = "none")
           ),
           # Link to study
           bs4Dash::box(

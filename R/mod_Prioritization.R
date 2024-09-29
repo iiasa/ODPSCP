@@ -89,7 +89,7 @@ mod_Prioritization_ui <- function(id){
                      # Objective functions
                      shiny::br(),
                      bs4Dash::box(
-                       title = "(Optional) Outcome identification",
+                       title = "Outcome identification",
                        closable = FALSE,
                        width = 12,
                        solidHeader = TRUE,
@@ -150,13 +150,10 @@ mod_Prioritization_ui <- function(id){
                                      "External indicator",
                                      "Other")
                        ),
-                       shiny::conditionalPanel(
-                         condition = "input.identsolution == 'Other'",
-                         ns = ns,
-                         shiny::textAreaInput(inputId = ns("otheridentification"), label = "",
-                                       placeholder = 'Explain how final solutions were obtained',
-                                       height = "45px", width = "100%", resize = "vertical")
-                       )
+                       # Explain
+                       shiny::textAreaInput(inputId = ns("otheridentification"), label = "",
+                                     placeholder = 'Explain how final solutions were obtained.',
+                                     height = "45px", width = "100%", resize = "vertical")
                       )
                      )
               )

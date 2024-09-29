@@ -30,8 +30,8 @@ mod_Export_ui <- function(id){
             shiny::p(
               "All protocol entries can be exported in a range of different formats
               for further use such as appending them to a manuscript.
-              It should be noted that only 'rData', 'csv' and 'yaml' are
-              machine-readable formats and be imported again by ODPSCP.
+              It should be noted that only 'csv' and 'yaml' are
+              machine-readable formats and can be imported again by ODPSCP.
               "
             ),
             shiny::br(),
@@ -44,7 +44,7 @@ mod_Export_ui <- function(id){
               size = "lg",
               status = "info",
               choices = c('docx', 'pdf', 'csv', 'yaml'),
-              selected = 'rData',
+              selected = 'yaml',
               checkIcon = list(
                 yes = shiny::icon("circle-down"),
                 no = NULL
@@ -109,9 +109,6 @@ mod_Export_ui <- function(id){
             collapsible = FALSE,
             DT::DTOutput(outputId = ns("results_table"))
           )
-          # shiny::textOutput(
-          #   outputId = ns("protocolmarkdown")
-          # )
         ) # End Tab panel
        ) # End Tabset panel
     )
@@ -135,21 +132,13 @@ mod_Export_server <- function(id, results){
                     editable = FALSE)
     })
 
-    # Get mandatory protocol entries
-    mand <- get_protocol_mandatory()
-
-    # # Check for mandatory outputs and highlight them in text
-    # test <- shiny::reactive({
-    #   req(results)
-    #   results
-    # })
-    #
-    # # Check the value of all mandatory fields
-    # shiny::observeEvent(test(), {
-    #   # miss <- check_protocol_mandatory(file, mand)
-    #   # output$missingtext <- shiny::renderText({
-    #   #   paste0("No entry found for mandatory fields:", miss)
-    #   # })
+    # --- #
+    # Check for mandatory outputs and highlight them in text
+    # shiny::observe(results, {
+    #   miss <- check_protocol_mandatory(results)
+    #   output$missingtext <- shiny::renderText({
+    #     paste0("No entry found for mandatory fields:", miss)
+    #   })
     #   print("test")
     #   shinyjs::toggle("downloadData")
     # })
@@ -162,8 +151,9 @@ mod_Export_server <- function(id, results){
       filename = function() {
         # Compose output file
         paste0(
+          "ODPSCP__",
           format(Sys.Date(), "%Y_%m_%d"),
-          "__ODPSCP.",
+          ".",
           oftype()
         )
       },
@@ -186,12 +176,12 @@ mod_Export_server <- function(id, results){
         } else if(oftype() == "docx"){
           # Create document from results, everything handled by function
           protocol <- format_protocol(results, format = "list")
-          protocol_to_document(protocol, file = file, format = "docx")
           # saveRDS(protocol, "test.rds")
+          protocol_to_document(protocol, file = file, format = "docx")
         } else if(oftype() == "pdf"){
           # Create document from results
           protocol <- format_protocol(results, format = "list")
-          protocol_to_document(protocol, file = file,format = "pdf")
+          protocol_to_document(protocol, file = file, format = "pdf")
         }
       }
     )

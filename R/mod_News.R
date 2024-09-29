@@ -48,20 +48,20 @@ mod_News_ui <- function(id){
                         width = 12,
                         shiny::verbatimTextOutput(ns("current_protocol"))
                       )
-                    ),
-                    shiny::tabPanel(
-                      title = "R Session Info",
-                      shiny::br(),
-                      bs4Dash::box(
-                        title = "R Session Info",
-                        status = "primary",
-                        solidHeader = TRUE,
-                        collapsed = FALSE,
-                        width = 12,
-                        shiny::verbatimTextOutput(ns("Rsession"))
-                      )
                     )
-                  )
+                    # shiny::tabPanel(
+                    #   title = "R Session Info",
+                    #   shiny::br(),
+                    #   bs4Dash::box(
+                    #     title = "R Session Info",
+                    #     status = "primary",
+                    #     solidHeader = TRUE,
+                    #     collapsed = FALSE,
+                    #     width = 12,
+                    #     shiny::verbatimTextOutput(ns("Rsession"))
+                    #   )
+                    # )
+                  ) # End of tabset
            )
          )
        ) # End fluidpage
@@ -76,9 +76,9 @@ mod_News_server <- function(id){
     ns <- session$ns
 
     # Print out the current Rsession
-    output$Rsession <- shiny::renderPrint(
-      print(utils::sessionInfo())
-    )
+    # output$Rsession <- shiny::renderPrint(
+    #   print(utils::sessionInfo())
+    # )
 
     # Get the protocol for print
     ppath <- system.file("01_protocol.yaml",
