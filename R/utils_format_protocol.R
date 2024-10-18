@@ -80,22 +80,22 @@ format_protocol <- function(results, format = "data.frame",
 
 #' Small helper for spatial conversion to wkt
 #' @param val A [`list`] with the datapath for the spatial file
+#' @return A [`character`] with a WKT.
 #' @noRd
 format_studyregion_to_text <- function(val){
   assertthat::assert_that(utils::hasName(val, "datapath"))
-  # Assume as sf and load as such
+  # Load from data path
   val <- try({
-    sf::st_as_sfc(
-      sf::st_read(val$datapath,quiet = TRUE)
-    )
-  },silent = TRUE)
+    spatial_to_sf(val$datapath, make_valid = FALSE)
+  }, silent = TRUE)
   if(inherits(val,"try-error")){
     val <- "Studyregion could not be loaded?"
   } else {
+    # Convert to sfc
+    val <- val |> sf::st_as_sfc()
     val <- paste0(
       # Also append SRID in front
-      sf::st_crs(val) |> sf::st_as_text(),";",
-      sf::st_as_text(val)
+      sf::st_crs(val) |> sf::st_as_text(),";", sf::st_as_text(val)
     )
   }
   return(val)
@@ -230,13 +230,25 @@ protocol_to_document <- function(results, file, format = "docx", path_protocol =
       if(el == "studyregion"){
         # Render studyregion
         sp <- strsplit(res,";") # Split SRID off
-        sp <- sp[[1]][2] |> sf::st_as_sfc() |> sf::st_sf(crs = sp[[1]][1])
-        gg <- ggplot2::ggplot() +
-          ggplot2::geom_sf(data = sp) +
-          ggplot2::labs(title = "Outline of studyregion")
-        # Add to document
-        doc <- doc |> officer::body_add_gg(value = gg)
-        try({ rm(gg, sp) },silent = TRUE)
+        # Catch error in case region could not be loaded
+        if(is.na(sp[[1]][2])){
+          # Add to body
+          fpar <- officer::fpar(
+            officer::ftext(text = sp[[1]][1],
+                           prop = officer::fp_text(font.size = 12,italic = FALSE))
+          )
+          doc <- doc |> officer::body_add_fpar(value = fpar)
+        } else {
+          # Correctly parsed geometry
+          sp <- sp[[1]][2] |> sf::st_as_sfc() |> sf::st_sf(crs = sp[[1]][1])
+          gg <- ggplot2::ggplot() +
+            ggplot2::geom_sf(data = sp) +
+            ggplot2::labs(title = "Outline of studyregion")
+          # Add to document
+          doc <- doc |> officer::body_add_gg(value = gg)
+          try({ rm(gg)},silent = TRUE)
+        }
+        try({ rm(sp) },silent = TRUE)
       } else if(el %in% c("authors_table","featurelist",
                           "evalidentification","specificzones")) {
 

@@ -14,8 +14,8 @@ app_server <- function(input, output, session) {
   shiny::observeEvent(input$bookmark, {
     # session$doBookmark()
     # Use manuall bookmarking instead owing to the complexity
-    shiny::showNotification("Export the current protocol as yaml. Then import later...",
-                            duration = 5,closeButton = TRUE, type = "message")
+    shiny::showNotification("Save the current protocol as csv or yaml. Then import later...",
+                            duration = 5, closeButton = TRUE, type = "message")
     bs4Dash::updateTabItems(session, inputId = "sidebarmenu", selected = "Export")
   })
 

@@ -37,6 +37,7 @@ Imports:
     tools,
     utils,
     waiter,
+    zip,
     yaml
 Suggests:
     spelling,

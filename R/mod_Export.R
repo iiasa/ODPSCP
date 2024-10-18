@@ -44,7 +44,7 @@ mod_Export_ui <- function(id){
               size = "lg",
               status = "info",
               choices = c('docx', 'pdf', 'csv', 'yaml'),
-              selected = 'yaml',
+              selected = 'csv',
               checkIcon = list(
                 yes = shiny::icon("circle-down"),
                 no = NULL
@@ -95,7 +95,13 @@ mod_Export_ui <- function(id){
                        shiny::textOutput(outputId = ns("missingtext"))),
             shiny::br(),
             # Button
-            shiny::downloadButton(ns("downloadData"), "Download the protocol")
+            shiny::p(
+              shiny::downloadButton(ns("downloadData"), "Download the selection option",
+                                    class = "btn-primary"),
+              shiny::downloadButton(ns("downloadEverything"), "Download everything",
+                                    icon = shiny::icon("file-zipper"),
+                                    class = "btn-secondary")
+            )
           )
         ),
         shiny::tabPanel(
@@ -176,13 +182,51 @@ mod_Export_server <- function(id, results){
         } else if(oftype() == "docx"){
           # Create document from results, everything handled by function
           protocol <- format_protocol(results, format = "list")
-          # saveRDS(protocol, "test.rds")
+          # saveRDS(results, "test.rds")
           protocol_to_document(protocol, file = file, format = "docx")
         } else if(oftype() == "pdf"){
           # Create document from results
           protocol <- format_protocol(results, format = "list")
           protocol_to_document(protocol, file = file, format = "pdf")
         }
+      }
+    )
+
+    # Download everything button
+    output$downloadEverything <- shiny::downloadHandler(
+      filename = function() {
+        # Compose output file
+        paste0(
+          "ODPSCP__",
+          format(Sys.Date(), "%Y_%m_%d"),
+          ".zip"
+        )
+      },
+      content = function(file) {
+        # Create outputs from results
+        shiny::showNotification("Preparing zipped outputs which can take a little while...",
+                                duration = 3, type = "message")
+        # First csv
+        protocol <- format_protocol(results, format = "data.frame")
+        ofname1 <- file.path(tempdir(), "ODPSCP_protocol.csv")
+        readr::write_csv(protocol, file = ofname1)
+
+        # Create document from results, everything handled by function
+        protocol <- format_protocol(results, format = "list")
+        ofname2 <- file.path(tempdir(), "ODPSCP_protocol.docx")
+        protocol_to_document(protocol, file = ofname2,
+                             format = "docx")
+
+        # Create PDF document from results
+        protocol <- format_protocol(results, format = "list")
+        ofname3 <- file.path(tempdir(), "ODPSCP_protocol.pdf")
+        protocol_to_document(protocol, file = ofname3,
+                             format = "pdf")
+
+        # Zip everything together
+        zip::zip(file,
+                 files = c(ofname1, ofname2, ofname3),
+                 mode = "cherry-pick")
       }
     )
 

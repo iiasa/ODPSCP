@@ -1,5 +1,6 @@
 ## Version 0.4
 
+* Fixed several typos ✍️. 
 * Updated with further description and suggested edits by experts.
 * Updated and shortened preface description page.
 

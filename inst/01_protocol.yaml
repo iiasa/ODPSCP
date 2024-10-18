@@ -73,6 +73,7 @@ overview:
     fieldtype: 'fileupload'
     fieldtype_conditional_render-id: 'studymap'
     fieldtype_conditional: 'leaflet'
+    fieldtype_conditional_description: ''
     mandatory: false
     popexample: "Upload for example a shp file of the study area."
 
@@ -96,6 +97,7 @@ overview:
     fieldtype: 'slider'
     fieldtype_conditional_render-id: 'otherstudytime'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Additional detail related to the temporal range of the study'
     mandatory: true
     popexample: "The study uses data from the period 2015-2020 in order to make
     recommendations for potential protected area network in 2030. The time period is thus 2015-2030."
@@ -127,6 +129,7 @@ overview:
     fieldtype: 'radio'
     fieldtype_conditional_render-id: 'inputdata'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Link to the data storage repository.'
     mandatory: true
     popexample: "Data are available from the original data providers here:"
 
@@ -139,10 +142,11 @@ overview:
     fieldtype: 'radio'
     fieldtype_conditional_render-id: 'outputdata'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Link to the data storage repository.'
     mandatory: true
     popexample: "A link to a permanent data repository, such as Zenodo, Figshare or similar."
 
-  reproducibility:
+  code_availability:
     render-nr: 2
     render-id: 'codeavailability'
     render-group: 'data_availability'
@@ -151,6 +155,7 @@ overview:
     fieldtype: 'radio'
     fieldtype_conditional_render-id: 'outputcode'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Link to the code storage repository.'
     mandatory: true
     popexample: "The analytical code for preparing input data and running the prioritization has been made available as supporting material and under the folling link: "
 
@@ -161,7 +166,7 @@ design:
     render-id: 'studyaim'
     render-group: 'study_design'
     question: 'What is the aim of the study?'
-    description: 'Desribe in 1-2 sentences what the study aims to achieve?'
+    description: 'Describe in 1-2 sentences what the study aims to achieve.'
     fieldtype: 'textbox'
     mandatory: true
     popexample: "Identification of joint priorities, location of new protected areas or management actions."
@@ -179,6 +184,7 @@ design:
       - Reference
     fieldtype_conditional_render-id: 'frameworkreference'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Clarification and link to the used framework.'
     mandatory: false
     popexample: "A framework outlining the decision making process and theory is described in the publication."
 
@@ -191,6 +197,7 @@ design:
     fieldtype: 'radio'
     fieldtype_conditional_render-id: 'theoryofchange_text'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Clarification with regards to the theory of change.'
     mandatory: false
     popexample: "Highlight an initial policy or stakeholder demand, continuous engagement and clear
     process towards implementation."
@@ -223,6 +230,7 @@ design:
     fieldtype: 'radio'
     fieldtype_conditional_render-id: 'multobj'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Clarification how multiple objectives were considered.'
     mandatory: true
     popexample: "Joint priorities for both climate mitigation and biodiversity preservation were identified."
 
@@ -235,6 +243,7 @@ design:
     fieldtype: 'checkbox'
     fieldtype_conditional_render-id: 'planningscenarios'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Description of the used scenarios.'
     mandatory: false
     popexample: "One planning outcome weighted towards biodiversity and another towards ecosystem services. Or SSP1-2.6 and SSP5-8.5, or similar"
 
@@ -247,6 +256,7 @@ design:
     fieldtype: 'radio'
     fieldtype_conditional_render-id: 'stakeholderint'
     fieldtype_conditional: 'dropdown'
+    fieldtype_conditional_description: 'Multiple choice selection how exactly stakeholder were engaged.'
     conditional_options:
       - Informed
       - Consulted
@@ -305,6 +315,7 @@ specification:
       - Other
     fieldtype_conditional_render-id: 'othertypes'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Description of any other type of planning unit.'
     mandatory: true
     popexample: "Regular gridded planning units were used."
 
@@ -315,16 +326,17 @@ specification:
     question: 'What was the spatial grain of planning?'
     description: 'Describe the grain of planning units if applicable.'
     fieldtype: 'numeric'
-    fieldtype_conditional_render-id: 'pu_grainunit'
+    fieldtype_conditional_render-id: 'pu_grainother'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Any other description of how the grain was described?'
     mandatory: false
     popexample: "Each planning unit had a size of 1000 m²."
 
-  grainspace_other:
+  grainspace_unit:
     render-nr: 3
-    render-id: 'pu_grainother'
+    render-id: 'pu_grainunit'
     render-group: 'planningunits'
-    question: 'Any other description with regards to spatial grain of PU?'
+    question: 'Select or enter unit used for the spatial grain.'
     description: 'Leave empty if not applicable.'
     fieldtype: 'selectizedropdown'
     options:
@@ -343,7 +355,7 @@ specification:
     render-id: 'pu_checkcosts'
     render-group: 'planningunits'
     question: 'Where there any costs of selecting a planning unit? Select one or multiple.'
-    description: 'Describe the grain of planning units if applicable.'
+    description: 'Where there any costs or penalities for selecting a planning unit? Select one or multiple.'
     fieldtype: 'multiplechoice'
     options:
       - Area only
@@ -358,6 +370,7 @@ specification:
       - Other
     fieldtype_conditional_render-id: 'pu_costs'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Describe the process of costs were created or used.'
     mandatory: true
     popexample: "No specific cost estimates were used and all PU had equal cost (Area only)."
 
@@ -370,6 +383,7 @@ specification:
     fieldtype: 'radio'
     fieldtype_conditional_render-id: 'specificecosystem'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Describe exactly how specific ecosystems were used.'
     mandatory: false
     popexample: "Study was conducted not on the whole landscape, but rather prioritizing only forest and features patches within them."
 
@@ -382,6 +396,7 @@ specification:
     fieldtype: 'radio'
     fieldtype_conditional_render-id: 'specificzones'
     fieldtype_conditional: 'multifieldselection'
+    fieldtype_conditional_description: 'Describe exactly how (management) zones were used, including contributions or exclusions.'
     mandatory: false
     popexample: "Identify a set of no-take and partial-take areas to prevent overfishing, but also ensure that there still remain plenty of areas for fishing activities."
 
@@ -398,6 +413,7 @@ specification:
       - Areas or Action excluded
     fieldtype_conditional_render-id: 'defaultareas'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Describe which areas were included/excluded and why.'
     mandatory: true
     popexample: "Existing protected areas were considered to be part of every solution (included)."
 
@@ -424,6 +440,7 @@ specification:
       - Other
     fieldtype_conditional_render-id: 'otherthreattype'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Describe the use of any other threat type.'
     mandatory: true
     popexample: "Select any type of threat considered in this work."
 
@@ -446,6 +463,7 @@ specification:
       - Other
     fieldtype_conditional_render-id: 'threatdetail'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Describe the use of other ways threats were considered in the planning.'
     mandatory: false
     popexample: "Anthropogenic land-uses were considered as a selection penalty for avoiding high impact regions."
 
@@ -472,6 +490,7 @@ specification:
       - Other
     fieldtype_conditional_render-id: 'otherfeaturetype'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Describe any other not listed feature types.'
     mandatory: true
     popexample: "The study used exclusively distribution estimates of species."
 
@@ -484,6 +503,7 @@ specification:
     fieldtype: 'checkbox'
     fieldtype_conditional_render-id: 'featureaggregated'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Describe which features were aggregated, why and how.'
     mandatory: false
     popexample: "Species distributions were aggregated to a species richness layer, that was then included as a feature."
 
@@ -494,7 +514,7 @@ specification:
     question: 'List the features'
     description: 'Add the features to the list.'
     fieldtype: 'multifieldselection'
-    mandatory: false
+    mandatory: true
     popexample: "Threatened plant species, Species (distributions), 260"
 
   featureorigin:
@@ -549,6 +569,7 @@ context:
     fieldtype: 'radio'
     fieldtype_conditional_render-id: 'connectivityplan'
     fieldtype_conditional: 'selectizedropdown'
+    fieldtype_conditional_description: 'Select what type of connectivity was considered specifically.'
     conditional_options:
       - Boundary penalty
       - Neighbour constraint
@@ -594,6 +615,7 @@ context:
       - Other
     fieldtype_conditional_render-id: 'targetdetail'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Explain how targets for features were estimated.'
     mandatory: true
     popexample: "A flat target of at least 10% of each feature was considered necessary to be in the solution."
 
@@ -606,6 +628,7 @@ context:
     fieldtype: 'checkbox'
     fieldtype_conditional_render-id: 'featureweightsdetails'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Explain how feature weights have been defined or set.'
     mandatory: true
     popexample: "Threatened species received a weight five-times as high as non-threatend species."
 
@@ -632,6 +655,7 @@ prioritization:
       - Other
     fieldtype_conditional_render-id: 'othersoftware'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Specify details for any other software used for planning.'
     mandatory: true
     popexample: "The software prioritizr was used for identifying a solution."
 
@@ -681,6 +705,7 @@ prioritization:
       - Other
     fieldtype_conditional_render-id: 'otheridentification'
     fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Explain how final solutions were obtained.'
     mandatory: true
     popexample: "The final priorities are identified by overlaying individual optimization results with priority areas identified by stakeholders."
 
@@ -688,12 +713,13 @@ prioritization:
     render-nr: 1
     render-id: 'checkperformance'
     render-group: 'perfidenticators'
-    question: 'Was the performance of the study in anyway evaluated?'
+    question: 'Was the performance of the study in any way evaluated?'
     description: 'Most studies describe their outputs in terms of what is gained by the solutions.'
     fieldtype: 'radio'
     mandatory: true
     fieldtype_conditional_render-id: 'evalidentification'
     fieldtype_conditional: 'multifieldselection'
+    fieldtype_conditional_description: 'Explain how the goodness of the planning was evaluated.'
     popexample: "Common examples are the compactness of the solutions, average number of targets achieved, avoided costs or impacts."
 
   otherperformance:

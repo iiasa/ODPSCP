@@ -63,6 +63,8 @@ mod_Overview_ui <- function(id){
             collapsible = TRUE,
             shiny::p("Add each author of the study to the table below. If a ORCID is not
                      known or available, leave blank."),
+            shiny::helpText("If the number of authors is extensive it might also be ok to
+                            simply add the lead author's name."),
             DT::DTOutput(outputId = ns("authors_table")),
             shiny::actionButton(inputId = ns("add_author"), label = "Add a new author row",
                                 icon = shiny::icon("plus")),
@@ -507,16 +509,17 @@ mod_Overview_server <- function(id, results, parentsession){
       shiny::req(file)
 
       if(!is.null(input$studyregion)){
-        # Found vector
-        if(tolower( tools::file_ext(file)) %in% c("shp","gpkg")){
-          out <- sf::st_read(file, quiet = TRUE) |>
-            sf::st_transform(crs = sf::st_crs(4326))
-        } else if(tolower( tools::file_ext(file)) %in% c("tif","geotiff")){
-          out <- terra::rast(file)
-          out[out>0] <- 1 # Replace all with 1
-          out <- out |> terra::as.polygons() |> sf::st_as_sf() |>
-            sf::st_cast("MULTIPOLYGON") |>
-            sf::st_transform(crs = sf::st_crs(4326))
+        # Check file size in MB
+        ss <- (file.size(file) / 1048576)
+        if(ss > 3){
+          shiny::showNotification("Uploaded file over 3 MB. Loading can take a while...",
+                                  duration = 5, type = "message")
+        }
+        # Load spatial file
+        out <- spatial_to_sf(file, make_valid = FALSE)
+        if(is.null(out)){
+          shiny::showNotification("Layer could not be loaded!",
+                                  duration = 2, type = "warning")
         }
         return(out)
       } else {
