@@ -30,13 +30,18 @@ format_protocol <- function(results, format = "data.frame",
 
   # Data.frame formatting
   if(format == "data.frame"){
-    protocol <- protocol_to_table() |> dplyr::mutate(value = "")
+    protocol <- protocol_to_table() |> dplyr::mutate(value = NA)
 
     for(i in 1:length(exportVals)){
       if(any(exportVals[i] %in% protocol$render_id)) {
+        # Get the result
         val <- results[[exportVals[i]]]
+        # And the fieldtype
+        ft <- get_protocol_options(exportVals[i],
+                                   path_protocol = path_protocol,
+                                   field = "fieldtype")
         if(length(val)>0){
-          # For studyregion:
+          # For study region:
           if(utils::hasName(val, "datapath")){
             if(studyregiondummy){
               val <- "Study region provided!"
@@ -44,18 +49,53 @@ format_protocol <- function(results, format = "data.frame",
               # Format EPSG and WKT to text
               val <- format_studyregion_to_text(val)
             }
-          } else if(is.data.frame(val)){
-            val <- paste(val$forename, paste0(val$surename, " (",val$orcid,") "), sep = ",", collapse = "; ")
+          } else if(exportVals[i] %in% c("authors_table","specificzones",
+                                         "featurelist", "evalidentification")) {
+            # Combine all to be sure for this element
+            val <- val |> dplyr::bind_rows()
+          } else if(ft == "slider"){
+            # Time slide correction or other entries that are lists or sliders
+            if(length(val)==2){
+              val <- paste(val[1], val[2], sep = ";")
+            }
+          } else {
+            # Otherwise collapse together
+            val <- paste(val, collapse = ";")
           }
-          # Time slide correction
-          if(length(val)==2){
-            val <- paste(val[1], val[2], sep = ",")
+          # --- #
+          # Write to output value
+          # For data.frame create duplicate rows
+          if(is.data.frame(val)){
+            # Get row and remove old one
+            new <- protocol[which(protocol$render_id == exportVals[i]),]
+            protocol <- protocol[-which(protocol$render_id == exportVals[i]),]
+            # For each row, paste together and then add to value
+            for(j in 1:nrow(val)){
+              new$value <- paste0(unlist(val[j,]),collapse = ";")
+              # Append to protocol
+              protocol <- dplyr::bind_rows(protocol, new)
+              new$value <- NA
+            }
+          } else {
+            # Assume vector or character and simply insert into value
+            protocol$value[which(protocol$render_id == exportVals[i])] <- val
           }
-          protocol$value[which(protocol$render_id == exportVals[i])] <- val
         }
       }
-    } # List format
+    }
+    # Finally reorder protocol again to preserve order
+    protocol$render_id <- factor(protocol$render_id,
+                                 levels = get_protocol_ids(path_protocol = path_protocol))
+    # Sort and convert back to character
+    protocol <- protocol |> dplyr::arrange(render_id) |>
+      dplyr::mutate(render_id = as.character(render_id))
+
+    # Check that there are no NA
+    assertthat::assert_that(!anyNA(protocol$render_id),
+                            msg = "Missing render ids while reordering results.")
+
   } else if(format == "list"){
+    # List format
     protocol <- list()
     protocol[["overview"]] <- list()
     protocol[["design"]] <- list()
@@ -71,34 +111,18 @@ format_protocol <- function(results, format = "data.frame",
       val <- results[[exportVals[i]]]
       if(utils::hasName(val, "datapath")){
         val <- format_studyregion_to_text(val)
+      } else if(exportVals[i] %in% c("authors_table","specificzones",
+                              "featurelist", "evalidentification")){
+        # Combine all to be sure for this element
+        val <- dplyr::bind_rows(val)
+      } else {
+        # Otherwise collapse together
+        val <- paste(val, collapse = ";")
       }
       protocol[[gr$group]][[exportVals[i]]] <- val
     }
   }
   return(protocol)
-}
-
-#' Small helper for spatial conversion to wkt
-#' @param val A [`list`] with the datapath for the spatial file
-#' @return A [`character`] with a WKT.
-#' @noRd
-format_studyregion_to_text <- function(val){
-  assertthat::assert_that(utils::hasName(val, "datapath"))
-  # Load from data path
-  val <- try({
-    spatial_to_sf(val$datapath, make_valid = FALSE)
-  }, silent = TRUE)
-  if(inherits(val,"try-error")){
-    val <- "Studyregion could not be loaded?"
-  } else {
-    # Convert to sfc
-    val <- val |> sf::st_as_sfc()
-    val <- paste0(
-      # Also append SRID in front
-      sf::st_crs(val) |> sf::st_as_text(),";", sf::st_as_text(val)
-    )
-  }
-  return(val)
 }
 
 #' List to table
@@ -166,6 +190,7 @@ protocol_to_document <- function(results, file, format = "docx", path_protocol =
   assertthat::assert_that(is.character(path_protocol) || is.null(path_protocol))
   # Check for other inputs
   assertthat::assert_that(is.list(results),
+                          is.character(format),
                           is.character(file))
   # Match the format
   format <- match.arg(format, c("html", "docx", "pdf"), several.ok = FALSE)
@@ -184,7 +209,7 @@ protocol_to_document <- function(results, file, format = "docx", path_protocol =
   # Create basic file
   doc <- officer::read_docx() |>
     officer::body_add_fpar(value = fpar) |>
-    officer::body_add_fpar(value = officer::fpar( officer::ftext(text = paste0("Created through ", template$protocol$repository),
+    officer::body_add_fpar(value = officer::fpar( officer::ftext(text = paste0("Created through ", template$protocol$website),
                                                                    prop = officer::fp_text(font.size = 14,bold = FALSE)) )) |>
     officer::body_add_fpar(value = officer::fpar( officer::ftext(text = paste0("Generated on ", Sys.Date() ),
                                                   prop = officer::fp_text(font.size = 14,bold = FALSE)))) |>
@@ -199,6 +224,9 @@ protocol_to_document <- function(results, file, format = "docx", path_protocol =
     doc <- doc |> officer::body_add_par(value = tools::toTitleCase(g), style = "heading 1")
 
     for(el in names(results[[g]])){ # el = names(results[[g]])[1]
+
+      # Skip studymap as this is a leaflet dummy
+      if(el == "studymap") next()
 
       # Get the name and description of the target element
       w <- get_protocol_elementgroup(el)
@@ -216,7 +244,7 @@ protocol_to_document <- function(results, file, format = "docx", path_protocol =
       # A description there in
       fpar <- officer::fpar(
         officer::ftext(text = paste0(sub$description),
-                       prop = officer::fp_text(font.size = 10,italic = TRUE))
+                       prop = officer::fp_text(font.size = 9,italic = TRUE))
       )
       doc <- doc |> officer::body_add_fpar(value = fpar)
 
@@ -266,18 +294,27 @@ protocol_to_document <- function(results, file, format = "docx", path_protocol =
       } else {
         # All other entries
         if(all(is.logical(res))) res <- ifelse(res, "Yes", "No")
+        if(all(is.null(res))) res <- "Not specified"
+        if(all(res == "")) res <- "Not specified"
         if(all(is.na(res))) res <- "Not specified"
 
-        # If multiple entries, paste together via -
-        if(length(res)>1) res <- paste(res, collapse = " - ")
+        # For study time, paste and add description around it.
+        if(el == "studytime") res <- paste("Planning was conducted from", paste0(strsplit(res, ";")[[1]],collapse = " - "))
 
-        # Add to body
-        fpar <- officer::fpar(
-          officer::ftext(text = res,
-                         prop = officer::fp_text(font.size = 12,italic = FALSE))
-        )
-        doc <- doc |> officer::body_add_fpar(value = fpar)
+        # If there are ; as breaks, split them
+        if(length(grep(";",res))>0) res <- strsplit(res, ";")[[1]]
 
+        # If multiple entries, make sure there is paragraph after each
+        for(k in res){
+          # Add to body
+          fpar <- officer::fpar(
+            officer::ftext(text = k,
+                           prop = officer::fp_text(font.size = 12,italic = FALSE))
+          )
+          doc <- doc |> officer::body_add_fpar(value = fpar)
+          # Paragraph break
+          doc <- doc |> officer::body_add_par(value = "",style = "Normal")
+        }
       }
       # Small linebreak
       doc <- doc |> officer::body_add_par(value = "", style = "Normal")

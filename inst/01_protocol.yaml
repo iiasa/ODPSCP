@@ -498,7 +498,7 @@ specification:
     render-nr: 2
     render-id: 'checkaggregated'
     render-group: 'features'
-    question: 'Where any features aggregated before use in the planning?'
+    question: 'Were any features aggregated before use in the planning?'
     description: 'If applicable please describe which and how.'
     fieldtype: 'checkbox'
     fieldtype_conditional_render-id: 'featureaggregated'

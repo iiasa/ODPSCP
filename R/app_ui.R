@@ -186,13 +186,15 @@ app_ui <- function(request) {
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
 #' @noRd
 golem_add_external_resources <- function() {
+
+  # Add resource path
   add_resource_path(
     "www",
     app_sys("app/www")
   )
 
   tags$head(
-    favicon(),
+    golem::favicon(),
     bundle_resources(
       path = app_sys("app/www"),
       app_title = "ODPSCP"

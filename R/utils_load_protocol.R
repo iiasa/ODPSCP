@@ -92,6 +92,15 @@ get_protocol_elementgroup <- function(id, path_protocol = NULL){
           data.frame(group = gr, element = element, id = id)
         )
       }
+      # For conditional render-ids
+      if(utils::hasName(ppp, 'fieldtype_conditional_render-id')){
+        if(ppp[['fieldtype_conditional_render-id']] == id){
+          out <- dplyr::bind_rows(
+            out,
+            data.frame(group = gr, element = element, id = id)
+          )
+        }
+      }
     }
   }
   if(nrow(out)==0) return( NULL )
@@ -100,9 +109,11 @@ get_protocol_elementgroup <- function(id, path_protocol = NULL){
 
 #' Get protocol options if specified
 #' @description
-#' Utility function to get the options if ounds for a render-id
+#' Utility function to get the options if for a render-id. Can also be used to
+#' query other fields in the protocol.
 #' @param id A character with the render_id.
 #' @param path_protocol The filepath to the actual protocol template (Default: \code{NULL})
+#' @param field A [`character`] of the field to be returned (Default: \code{"options"}).
 #' @returns Either \code{NULL} or a vector with found options.
 #' @examples
 #' /dontrun{
@@ -110,8 +121,9 @@ get_protocol_elementgroup <- function(id, path_protocol = NULL){
 #' }
 #'
 #' @noRd
-get_protocol_options <- function(id, path_protocol = NULL){
+get_protocol_options <- function(id, path_protocol = NULL, field = "options"){
   assertthat::assert_that(is.character(id),
+                          is.character(field),
                           is.character(path_protocol) || is.null(path_protocol))
 
   # If is null, load protocol
@@ -120,8 +132,8 @@ get_protocol_options <- function(id, path_protocol = NULL){
   check <- get_protocol_elementgroup(id)
   if(!is.null(check)){
     # Get the actual options
-    if("options" %in% names(template[[check$group]][[check$element]])){
-      check <- template[[check$group]][[check$element]]$options
+    if(field %in% names(template[[check$group]][[check$element]])){
+      check <- template[[check$group]][[check$element]][[field]]
     } else { check <- NULL }
   }
   return(check)

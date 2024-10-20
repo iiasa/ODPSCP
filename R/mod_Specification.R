@@ -523,10 +523,10 @@ mod_Specification_server <- function(id, results, parentsession){
     ids <- get_protocol_ids(group = "specification")
     shiny::observe({
       for(id in ids){
-        if(id == "feature_table"){
-          results[[id]] <- data.frame(feature_table$df) |> asplit(MARGIN = 1)
-        } else if(id == "zones_table") {
-          results[[id]] <- data.frame(zones_table$df) |> asplit(MARGIN = 1)
+        if(id == "featurelist"){
+          results[[id]] <- data.frame(feature_table()) |> asplit(MARGIN = 1)
+        } else if(id == "specificzones") {
+          results[[id]] <- data.frame(zones_table()) |> asplit(MARGIN = 1)
         } else {
           results[[id]] <- input[[id]]
         }
@@ -535,8 +535,8 @@ mod_Specification_server <- function(id, results, parentsession){
 
     # --- #
     # Define the features list
-    feature_table <- shiny::reactiveValues(
-      df = data.frame(name = character(0),
+    feature_table <- shiny::reactiveVal(
+      data.frame(name = character(0),
                  group = character(0),
                  number = numeric(0L))
     )
@@ -561,40 +561,42 @@ mod_Specification_server <- function(id, results, parentsession){
       } else {
         new_feature = data.frame("name" = input$name, "group" = input$group, "number" = input$number,
                                  stringsAsFactors = F)
-        new_data <- feature_table$df |> dplyr::add_row(new_feature)
-        feature_table$df <- new_data
+        # Check for zero number
+        if(input$number==0){
+          shiny::showNotification("Features with number zero?", duration = 4, type = "error")
+        }
+        new_data <- feature_table() |> dplyr::add_row(new_feature)
+        feature_table(new_data)
         shiny::removeModal()
       }
     })
 
     shiny::observeEvent(input$remove_feature, {
-      new_data <- feature_table$df
+      new_data <- feature_table()
       if(nrow(new_data)==0){
         shiny::showNotification("No features added yet!",
                                 duration = 2, type = "warning")
       } else {
         new_data <- new_data |> dplyr::slice(-dplyr::n())
-        feature_table$df <- new_data
+        feature_table(new_data)
       }
     })
 
     #output the datatable based on the dataframe (and make it editable)
     output$featurelist <- DT::renderDataTable({
-      features = feature_table$df
-      features_dt <- DT::datatable(features, rownames = FALSE,
+        DT::datatable(feature_table(), rownames = FALSE,
                     colnames = c("Feature name", "Feature group", "Total number"),
                     filter = "none", selection = "none",
                     style = "auto",
                     editable = TRUE)
-      return(features_dt)
     })
 
     # Manual edit
     shiny::observeEvent(input$featurelist_cell_edit, {
       info <- input$featurelist_cell_edit
-      modified_data <- feature_table$df
+      modified_data <- feature_table()
       modified_data[info$row, info$col+1] <- info$value
-      feature_table$df <- modified_data
+      feature_table(modified_data)
     })
 
     # Load an external file
@@ -624,38 +626,38 @@ mod_Specification_server <- function(id, results, parentsession){
 
     # --- #
     # Define the features list
-    zones_table <- shiny::reactiveValues(
-      df = data.frame(name = character(0),
+    zones_table <- shiny::reactiveVal(
+      data.frame(name = character(0),
                  aim = character(0),
                  costs = character(0),
                  contributions = character(0)
-                 )
+      )
     )
 
     # Events for author table
     shiny::observeEvent(input$add_zone, {
-      new_data <- zones_table$df |> dplyr::add_row(
+      new_data <- zones_table() |> dplyr::add_row(
         data.frame(name = "My zone", aim = "Zone purpose",
                    costs = "Differing costs",
                    contributions = "Who benefits")
       )
-      zones_table$df <- new_data
+      zones_table(new_data)
     })
 
     shiny::observeEvent(input$remove_zone, {
-      new_data <- zones_table$df
+      new_data <- zones_table()
       if(nrow(new_data)==0){
         shiny::showNotification("No zones added yet!",
                                 duration = 2, type = "warning")
       } else {
         new_data <- new_data |> dplyr::slice(-dplyr::n())
-        zones_table$df <- new_data
+        zones_table(new_data)
       }
     })
 
     #output the datatable based on the dataframe (and make it editable)
     output$specificzones <- DT::renderDT({
-      DT::datatable(zones_table$df,rownames = FALSE,
+      DT::datatable(zones_table(), rownames = FALSE,
                     colnames = c("Zone name", "Purpose", "Costs", "Who benefits"),
                     filter = "none", selection = "none",
                     style = "auto",
@@ -665,9 +667,9 @@ mod_Specification_server <- function(id, results, parentsession){
     # Manual edit
     shiny::observeEvent(input$specificzones_cell_edit, {
       info <- input$specificzones_cell_edit
-      modified_data <- zones_table$df
+      modified_data <- zones_table()
       modified_data[info$row, info$col+1] <- info$value
-      zones_table$df <- modified_data
+      zones_table(modified_data)
     })
 
     # Load an external file

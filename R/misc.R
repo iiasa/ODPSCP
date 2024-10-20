@@ -54,3 +54,28 @@ spatial_to_sf <- function(file, make_valid = FALSE){
 
   return(out)
 }
+
+#' Small helper for spatial conversion to wkt
+#' @param val A [`list`] with the datapath for the spatial file
+#' @return A [`character`] with a WKT.
+#' @noRd
+format_studyregion_to_text <- function(val){
+  assertthat::assert_that(utils::hasName(val, "datapath"))
+  # Check that if file exists
+  if(!file.exists(val$datapath)) return("Studyregion could not be loaded?")
+  # Load from data path
+  val <- try({
+    spatial_to_sf(val$datapath, make_valid = FALSE)
+  }, silent = TRUE)
+  if(inherits(val,"try-error")){
+    val <- "Studyregion could not be loaded?"
+  } else {
+    # Convert to sfc
+    val <- val |> sf::st_as_sfc()
+    val <- paste0(
+      # Also append SRID in front
+      sf::st_crs(val) |> sf::st_as_text(),";", sf::st_as_text(val)
+    )
+  }
+  return(val)
+}

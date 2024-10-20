@@ -43,7 +43,7 @@ mod_Export_ui <- function(id){
               justified = TRUE,
               size = "lg",
               status = "info",
-              choices = c('docx', 'pdf', 'csv', 'yaml'),
+              choices = c('docx', 'csv', 'yaml'),
               selected = 'csv',
               checkIcon = list(
                 yes = shiny::icon("circle-down"),
@@ -182,7 +182,7 @@ mod_Export_server <- function(id, results){
         } else if(oftype() == "docx"){
           # Create document from results, everything handled by function
           protocol <- format_protocol(results, format = "list")
-          # saveRDS(results, "test.rds")
+          # saveRDS(rvtl(results), "test.rds")
           protocol_to_document(protocol, file = file, format = "docx")
         } else if(oftype() == "pdf"){
           # Create document from results
@@ -217,11 +217,10 @@ mod_Export_server <- function(id, results){
         protocol_to_document(protocol, file = ofname2,
                              format = "docx")
 
-        # Create PDF document from results
+        # Create yaml from results
         protocol <- format_protocol(results, format = "list")
-        ofname3 <- file.path(tempdir(), "ODPSCP_protocol.pdf")
-        protocol_to_document(protocol, file = ofname3,
-                             format = "pdf")
+        ofname3 <- file.path(tempdir(), "ODPSCP_protocol.yaml")
+        yaml::write_yaml(protocol, file = ofname3)
 
         # Zip everything together
         zip::zip(file,
