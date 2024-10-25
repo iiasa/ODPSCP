@@ -139,6 +139,40 @@ get_protocol_options <- function(id, path_protocol = NULL, field = "options"){
   return(check)
 }
 
+#' Get field types of all protocol ids
+#'
+#' @description
+#' Utility function to get the the type of all protocol ids.
+#' @details
+#' This function is needed to collate input fields and ultimately correctly update
+#' them, for example by importing an existing protocol.
+#'
+#' @param path_protocol The file path to the actual protocol template (Default: \code{NULL})
+#' @returns A [`data.frame`] containing the \code{"id"} and \code{"fieldtype"}.
+#' @examples
+#' /dontrun{
+#'  get_protocol_fieldtypes()
+#' }
+#'
+#' @noRd
+get_protocol_fieldtypes <- function(path_protocol = NULL){
+  assertthat::assert_that(is.character(path_protocol) || is.null(path_protocol))
+
+  # If is null, load protocol
+  template <- load_protocol(path_protocol)
+
+  # Get and save all ids
+  out <- data.frame(
+    group = NA,
+    id = get_protocol_ids(path_protocol = path_protocol),
+    fieldtype = NA)
+
+  out$group <- sapply(out$id, function(z) get_protocol_elementgroup(z)[["group"]] )
+  out$fieldtype <- sapply(out$id, function(z) get_protocol_options(z,field = "fieldtype"))
+
+  return(out)
+}
+
 #' Check for mandatory fields to be filled
 #'
 #' @description
@@ -247,9 +281,15 @@ validate_protocol_results <- function(results, path_protocol = NULL){
   }
 
   # Check mandatory entries
-  if(!all(get_protocol_mandatory(path_protocol = path_protocol)) %in% ids){
+  if(!all(get_protocol_mandatory(path_protocol = path_protocol) %in% ids)){
     return("Exported protocol does not contain all mandatory groups!")
   }
+
   # --- #
+  # Check more specific entry validities as spot checks
+  if(!(results$overview$studyscale %in% template$overview$extent$options)){
+    return("Incorrect study extent?")
+  }
+
   return(NULL)
 }

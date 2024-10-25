@@ -11,9 +11,10 @@
 #' @importFrom shiny actionButton tabsetPanel column
 mod_Import_ui <- function(id){
   ns <- NS(id)
+  # Spinner
+  waiter::autoWaiter()
 
-  # TODO:
-  # Import existing Marxan / Zonation / Prioritizr configuration files?
+  # Import board
   bs4Dash::tabItem(tabName = "Import",
           shiny::fluidPage(
             bs4Dash::box(
@@ -30,7 +31,8 @@ mod_Import_ui <- function(id){
             shiny::br(),
             shiny::div("Please note:"),
             shiny::helpText("> Non accepted fields will not be parsed."),shiny::br(),
-            shiny::helpText("> Reexporting the protocol resets internally the version and date."),
+            shiny::helpText("> Importing a protocol overwrites all existing values!"),shiny::br(),
+            shiny::helpText("> Re-exporting the protocol resets internally the version and date."),
             shiny::br(),
             shiny::hr(),
             shiny::fileInput(
@@ -52,7 +54,7 @@ mod_Import_ui <- function(id){
 #' Import Server Functions
 #'
 #' @noRd
-mod_Import_server <- function(id){
+mod_Import_server <- function(id, results, parentsession){
  shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
@@ -80,6 +82,7 @@ mod_Import_server <- function(id){
           stop(shiny::safeError(e))
         }
       )
+
       # Checks
       if(inherits(out, "try-error")){
         shiny::showNotification("File not valid!", duration = 2, type = "error")
@@ -99,13 +102,41 @@ mod_Import_server <- function(id){
     # Validate the protocol and import protocol
     shiny::observeEvent(imports(), {
       if(!is.null(imports())){
-        check <- validate_protocol_results(imports())
+        check <- try({ validate_protocol_results(imports()) },silent = TRUE)
+        if(inherits(check, "try-error")){
+          shiny::showNotification("Parsing failed. Protocol not valid!", duration = 5,
+                                  closeButton = TRUE, type = "error")
+        }
         if(!is.null(check)){
           shiny::showNotification(check, duration = 5,closeButton = TRUE, type = "error")
+        } else {
+          # --- #
+          #### Parse and insert protocol entries ####
+          # ODPSCP import functions
+          new <- imports()
+
+          # First get types for all ids
+          ft <- get_protocol_fieldtypes()
+
+          # Now iterate over each field and update respectively
+          for(i in 1:nrow(ft)){
+
+            # Result id and value
+            val <- new[[ft$group[i]]][[ft$id[i]]]
+
+            # Insert depending on type
+            # if(ft$fieldtype[i]=="textbox"){
+            # message(ft$id[i], "-", val)
+              results[[ft$id[i]]] <- val
+              # Trigger
+              # gargoyle::trigger(paste0("import_",ft$group[i]),
+              #                   session = parentsession)
+            # }
+          }
+          shiny::showNotification("Existing protocol sucessfully loaded!",
+                                  duration = 5, closeButton = TRUE, type = "message")
         }
       }
-      # Insert protocol
-      bs4Dash::updateTabItems(session, inputId = "sidebarmenu", selected = "Overview")
     })
   })
 }

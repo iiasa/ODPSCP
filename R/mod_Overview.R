@@ -486,7 +486,7 @@ mod_Overview_server <- function(id, results, parentsession){
     })
 
     # ----- #
-    #### Studyregion updates ####
+    #### Study region updates ####
 
     # Gather study region from bounding box
     # xmin <- shiny::reactive(input$studyregion_bbox_xmin)
@@ -596,6 +596,16 @@ mod_Overview_server <- function(id, results, parentsession){
                                   group="Open Street Map")
       map
     })
+
+    # ----- #
+    #### Trigger watch ----
+
+    # Import trigger
+    # gargoyle::on("import_overview",{
+      # Triggering
+      # shiny::updateTextAreaInput(inputId = "studyname",
+      #                            value = results$overview$studyname)
+    # })
 
     # ----- #
     # Send a pre-rendered image, and don't delete the image after sending it

@@ -79,3 +79,28 @@ format_studyregion_to_text <- function(val){
   }
   return(val)
 }
+
+#' Small helper for conversion wkt to spatial
+#' @param val A [`character`] with studyregion string
+#' @return A [`sf`] object.
+#' @noRd
+format_text_to_studyregion <- function(val){
+  assertthat::assert_that(is.character(val))
+
+  # Split by semicolon
+  ss <- strsplit(val,";")[[1]]
+
+  # Convert to spatial and set crs
+  pol <- sf::st_as_sfc(ss[[2]])
+  pol <- sf::st_set_crs(pol, value = sf::st_crs(ss[1]) )
+
+  # Convert to sf
+  if(!inherits(pol, "sf")){
+    pol <- sf::st_as_sf(pol)
+  }
+
+  # Rename geometry name to be sure
+  sf::st_geometry(pol) <- "geometry" # rename
+
+  return(pol)
+}

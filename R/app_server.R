@@ -96,6 +96,12 @@ app_server <- function(input, output, session) {
     shinyjs::runjs(jscode)
   })
 
+  # Initiate watching flags
+  # gargoyle::init("import_overview", "import_design",
+  #                "import_specification",
+  #                "import_context",
+  #                "import_prioritization", session = session)
+
   # title page ----------------------------------------------------------------
   # Adding module server code
   mod_Home_server("Home_1", results, session)
@@ -109,7 +115,7 @@ app_server <- function(input, output, session) {
   mod_News_server("News_1")
   mod_Glossary_server("Glossary_1")
   # Import/Export
-  mod_Import_server("Import_1")
+  mod_Import_server("Import_1", results, session)
   mod_Export_server("Export_1", results)
 
   # Automatically stop a Shiny app when closing the browser tab
