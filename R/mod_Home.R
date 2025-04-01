@@ -87,6 +87,9 @@ mod_Home_ui <- function(id){
       shiny::fluidRow(
         shiny::column(width = 2),
         shiny::column(width = 8,
+               shiny::p("Note: This online interface does not permanently collect or store any entered information.
+                        Please export your protocol after it has been entered.",
+                        style = "font-weight: bold"),
                # Button to get started
                shinyWidgets::actionBttn(
                  inputId = "start_new_protocol",

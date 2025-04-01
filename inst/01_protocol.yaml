@@ -1,7 +1,7 @@
 # Basic information
 protocol:
   name: ODPSCP
-  version: '0.4'
+  version: '0.5'
   repository: 'https://github.com/iiasa/ODPSCP'
   website: 'https://odpscp.iiasa.ac.at/'
   last_updated: 2024-09-30
@@ -296,6 +296,19 @@ design:
     fieldtype: 'textbox'
     mandatory: false
     popexample: "Should at least include if at all, when (conceptualization or start of the project) and how (workshops, interviews)."
+
+  monitoringeval:
+    render-nr: 1
+    render-id: 'checkmonitoringeval'
+    render-group: 'monitoringeval_plan'
+    question: 'Has a monitoring and evaluation plan be developed?'
+    description: 'Following implementation of the targeted objective and targets, the outcomes should be monitored and evaluated.'
+    fieldtype: 'checkbox'
+    fieldtype_conditional_render-id: 'checkmonitoringeval_detail'
+    fieldtype_conditional: 'textbox'
+    fieldtype_conditional_description: 'Describe what aspects of the project are monitored and how the expected results or goals are evaluated.'
+    mandatory: false
+    popexample: "Following the implementation of the project, annual vegetation surveys will be conducted to assess improvement of species diversity in response to implemented actions."
 
 #### Specification ####
 specification:

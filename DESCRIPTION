@@ -1,6 +1,6 @@
 Package: ODPSCP
 Title: A standard reporting protocol for conservation planning
-Version: 0.4
+Version: 0.5
 Authors@R: 
     person("Martin", "Jung", , "jung@iiasa.ac.at", role = c("cre", "aut"))
 Description: This repository contains the environment and shiny code

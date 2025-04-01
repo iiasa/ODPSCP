@@ -320,10 +320,51 @@ mod_Design_ui <- function(id){
                       )
                     )
                   )
-            ) # Box engagement
+            ), # Box engagement
+            # Added with version 0.5 - Box on monitoring
+            bs4Dash::box(
+              title = 'Monitoring and evaluation',
+              closable = FALSE,
+              width = 12,
+              solidHeader = TRUE,
+              status = "primary",
+              collapsible = TRUE,
+              # icon = icon("info"),
+              # Stakeholders
+              shiny::p("Monitoring and evaluation is a key part of systematic conservation planning. Here we ask
+                       whether - following the implementation of the study - procedures are in place to monitor
+                       its outcome and what steps have been undertaken to evaluate the effectiveness of the planning."),
+              shiny::br(),
+              bs4Dash::box(
+                title = "Has a monitoring and evaluation plan be developed?",
+                closable = FALSE,
+                width = 12,
+                solidHeader = TRUE,
+                status = "secondary",
+                collapsible = FALSE,
+                shiny::br(),
+                shiny::p("Such a plan could for example include the monitoring of the implementation and its effectiveness,
+                         or the mentioning of a specific methodology to evaluate the planning objectives and targets."),
+                shinyWidgets::awesomeRadio(
+                  inputId = ns("checkmonitoringeval"),
+                  label = "Has a monitoring and evaluation plan be developed?",
+                  choices = c("No", "Yes"),
+                  selected = "No",
+                  inline = FALSE,
+                  checkbox = TRUE
+                ),
+                shiny::br(),
+                shiny::conditionalPanel(
+                  condition = "input.checkmonitoringeval == 'Yes'",
+                  ns = ns,
+                  shiny::textAreaInput(inputId = ns("checkmonitoringeval_detail"), label = "Explain",
+                                       placeholder = 'Describe what aspects of the project are monitored and how the expected results or goals are evaluated.',
+                                       height = "60px", width = "100%", resize = "vertical")
+                )
+              ) # End of targetd box on monitoring and evaluation plan
+            )
           )
         ),
-
         # End of page button row
         shiny::fluidRow(
           shiny::column(width = 2),

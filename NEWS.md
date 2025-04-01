@@ -1,3 +1,8 @@
+## Version 0.5
+
+* The design tab now includes a separate elements recording if, and what type of monitoring and evaluation exists.
+* Added statement on data sharing.
+
 ## Version 0.4
 
 * Fixed several typos ✍️. 
