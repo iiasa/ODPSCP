@@ -279,6 +279,8 @@ mod_Specification_ui <- function(id){
                               shiny::p("Select any threats that were targeted in the planning
                                        or that, directly or indirectly, shape the planning outcome.
                                        The threat description broadly follows the IUCN Threat categorization system."),
+                              shiny::p("Note: Add here only threats that were directly included or considered in the planning.
+                                       Using climate data to derive modelled species distributions would not qualify here."),
                               shiny::br(),
                               shiny::p("IUCN Threat classification: https://www.iucnredlist.org/resources/threat-classification-scheme"),
                             # Threat types
@@ -449,7 +451,7 @@ mod_Specification_ui <- function(id){
                           shiny::actionButton(inputId = ns("remove_feature"), label = "Remove last feature row",
                                               icon = shiny::icon("minus")),
                           shiny::helpText("(Doubleclick on an added row to change the input values)"),
-                          shiny::br(),
+                          shiny::br(), shiny::br(),
                           shiny::p("Alternatively upload a grouped feature table in csv or tsv format.
                                    Note that this table needs to have exactly 3 columns with the name | group | number"),
                           shiny::fileInput(inputId = ns('load_feature'),label = 'Alternatively upload a feature/group list:',

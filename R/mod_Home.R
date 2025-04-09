@@ -35,7 +35,7 @@ mod_Home_ui <- function(id){
                        achieving conservation policy objectives across scales. Yet
                        despite decades of research and numerous scientific advances
                        in Europe ",shiny::a(href = 'https://doi.org/10.1098/rstb.2023.0015', '(Jung et al. 2024)',
-                                                    target = "_blank", .noWS = "outside"),".",
+                                                    target = "_blank", .noWS = "outside"),",",
                        " and globally ",shiny::a(href = 'https://www.annualreviews.org/doi/10.1146/annurev-environ-102016-060902', '(McIntosh et al. 2017)', target = "_blank", .noWS = "outside"),
                        ", it often remains hard to graps for those unfamiliar with the
                        planning how decisions where made or what factors were considered

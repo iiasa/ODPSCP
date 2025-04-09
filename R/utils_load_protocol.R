@@ -15,7 +15,8 @@ load_protocol <- function(path_protocol = NULL){
                                  package = "ODPSCP",
                                  mustWork = TRUE)
   }
-  assertthat::assert_that(file.exists(path_protocol))
+  assertthat::assert_that(file.exists(path_protocol),
+                          msg = paste0("The protocol file does not exist at the specified location: ", path_protocol))
 
   # Load the protocol
   pp <- yaml::read_yaml(path_protocol)
@@ -133,7 +134,12 @@ get_protocol_options <- function(id, path_protocol = NULL, field = "options"){
   if(!is.null(check)){
     # Get the actual options
     if(field %in% names(template[[check$group]][[check$element]])){
-      check <- template[[check$group]][[check$element]][[field]]
+      el <- template[[check$group]][[check$element]]
+      if(id == el[['render-id']]){
+        check <- el[[field]]
+      } else {
+        check <- el[[paste0(field,'_conditional')]]
+      }
     } else { check <- NULL }
   }
   return(check)
@@ -287,8 +293,13 @@ validate_protocol_results <- function(results, path_protocol = NULL){
 
   # --- #
   # Check more specific entry validities as spot checks
-  if(!(results$overview$studyscale %in% template$overview$extent$options)){
-    return("Incorrect study extent?")
+  if(!is.data.frame(results)){
+    if(!(results$overview$studyscale %in% template$overview$extent$options)){
+      return("Incorrect study extent?")
+    }
+  } else {
+    v <- results |> dplyr::filter(element == 'extent') |> dplyr::pull(value)
+    if(!(v %in% template$overview$extent$options)) return("Incorrect study extent?")
   }
 
   return(NULL)

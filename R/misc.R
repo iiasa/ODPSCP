@@ -18,6 +18,18 @@ spatial_to_sf <- function(file, make_valid = FALSE){
   # Found vector
   if(ext %in% c("shp","gpkg")){
     out <- sf::st_read(file, quiet = TRUE)
+  } else if(ext %in% c("zip")) {
+    # Unzip first
+    tmpdir <- paste0(base::tempdir(),"_fileupload")
+    dir.create(tmpdir, recursive = TRUE, showWarnings = FALSE)
+    # Extract
+    utils::unzip(zipfile = file, exdir = tmpdir)
+    # List files
+    ll <- list.files(tmpdir, full.names = TRUE)
+    ll <- ll[assertthat::has_extension(ll, 'shp')]
+    if(length(ll)==0) return(NULL)
+
+    out <- sf::st_read(ll, quiet = TRUE)
   } else if( ext %in% c("tif","geotiff")){
     out <- terra::rast(file)
     out[out>0] <- 1 # Replace all with 1

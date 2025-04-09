@@ -33,7 +33,7 @@ mod_News_ui <- function(id){
                         solidHeader = TRUE,
                         collapsed = FALSE,
                         width = 12,
-                        shiny::includeMarkdown("NEWS.md")
+                        shiny::includeMarkdown(path = app_sys("NEWS.md"))
                       )
                     ),
                     # Rendered protocol
@@ -81,9 +81,7 @@ mod_News_server <- function(id){
     # )
 
     # Get the protocol for print
-    ppath <- system.file("01_protocol.yaml",
-                         package = "ODPSCP",
-                         mustWork = TRUE)
+    ppath <- app_sys("01_protocol.yaml")
     output$current_protocol <- shiny::renderPrint(
      readLines(ppath)
     )

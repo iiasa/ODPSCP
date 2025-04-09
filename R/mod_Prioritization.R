@@ -79,8 +79,8 @@ mod_Prioritization_ui <- function(id){
                          condition = "input.software != ''",
                          ns = ns,
                          shiny::p("Enter a version number of the used software.
-                                  Also provide any other information related to software
-                                  (for example if a specific solver was used for mathematical programming such as Gurobi or Symphony)."),
+                                  Also provide other information related to software as such
+                                  (for example if a specific solver was used for mathematical programming, such as Gurobi or Symphony)."),
                          shiny::textAreaInput(inputId = ns("versionnr"),
                                               label = "Provide a version number and other information related to the software.",
                                      placeholder = 'Enter free text here.',
@@ -176,7 +176,7 @@ mod_Prioritization_ui <- function(id){
                        shiny::br(),
                        shinyWidgets::awesomeRadio(
                          inputId = ns("checkperformance"),
-                         label = "Was the performance of the study in anyway evaluated?",
+                         label = "Was the performance of the study in any way evaluated?",
                          choices = c("No", "Yes"),
                          selected = "Yes",
                          inline = FALSE,

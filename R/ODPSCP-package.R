@@ -11,5 +11,6 @@
 
 globalVariables(c(
   "element",
-  "Term"
+  "Term",
+  "render_id"
 ))

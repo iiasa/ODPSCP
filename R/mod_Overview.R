@@ -149,6 +149,9 @@ mod_Overview_ui <- function(id){
             shiny::div("Here the planning unit grid can be provided as geospatial dataset. Currently
                        supported is the upload of gridded or vector planning unit files.
                        Accepted formats are shapefiles, geopackages or geotiffs."),
+            shiny::br(),
+            shiny::helpText("Note that ESRI Shapefiles should be uploaded as zipped file
+                            containing a 'shp', 'dbf', 'shx' and 'prj' file. "),
             # shiny::div("Alternatively a boundary box (longitude-latitude) can be provided."),
             shiny::hr(),
             # --- #
@@ -194,7 +197,7 @@ mod_Overview_ui <- function(id){
                 "Choose geospatial File",
                 multiple = FALSE,
                 accept = c(
-                  ".shp", ".gpkg",
+                  ".gpkg", ".zip",
                   ".tif", ".geotiff"
                 )
               ),
@@ -282,7 +285,7 @@ mod_Overview_ui <- function(id){
             collapsed = FALSE,
             collapsible = TRUE,
             # icon = icon("magnifying-glass-chart"),
-            shiny::imageOutput(ns("peng2011"),inline = TRUE,fill = FALSE),
+            shiny::imageOutput(ns("peng2011"),width = "100%",height = "80%", inline = TRUE,fill = FALSE),
             shiny::br(),
             shiny::helpText("Source: Peng, R. D. (2011). Reproducible research in computational science. Science, 334(6060), 1226-1227."),
             shiny::br(),
@@ -453,7 +456,7 @@ mod_Overview_server <- function(id, results, parentsession){
     # Events for author table
     shiny::observeEvent(input$add_author, {
       new_data <- authors() |> dplyr::add_row(
-        data.frame(firstname = "EDIT ME", surname = "EDIT ME", orcid = "EDIT ME")
+        data.frame(firstname = "EDIT ME", surname = "EDIT ME", orcid = "")
       )
       authors(new_data)
     })
@@ -516,10 +519,16 @@ mod_Overview_server <- function(id, results, parentsession){
                                   duration = 5, type = "message")
         }
         # Load spatial file
-        out <- spatial_to_sf(file, make_valid = FALSE)
+        out <- try({ spatial_to_sf(file, make_valid = FALSE) },silent = TRUE)
+        if(inherits(out, "try-error")){
+          shiny::showNotification("The upload could not be processed. Try converting or simplifying.",
+                                  duration = 2, type = "warning")
+          return(NULL)
+        }
         if(is.null(out)){
           shiny::showNotification("Layer could not be loaded!",
                                   duration = 2, type = "warning")
+          return(NULL)
         }
         return(out)
       } else {

@@ -8,15 +8,15 @@ app_ui <- function(request) {
   shiny::tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
-    tags$head(
-      tags$script(shiny::HTML("
-      window.onbeforeunload = function (e) {
-        var confirmationMessage = 'Are you sure you want to leave (accidentally closed)?';
-        (e || window.event).returnValue = confirmationMessage;
-        return confirmationMessage;
-      };
-    "))
-    ),
+    # tags$head(
+    #   tags$script(shiny::HTML("
+    #   window.onbeforeunload = function (e) {
+    #     var confirmationMessage = 'Are you sure you want to leave (accidentally closed)?';
+    #     (e || window.event).returnValue = confirmationMessage;
+    #     return confirmationMessage;
+    #   };
+    # "))
+    # ),
     # --- #
     # Add the overall dashboard
     bs4Dash::dashboardPage(

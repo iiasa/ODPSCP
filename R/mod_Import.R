@@ -76,8 +76,9 @@ mod_Import_server <- function(id, results, parentsession){
                yaml = yaml::read_yaml(file),
                shiny::validate("Invalid file; Please upload a .csv or .yaml file!")
               )
-        },
+      },
         error = function(e) {
+          shiny::showNotification(paste("Error reading file:", e$message), type = "error")
           # return a safeError if a parsing error occurs
           stop(shiny::safeError(e))
         }
@@ -87,8 +88,15 @@ mod_Import_server <- function(id, results, parentsession){
       if(inherits(out, "try-error")){
         shiny::showNotification("File not valid!", duration = 2, type = "error")
         return(NULL)
-      } else if(is.data.frame(out)){
+      }
+      # Now format to list if isn't one already.
+      # By Default csvs are exported/imported as tabular data
+      if(ext == "yaml") out <- as.data.frame(out)
+
+      if(is.data.frame(out)){
         shiny::validate(
+          shiny::need(utils::hasName(out,"group"), "No group id found?"),
+          shiny::need(utils::hasName(out,"render_id"), "No render id found?"),
           shiny::need(nrow(out)>10, "Uploaded dataframe seems to small?")
         )
       } else if(is.list(out)){
@@ -121,16 +129,31 @@ mod_Import_server <- function(id, results, parentsession){
           # Now iterate over each field and update respectively
           for(i in 1:nrow(ft)){
 
+            # If field is not in protocol, skip
+            if(!(ft$id[i] %in% new$render_id)) next()
+
             # Result id and value
-            val <- new[[ft$group[i]]][[ft$id[i]]]
+            val <- new$value[new$render_id==ft$id[i]]
 
             # Insert depending on type
-            # if(ft$fieldtype[i]=="textbox"){
+            if(ft$fieldtype[i] %in% c("textbox","radio")){
+              val <- as.character(val)
+            } #else if(ft$fieldtype[i] %in% c("multifieldselection")){
+              # These are vectors of tables
+            #}
             # message(ft$id[i], "-", val)
               results[[ft$id[i]]] <- val
+              ## FIXME:
+              # Somehow failing to render in export table
+              # Trigger some updaters...
               # Trigger
               # gargoyle::trigger(paste0("import_",ft$group[i]),
               #                   session = parentsession)
+              # if(ft$id[i] == "studyname"){
+              #   print("Updating studyname")
+              #   shiny::updateTextAreaInput(parentsession,inputId = "studyname",
+              #                              label = "test")
+              # }
             # }
           }
           shiny::showNotification("Existing protocol sucessfully loaded!",
