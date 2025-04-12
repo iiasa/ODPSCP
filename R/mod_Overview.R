@@ -300,7 +300,9 @@ mod_Overview_ui <- function(id){
                 solidHeader = TRUE,
                 status = "gray",
                 collapsible = FALSE,
-                shiny::p("If applicable please enter a link to the data storage repository."),
+                shiny::p("Input data can be estimates of features, threats, costs or other
+                          parameters. If some or all of them shared as part of the study, please
+                          describe in the field below, also entering a link to the data storage repository."),
                 shinyWidgets::awesomeRadio(
                   inputId = ns('inputavailability'),
                   label = "Is the input data provided with the study?",
@@ -357,7 +359,8 @@ mod_Overview_ui <- function(id){
               collapsible = FALSE,
               shiny::p("Preparing data for analysis and creating priority maps can be done
                        with computer code. If such code was created, consider storing it somewhere
-                       and make it available."),
+                       and make it available. Similarly, the code could also contain information
+                       of analytical code used to prepare specific inputs for the planning."),
               shinyWidgets::awesomeRadio(
                 inputId = ns('codeavailability'),
                 label = "Has the analytical code for making the outputs been made available?",

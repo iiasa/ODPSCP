@@ -7,6 +7,7 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![](https://img.shields.io/badge/Shiny-shinyapps.io-447099%22?style=flat&labelColor=white&logo=Posit&logoColor=447099%22)](https://martinjung.shinyapps.io/ODPSCP/)
 
 <!-- badges: end -->
 
@@ -26,11 +27,11 @@ This repository contains the shiny app behind the package and can be
 visualized on <https://odpscp.iiasa.ac.at/> where it will remain hosted.
 A full list of known mirrors can be found here:
 
-| Host                    | Url                                       | Comment                            |
-|-------------------------|-------------------------------------------|------------------------------------|
-| IIASA                   | <https://odpscp.iiasa.ac.at/>             | Official host website              |
-| Shinyapps (Martin Jung) | <https://martinjung.shinyapps.io/ODPSCP/> | Not all functionalities might work |
-|                         |                                           |                                    |
+| Host | Url | Comment |
+|----|----|----|
+| IIASA | <https://odpscp.iiasa.ac.at/> | Official host website |
+| Shinyapps (Martin Jung) | <https://martinjung.shinyapps.io/ODPSCP/> | Secondary mirror |
+|  |  |  |
 
 If you plan to host a mirror of the shiny app, please let
 [Martin](https://github.com/Martin-Jung) know for example via an issue
@@ -39,12 +40,30 @@ long-term resilience of the platform. Institutional logos and branding
 are welcome as long as the protocol is consistent with the ODPSCP
 standard.
 
+## Installation and execution
+
+It is also possible to run the shiny-interface locally. To do so, you
+need to install the package from GitHub:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("iiasa/ODPSCP")
+
+library(ODPSCP)
+
+# Run the application
+ODPSCP::run_app()
+```
+
 ## Contribution
 
-The code has been created in *R-shiny* with the help of the *golem*
-framework for production- ready shiny interfaces. It uses Further
-versions of the framework are planned and we welcome suggested pull
-requests and edits by the SCP community.
+The code is open source and contributions are welcome. The code is
+licensed under the [CC-BY
+4.0](https://creativecommons.org/licenses/by/4.0/). The interface has
+been created in *R-shiny* with the help of the *golem* framework for
+production- ready shiny interfaces. It uses Further versions of the
+framework are planned and we welcome suggested pull requests and edits
+by the SCP community.
 
 Please note that the ODPSCP project is released with a [Contributor Code
 of
