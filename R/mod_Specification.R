@@ -657,7 +657,7 @@ mod_Specification_server <- function(id, results, parentsession){
       }
     })
 
-    #output the datatable based on the dataframe (and make it editable)
+    #output the datatable based on the data frame (and make it editable)
     output$specificzones <- DT::renderDT({
       DT::datatable(zones_table(), rownames = FALSE,
                     colnames = c("Zone name", "Purpose", "Costs", "Who benefits"),

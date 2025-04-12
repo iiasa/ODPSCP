@@ -521,13 +521,13 @@ mod_Overview_server <- function(id, results, parentsession){
         # Load spatial file
         out <- try({ spatial_to_sf(file, make_valid = FALSE) },silent = TRUE)
         if(inherits(out, "try-error")){
-          shiny::showNotification("The upload could not be processed. Try converting or simplifying.",
-                                  duration = 2, type = "warning")
-          return(NULL)
-        }
-        if(is.null(out)){
-          shiny::showNotification("Layer could not be loaded!",
-                                  duration = 2, type = "warning")
+          shinyWidgets::sendSweetAlert(
+            session = session,
+            title = "Error",
+            closeOnClickOutside = TRUE,showCloseButton = TRUE,
+            text = "The upload could not be processed. Try converting format or simplifying the file.",
+            type = "error"
+          )
           return(NULL)
         }
         return(out)

@@ -78,15 +78,27 @@ mod_Import_server <- function(id, results, parentsession){
               )
       },
         error = function(e) {
-          shiny::showNotification(paste("Error reading file:", e$message), type = "error")
-          # return a safeError if a parsing error occurs
+          shinyWidgets::sendSweetAlert(
+            session = session,
+            title = "Error",
+            closeOnClickOutside = TRUE,showCloseButton = TRUE,
+            text = paste("Error reading file:", e$message),
+            type = "error"
+          )
+          # Return a safe error if a parsing error occurs
           stop(shiny::safeError(e))
         }
       )
 
       # Checks
       if(inherits(out, "try-error")){
-        shiny::showNotification("File not valid!", duration = 2, type = "error")
+        shinyWidgets::sendSweetAlert(
+          session = session,
+          title = "Error",
+          closeOnClickOutside = TRUE,showCloseButton = TRUE,
+          text = "File not valid!",
+          type = "error"
+        )
         return(NULL)
       }
       # Now format to list if isn't one already.

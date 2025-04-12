@@ -5,10 +5,10 @@
 #' format to a [`sf`] object.
 #' @param file A [`character`] file path
 #' @param make_valid A [`logical`] on whether \code{'file'} should be ensured to
-#' be a valid geometry (Default: \code{FALSE}).
+#' be a valid geometry (Default: \code{TRUE}).
 #' @keywords internal
 #' @noRd
-spatial_to_sf <- function(file, make_valid = FALSE){
+spatial_to_sf <- function(file, make_valid = TRUE){
   assertthat::assert_that(is.character(file),
                           is.logical(make_valid))
 
@@ -28,8 +28,12 @@ spatial_to_sf <- function(file, make_valid = FALSE){
     ll <- list.files(tmpdir, full.names = TRUE)
     ll <- ll[assertthat::has_extension(ll, 'shp')]
     if(length(ll)==0) return(NULL)
+    if(length(ll)>1) ll <- ll[1] # Take first
 
     out <- sf::st_read(ll, quiet = TRUE)
+    # Remove files
+    base::unlink(tmpdir, recursive = TRUE)
+
   } else if( ext %in% c("tif","geotiff")){
     out <- terra::rast(file)
     out[out>0] <- 1 # Replace all with 1
