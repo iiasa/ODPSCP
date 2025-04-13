@@ -27,6 +27,7 @@ Imports:
     markdown,
     rmarkdown,
     jsonlite,
+    httr,
     sever,
     sf,
     shinyFeedback,

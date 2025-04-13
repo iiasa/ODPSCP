@@ -120,3 +120,66 @@ format_text_to_studyregion <- function(val){
 
   return(pol)
 }
+
+#' Search for a ORCID id online
+#'
+#' @description
+#' This function searches for a ORCID id online and returns the
+#' first and surname of any found resarchers
+#'
+#' @param val A [`character`] with the ORCID identifier.
+#'
+#' @return A [`vector`] with the first and surname of the researcher. If it fails,
+#' return `NULL`.
+#' @keywords internal
+#' @noRd
+get_names_from_orcid <- function(val){
+  assertthat::assert_that(is.character(val))
+
+  # Get the request from online
+  url <- paste0("https://pub.orcid.org/v3.0/", val, "/person")
+  res <- try({ httr::GET(url, httr::accept("application/json")) },silent = TRUE)
+
+  # If the request failed, return NULL
+  if(inherits(res, "try-error")) {
+    return(NULL)
+  }
+
+  # Check if the request was successful
+  if(httr::status_code(res) == 200) {
+    data <- jsonlite::fromJSON(httr::content(res, as = "text"))
+    name <- data$name
+    given <- name$`given-names`$value
+    family <- name$`family-name`$value
+  } else {
+    return(NULL)
+  }
+  # Check if the name is a character
+  if(!is.character(given) || !is.character(family)){
+    return(NULL)
+  }
+
+  # Check for other issues
+  if(is.null(given) || is.null(family)){
+    return(NULL)
+  }
+
+  # Return name
+  return(c(
+    forname = given,
+    surename = family
+  ))
+}
+
+#' Validate a ORCID identifier
+#'
+#' @description
+#' This function checks if the ORCID identifier is valid.
+#' @param val A [`character`] with the ORCID identifier.
+#' @keywords internal
+#' @noRd
+is_valid_orcid <- function(val) {
+  assertthat::assert_that(is.character(val))
+
+  grepl("^\\d{4}-\\d{4}-\\d{4}-\\d{3}", val)
+}

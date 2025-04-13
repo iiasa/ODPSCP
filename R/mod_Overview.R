@@ -70,6 +70,8 @@ mod_Overview_ui <- function(id){
                                 icon = shiny::icon("plus")),
             shiny::actionButton(inputId = ns("remove_author"), label = "Remove last author row",
                                 icon = shiny::icon("minus")),
+            shiny::actionButton(inputId = ns("search_orcid"), label = "Search ORCID",
+                                icon = shiny::icon("search")),
             shiny::pre("(Doubleclick on an added row to change the input values)"),
             shiny::br()
           ),
@@ -449,11 +451,13 @@ mod_Overview_server <- function(id, results, parentsession){
       }
     })
 
+    #### Authors ---------
     # Authors
     authors <- shiny::reactiveVal(
       data.frame(firstname = character(0),
                  surname = character(0),
-                 orcid = character(0) )
+                 orcid = character(0),
+                 stringsAsFactors = FALSE )
     )
 
     # Events for author table
@@ -491,6 +495,68 @@ mod_Overview_server <- function(id, results, parentsession){
       authors(modified_data)
     })
 
+    shiny::observeEvent(input$search_orcid, {
+      shiny::showModal(
+        shiny::modalDialog(
+        shiny::textInput(ns("orcidInput"), "Enter ORCID:", placeholder = "e.g., 0000-0002-7569-1390"),
+        footer = shiny::tagList(
+          shiny::modalButton("Cancel"),
+          shiny::actionButton(ns("submitOrcid"), "Search ORCID", class = "btn-primary")
+        )
+      ))
+    })
+
+    # Validate and search for ORCID
+    shiny::observeEvent(input$submitOrcid, {
+      shiny::removeModal()
+      shiny::req(input$orcidInput)
+
+      # Get the ORCID from the input
+      orcid <- input$orcidInput
+
+      if(!is_valid_orcid(orcid)) {
+        shinyWidgets::sendSweetAlert(
+          session = session,
+          title = "Invalid ORCID",
+          closeOnClickOutside = TRUE, showCloseButton = TRUE,
+          text = "Please enter a valid ORCID in the format: 0000-0000-0000-0000",
+          type = "error"
+        )
+        return(NULL)
+      }
+
+      # Get the names
+      new_name <- try({ get_names_from_orcid(orcid) },silent = TRUE)
+
+      # Check if a name was found, otherwise show warning
+      if(inherits(new_name, "try-error")){
+        shiny::showNotification(
+          "No names were found for the provided ORCID.",
+          duration = 5, type = "warning"
+        )
+        return(NULL)
+      }
+
+      if(is.null(new_name)){
+        shiny::showNotification(
+          "No names were found for the provided ORCID.",
+          duration = 5, type = "warning"
+        )
+        return(NULL)
+      }
+
+      # Otherwise append the name to the authors table
+      if(!is.null(new_name)){
+        # Update authors reactive data frame
+        current_data <- authors()
+        new_data <- current_data |> dplyr::add_row(
+          data.frame(firstname = new_name[[1]],
+                     surname = new_name[[2]],
+                     orcid = orcid)
+        )
+        authors(new_data)
+      }
+    })
     # ----- #
     #### Study region updates ####
 
