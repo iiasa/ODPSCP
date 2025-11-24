@@ -55,6 +55,12 @@ library(ODPSCP)
 ODPSCP::run_app()
 ```
 
+## Reference
+When using the ODPSCP in a report or publication, please always cite the publication as well as the current version number of the protocol (part of the export).
+
+Jung, M., Adams, V. M., Alagador, D., Álvarez-Romero, J. G., Araujo, M. B., Arponen, A., Beger, M., Beher, J., Carvalho, S. B., Giakoumi, S., Hanson, J. O., Hermoso, V., Jantke, K., Kujala, H., McGowan, J., Metaxas, A., O'Connor, L., Salgado-Rojas, J., Schuster, R., … Visconti, P. (2025). An interoperable and standardized protocol for reporting systematic conservation planning projects. Conservation Science and Practice, 7(7), e70097. https://doi.org/10.1111/csp2.70097
+
+
 ## Contribution
 
 The code is open source and contributions are welcome. The code is
