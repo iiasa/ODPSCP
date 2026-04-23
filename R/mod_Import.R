@@ -135,7 +135,7 @@ mod_Import_server <- function(id, results, parentsession){
           # ODPSCP import functions
           new <- imports()
 
-          # First get types for all ids
+          # First get types for all ids (single-pass, no repeated YAML reads)
           ft <- get_protocol_fieldtypes()
 
           # Now iterate over each field and update respectively
@@ -155,23 +155,12 @@ mod_Import_server <- function(id, results, parentsession){
             #}
             # message(ft$id[i], "-", val)
               results[[ft$id[i]]] <- val
-              ## FIXME:
-              # Somehow failing to render in export table
-              # Trigger some updaters...
-              # Trigger
-              # gargoyle::trigger(paste0("import_",ft$group[i]),
-              #                   session = parentsession)
-              # if(ft$id[i] == "studyname"){
-              #   print("Updating studyname")
-              #   shiny::updateTextAreaInput(parentsession,inputId = "studyname",
-              #                              label = "test")
-              # }
-            # }
+            }
           }
           shiny::showNotification("Existing protocol sucessfully loaded!",
                                   duration = 5, closeButton = TRUE, type = "message")
         }
-      }
+
     })
   })
 }

@@ -1,7 +1,7 @@
 # Basic information
 protocol:
   name: ODPSCP
-  version: '0.5'
+  version: '0.6'
   repository: 'https://github.com/iiasa/ODPSCP'
   website: 'https://odpscp.iiasa.ac.at/'
   last_updated: 2024-09-30

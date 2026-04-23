@@ -1,6 +1,6 @@
 Package: ODPSCP
 Title: A standard reporting protocol for conservation planning
-Version: 0.5
+Version: 0.6
 Authors@R: 
     person("Martin", "Jung", , "jung@iiasa.ac.at", role = c("cre", "aut"))
 Description: This repository contains the environment and shiny code
@@ -22,6 +22,7 @@ Imports:
     ggplot2,
     golem (>= 0.4.1),
     leaflet,
+    leaflet.extras,
     officer,
     readr,
     markdown,
@@ -47,4 +48,4 @@ Suggests:
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3

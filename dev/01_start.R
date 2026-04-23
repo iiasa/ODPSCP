@@ -26,7 +26,7 @@ golem::fill_desc(
   author_last_name = "Jung", # Your Last Name
   author_email = "jung@iiasa.ac.at", # Your Email
   repo_url = "https://github.com/iiasa/ODPSCP", # The URL of the GitHub Repo (optional),
-  pkg_version = "1.0" # The Version of the package containing the App
+  pkg_version = "0.6" # The Version of the package containing the App
 )
 
 ## Set {golem} options ----

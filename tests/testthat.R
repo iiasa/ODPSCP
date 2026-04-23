@@ -6,7 +6,18 @@
 # * https://r-pkgs.org/testing-design.html#sec-tests-files-overview
 # * https://testthat.r-lib.org/articles/special-files.html
 
-library(testthat)
-library(ODPSCP)
+silence_built_under_warning <- function(expr) {
+	withCallingHandlers(
+		expr,
+		warning = function(condition) {
+			if (grepl("was built under R version", conditionMessage(condition), fixed = TRUE)) {
+				invokeRestart("muffleWarning")
+			}
+		}
+	)
+}
+
+silence_built_under_warning(library(testthat))
+silence_built_under_warning(library(ODPSCP))
 
 test_check("ODPSCP")

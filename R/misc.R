@@ -27,7 +27,10 @@ spatial_to_sf <- function(file, make_valid = TRUE){
     # List files
     ll <- list.files(tmpdir, full.names = TRUE)
     ll <- ll[assertthat::has_extension(ll, 'shp')]
-    if(length(ll)==0) return(NULL)
+    if(length(ll) == 0) {
+      base::unlink(tmpdir, recursive = TRUE)
+      return(NULL)
+    }
     if(length(ll)>1) ll <- ll[1] # Take first
 
     out <- sf::st_read(ll, quiet = TRUE)
@@ -71,6 +74,44 @@ spatial_to_sf <- function(file, make_valid = TRUE){
   return(out)
 }
 
+#' Small helper for spatial conversion from sf to wkt
+#' @param val A [`sf`] or [`sfc`] object with the study region
+#' @return A [`character`] with a WKT.
+#' @noRd
+format_sf_to_studyregion_text <- function(val){
+  assertthat::assert_that(inherits(val, c("sf", "sfc")))
+
+  val <- sf::st_as_sfc(val)
+  if(length(val) == 0) return(NULL)
+
+  if(is.na(sf::st_crs(val))){
+    val <- sf::st_set_crs(val, value = sf::st_crs(4326))
+  }
+
+  if(!all(sf::st_is_valid(val))){
+    val <- sf::st_make_valid(val)
+  }
+
+  val <- val |>
+    sf::st_cast("MULTIPOLYGON", warn = FALSE) |>
+    sf::st_transform(crs = sf::st_crs(4326))
+
+  if(length(val) > 1){
+    combined <- sf::st_combine(val)
+    cast_combined <- try(
+      sf::st_cast(combined, "MULTIPOLYGON", warn = FALSE),
+      silent = TRUE
+    )
+    val <- if(inherits(cast_combined, "try-error")) combined else cast_combined
+  }
+
+  paste0(
+    sf::st_crs(val) |> sf::st_as_text(),
+    ";",
+    sf::st_as_text(val)
+  )
+}
+
 #' Small helper for spatial conversion to wkt
 #' @param val A [`list`] with the datapath for the spatial file
 #' @return A [`character`] with a WKT.
@@ -86,12 +127,7 @@ format_studyregion_to_text <- function(val){
   if(inherits(val,"try-error")){
     val <- "Studyregion could not be loaded?"
   } else {
-    # Convert to sfc
-    val <- val |> sf::st_as_sfc()
-    val <- paste0(
-      # Also append SRID in front
-      sf::st_crs(val) |> sf::st_as_text(),";", sf::st_as_text(val)
-    )
+    val <- format_sf_to_studyregion_text(val)
   }
   return(val)
 }
@@ -138,7 +174,7 @@ get_names_from_orcid <- function(val){
 
   # Get the request from online
   url <- paste0("https://pub.orcid.org/v3.0/", val, "/person")
-  res <- try({ httr::GET(url, httr::accept("application/json")) },silent = TRUE)
+  res <- try({ httr::GET(url, httr::accept("application/json"), httr::timeout(5)) }, silent = TRUE)
 
   # If the request failed, return NULL
   if(inherits(res, "try-error")) {

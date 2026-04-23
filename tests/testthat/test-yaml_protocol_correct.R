@@ -1,6 +1,4 @@
 test_that("Check that the protocol can be parsed", {
-  library(yaml)
-
   # Path to protocol
   # FIXME: Ideally version nr agnostic
   path_protocol <- system.file("01_protocol.yaml", package = "ODPSCP",mustWork = TRUE)
@@ -9,7 +7,7 @@ test_that("Check that the protocol can be parsed", {
   expect_true( file.exists(path_protocol) )
 
   # Check that it can be parsed
-  expect_no_error(pp <- load_protocol(path_protocol) )
+  expect_no_error(pp <- suppressWarnings(load_protocol(path_protocol)) )
   expect_type(pp, "list")
   expect_gte(length(pp), 2)
 

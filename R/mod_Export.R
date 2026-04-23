@@ -138,16 +138,17 @@ mod_Export_server <- function(id, results){
                     editable = FALSE)
     })
 
-    # --- #
-    # Check for mandatory outputs and highlight them in text
-    # shiny::observe(results, {
-    #   miss <- check_protocol_mandatory(results)
-    #   output$missingtext <- shiny::renderText({
-    #     paste0("No entry found for mandatory fields:", miss)
-    #   })
-    #   print("test")
-    #   shinyjs::toggle("downloadData")
-    # })
+    # Show which mandatory fields are still empty
+    shiny::observe({
+      miss <- check_protocol_mandatory(rvtl(results))
+      output$missingtext <- shiny::renderText({
+        if(length(miss) > 0){
+          paste0("Missing mandatory fields: ", paste(miss, collapse = ", "))
+        } else {
+          ""
+        }
+      })
+    })
 
     # Get output format
     oftype <- shiny::reactive({input$downloadFormat})
@@ -203,7 +204,6 @@ mod_Export_server <- function(id, results){
         )
       },
       content = function(file) {
-        # Create outputs from results
         shiny::showNotification("Preparing zipped outputs which can take a little while...",
                                 duration = 3, type = "message")
         # First csv

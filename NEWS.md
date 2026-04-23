@@ -1,3 +1,9 @@
+## Version 0.6
+
+* Support for directly drawing on the map.
+* Bug fixes with feature tables.
+* Some further test examples.
+
 ## Version 0.5
 
 * The design tab now includes a separate elements recording if, and what type of monitoring and evaluation exists.

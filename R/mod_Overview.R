@@ -148,12 +148,21 @@ mod_Overview_ui <- function(id){
             solidHeader = TRUE,
             status = "secondary",
             collapsible = FALSE,
-            shiny::div("Here the planning unit grid can be provided as geospatial dataset. Currently
-                       supported is the upload of gridded or vector planning unit files.
-                       Accepted formats are shapefiles, geopackages or geotiffs."),
+            shiny::div("Here the planning unit grid can be provided as geospatial dataset or
+                       the study region can be drawn directly on the map below. Accepted upload
+                       formats are shapefiles, geopackages or geotiffs."),
             shiny::br(),
-            shiny::helpText("Note that ESRI Shapefiles should be uploaded as zipped file
-                            containing a 'shp', 'dbf', 'shx' and 'prj' file. "),
+            shiny::tags$style(
+              shiny::HTML(
+                paste0(
+                  "#", ns("studymap_wrapper"), ".studyregion-draw-disabled .leaflet-draw-toolbar a,",
+                  "#", ns("studymap_wrapper"), ".studyregion-draw-disabled .leaflet-draw-actions a {",
+                  "pointer-events: none; opacity: 0.35; filter: grayscale(1); cursor: not-allowed;}",
+                  "#", ns("studymap_wrapper"), ".studyregion-draw-disabled .leaflet-draw-toolbar {",
+                  "opacity: 0.7;}"
+                )
+              )
+            ),
             # shiny::div("Alternatively a boundary box (longitude-latitude) can be provided."),
             shiny::hr(),
             # --- #
@@ -161,7 +170,8 @@ mod_Overview_ui <- function(id){
               inputId = ns("spatial_selector"),
               label = "",
               choices = c(#"Bounding box",
-                          "Spatial file"),
+                          "Spatial file", "Draw on map"),
+              selected = "Spatial file",
               individual = TRUE,
               checkIcon = list(
                 yes = tags$i(class = "fa fa-circle",
@@ -203,10 +213,21 @@ mod_Overview_ui <- function(id){
                   ".tif", ".geotiff"
                 )
               ),
+              shiny::helpText("Note that ESRI Shapefiles should be uploaded as zipped file
+                              containing a 'shp', 'dbf', 'shx' and 'prj' file."),
               shiny::helpText("Note that the maximum file size is 30 MB and larger files might take a while to render.")
             ),
+            shiny::conditionalPanel(
+              condition = "input.spatial_selector == 'Draw on map'",
+              ns = ns,
+              shiny::helpText("Click the 'Draw on map' button above to enable the polygon and rectangle tools on the map.")
+            ),
             shiny::br(),
-            leaflet::leafletOutput(ns("studymap")),
+            shiny::div(
+              id = ns("studymap_wrapper"),
+              class = "studyregion-draw-disabled",
+              leaflet::leafletOutput(ns("studymap"), height = "500px")
+            ),
             shiny::actionButton(inputId = ns("updatemap"),
                                 label = "Update View", icon = shiny::icon("refresh")),
             shiny::actionButton(inputId = ns("clearmap"),
@@ -439,12 +460,161 @@ mod_Overview_server <- function(id, results, parentsession){
 
     # Study overview page --------------------------------------------------------------
 
+    studyregion_sf <- shiny::reactiveVal(NULL)
+    studyregion_value <- shiny::reactiveVal(NULL)
+
+    studyregion_ring_matrix <- function(coords){
+      if(is.matrix(coords)){
+        ring <- coords[, 1:2, drop = FALSE]
+      } else {
+        ring <- do.call(rbind, lapply(coords, function(point){
+          as.numeric(unlist(point, use.names = FALSE)[1:2])
+        }))
+      }
+
+      if(!all(ring[1, ] == ring[nrow(ring), ])){
+        ring <- rbind(ring, ring[1, , drop = FALSE])
+      }
+
+      ring
+    }
+
+    studyregion_feature_to_sfc <- function(feature){
+      geometry <- feature$geometry
+      if(is.null(geometry$type) || is.null(geometry$coordinates)) return(NULL)
+
+      if(geometry$type == "Polygon"){
+        polygon <- sf::st_polygon(
+          lapply(geometry$coordinates, studyregion_ring_matrix)
+        )
+        return(sf::st_sfc(polygon, crs = 4326))
+      }
+
+      if(geometry$type == "MultiPolygon"){
+        multipolygon <- sf::st_multipolygon(
+          lapply(geometry$coordinates, function(polygon){
+            lapply(polygon, studyregion_ring_matrix)
+          })
+        )
+        return(sf::st_sfc(multipolygon, crs = 4326))
+      }
+
+      NULL
+    }
+
+    studyregion_from_draw <- function(draw_data){
+      if(is.null(draw_data)) return(NULL)
+
+      features <- draw_data$features
+      if(is.null(features)) features <- list(draw_data)
+      if(length(features) == 0) return(NULL)
+
+      geoms <- lapply(features, studyregion_feature_to_sfc)
+      geoms <- Filter(Negate(is.null), geoms)
+      if(length(geoms) == 0) return(NULL)
+
+      region <- sf::st_sf(geometry = do.call(c, geoms)) |>
+        sf::st_cast("MULTIPOLYGON", warn = FALSE)
+      sf::st_geometry(region) <- "geometry"
+      region
+    }
+
+    set_studyregion <- function(region){
+      if(is.null(region)){
+        studyregion_sf(NULL)
+        studyregion_value(NULL)
+        return(invisible(NULL))
+      }
+
+      if(!all(sf::st_is_valid(region))){
+        region <- sf::st_make_valid(region)
+      }
+
+      if(is.na(sf::st_crs(region))){
+        region <- sf::st_set_crs(region, value = sf::st_crs(4326))
+      }
+
+      region <- region |>
+        sf::st_transform(crs = sf::st_crs(4326)) |>
+        sf::st_cast("MULTIPOLYGON", warn = FALSE)
+
+      sf::st_geometry(region) <- "geometry"
+      studyregion_sf(region)
+      studyregion_value(format_sf_to_studyregion_text(region))
+    }
+
+    update_studyregion_map <- function(region = studyregion_sf()){
+      map <- leaflet::leafletProxy("studymap", session) |>
+        leaflet::clearGroup("studyregion")
+
+      if(inherits(region, "sf")){
+        bbox <- sf::st_bbox(region)
+        map <- map |>
+          leaflet::addPolygons(data = region,
+                               stroke = TRUE,
+                               color = "darkred",
+                               weight = 2,
+                               fillOpacity = 0.15,
+                               group = "studyregion")
+
+        if(all(is.finite(bbox))){
+          map <- map |>
+            leaflet::fitBounds(lng1 = bbox[["xmin"]],
+                               lat1 = bbox[["ymin"]],
+                               lng2 = bbox[["xmax"]],
+                               lat2 = bbox[["ymax"]])
+        }
+      }
+
+      map
+    }
+
+    add_studyregion_toolbar <- function(map){
+      map |>
+        leaflet.extras::addDrawToolbar(
+          targetGroup = "studyregion",
+          singleFeature = TRUE,
+          polygonOptions = leaflet.extras::drawPolygonOptions(),
+          rectangleOptions = leaflet.extras::drawRectangleOptions(),
+          polylineOptions = FALSE,
+          circleOptions = FALSE,
+          markerOptions = FALSE,
+          circleMarkerOptions = FALSE,
+          editOptions = leaflet.extras::editToolbarOptions()
+        )
+    }
+
+    toggle_studyregion_draw_controls <- function(enable_draw){
+      if(isTRUE(enable_draw)){
+        shinyjs::removeClass(id = "studymap_wrapper",
+                             class = "studyregion-draw-disabled")
+      } else {
+        leaflet::leafletProxy("studymap", session) |>
+          leaflet.extras::removeDrawToolbar(clearFeatures = FALSE) |>
+          add_studyregion_toolbar()
+
+        shinyjs::addClass(id = "studymap_wrapper",
+                          class = "studyregion-draw-disabled")
+      }
+    }
+
+    create_studyregion_map <- function(){
+      leaflet::leaflet(options = leaflet::leafletOptions(zoomControl = TRUE)) |>
+        leaflet::addTiles(leaflet::providers$OpenStreetMap) |>
+        leaflet::addProviderTiles(leaflet::providers$OpenStreetMap,
+                                  options = leaflet::providerTileOptions(noWrap = TRUE),
+                                  group = "Open Street Map") |>
+        add_studyregion_toolbar()
+    }
+
     # Load all parameters in overview and add
     ids <- get_protocol_ids(group = "overview")
     shiny::observe({
       for(id in ids){
         if(id == "authors_table"){
           results[[id]] <- data.frame(authors()) |> asplit(MARGIN = 1)
+        } else if(id == "studyregion"){
+          results[[id]] <- studyregion_value()
         } else {
           results[[id]] <- input[[id]]
         }
@@ -574,105 +744,82 @@ mod_Overview_server <- function(id, results, parentsession){
     # } else {
     # }
 
-    # Test default
-    myregion <- shiny::reactive({
-      # Get the studypath
+    shiny::observeEvent(input$studyregion, {
       file <- input$studyregion$datapath
       shiny::req(file)
 
       if(!is.null(input$studyregion)){
-        # Check file size in MB
         ss <- (file.size(file) / 1048576)
         if(ss > 3){
           shiny::showNotification("Uploaded file over 3 MB. Loading can take a while...",
                                   duration = 5, type = "message")
         }
-        # Load spatial file
-        out <- try({ spatial_to_sf(file, make_valid = FALSE) },silent = TRUE)
+
+        out <- try({ spatial_to_sf(file, make_valid = FALSE) }, silent = TRUE)
         if(inherits(out, "try-error")){
           shinyWidgets::sendSweetAlert(
             session = session,
             title = "Error",
-            closeOnClickOutside = TRUE,showCloseButton = TRUE,
+            closeOnClickOutside = TRUE, showCloseButton = TRUE,
             text = "The upload could not be processed. Try converting format or simplifying the file.",
             type = "error"
           )
           return(NULL)
         }
-        return(out)
-      } else {
-        return(NULL)
+
+        set_studyregion(out)
+        update_studyregion_map()
       }
     })
 
-    # Observe Event to automatically draw uploaded file
-    shiny::observeEvent(myregion(), {
-      if(inherits(myregion(), "sf")){
-        # Try to redraw
-        map <- leaflet::leafletProxy("studymap", session) |>
-          leaflet::clearShapes() |>
-          leaflet::addPolygons(data = myregion(),
-                               stroke = TRUE,
-                               color = "darkred")
-        # Calculate centroid and zoom in
-        cent <- cbind(
-          mean( sf::st_coordinates( myregion() )[,1] ),
-          mean( sf::st_coordinates( myregion() )[,2] )
-        )
-        map <- map |>
-          leaflet::setView(
-            lng = cent[,1],
-            lat = cent[,2],
-            zoom = 7
-          )
-        map
+    shiny::observeEvent(input$studymap_draw_new_feature, {
+      region <- studyregion_from_draw(input$studymap_draw_new_feature)
+      if(inherits(region, "sf")){
+        set_studyregion(region)
+        update_studyregion_map()
       }
     })
+
+    shiny::observeEvent(input$studymap_draw_edited_features, {
+      region <- studyregion_from_draw(input$studymap_draw_edited_features)
+      if(inherits(region, "sf")){
+        set_studyregion(region)
+        update_studyregion_map()
+      }
+    })
+
+    shiny::observeEvent(input$studymap_draw_deleted_features, {
+      set_studyregion(NULL)
+      update_studyregion_map(NULL)
+    })
+
+    session$onFlushed(function(){
+      toggle_studyregion_draw_controls(FALSE)
+    }, once = TRUE)
+
+    shiny::observeEvent(input$spatial_selector, {
+      toggle_studyregion_draw_controls(
+        identical(input$spatial_selector, "Draw on map")
+      )
+    }, ignoreInit = TRUE)
 
     # Reactive studyregion redraw
     shiny::observeEvent(input$updatemap, {
-      if(inherits(myregion(), "sf")){
-        # If my region is not null, update
-        map <- leaflet::leafletProxy("studymap", session) |>
-          leaflet::clearShapes() |>
-          leaflet::addPolygons(data = myregion(),
-                               stroke = TRUE,
-                               color = "darkred")
-
-        # Calculate centroid and zoom in
-        cent <- cbind(
-          mean( sf::st_coordinates( myregion() )[,1] ),
-          mean( sf::st_coordinates( myregion() )[,2] )
-        )
-        map <- map |>
-          leaflet::setView(
-            lng = cent[,1],
-            lat = cent[,2],
-            zoom = 7
-            )
-        map
+      if(inherits(studyregion_sf(), "sf")){
+        update_studyregion_map()
       }
     })
 
     # Clean map
     shiny::observeEvent(input$clearmap, {
-      map <- leaflet::leaflet(options = leaflet::leafletOptions(zoomControl = TRUE)) |>
-        leaflet::addTiles(leaflet::providers$OpenStreetMap) |>
-        leaflet::addProviderTiles(leaflet::providers$OpenStreetMap,
-                                  options = leaflet::providerTileOptions(noWrap = TRUE),
-                                  group="Open Street Map")
-      output$studymap <- leaflet::renderLeaflet({map})
+      set_studyregion(NULL)
+      leaflet::leafletProxy("studymap", session) |>
+        leaflet::clearGroup("studyregion")
     })
 
     # Render default study region leaflet code
     output$studymap <- leaflet::renderLeaflet({
-      # generate base leaflet
-      map <- leaflet::leaflet(options = leaflet::leafletOptions(zoomControl = TRUE)) |>
-        leaflet::addTiles(leaflet::providers$OpenStreetMap) |>
-        leaflet::addProviderTiles(leaflet::providers$OpenStreetMap,
-                                  options = leaflet::providerTileOptions(noWrap = TRUE),
-                                  group="Open Street Map")
-      map
+      create_studyregion_map()
     })
 
     # ----- #

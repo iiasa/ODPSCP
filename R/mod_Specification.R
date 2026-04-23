@@ -144,7 +144,7 @@ mod_Specification_ui <- function(id){
                            # Any other cost description?
                            shiny::textAreaInput(inputId = ns("pu_costs"), label = "Describe process of creating costs",
                                          placeholder = 'Provide some detail on how costs were defined or created.',
-                                         height = "45px", width = "100%", resize = "none")
+                                         height = "45px", width = "100%", resize = "both")
                          )
                     )
                 ) # End column
@@ -510,6 +510,90 @@ mod_Specification_ui <- function(id){
   ) # End tab
 }
 
+#' Read and validate uploaded delimited tables
+#'
+#' @param datapath Temporary path for an uploaded file.
+#' @param filename Original uploaded file name.
+#' @param expected_names Expected column names in order.
+#' @param check_names Whether uploaded columns must match expected names.
+#'
+#' @return A list with `data` and `message` entries.
+#' @noRd
+read_uploaded_specification_table <- function(datapath, filename, expected_names,
+                                             check_names = TRUE) {
+  if (is.null(datapath) || is.null(filename)) {
+    return(list(data = NULL, message = NULL))
+  }
+
+  ext <- tolower(tools::file_ext(filename))
+  reader <- switch(
+    ext,
+    csv = readr::read_csv,
+    tsv = readr::read_tsv,
+    NULL
+  )
+
+  if (is.null(reader)) {
+    return(list(
+      data = NULL,
+      message = "Uploaded file must be in csv or tsv format."
+    ))
+  }
+
+  data <- tryCatch(
+    reader(datapath, show_col_types = FALSE),
+    error = function(error) {
+      NULL
+    }
+  )
+
+  if (is.null(data)) {
+    return(list(
+      data = NULL,
+      message = "Uploaded file could not be read."
+    ))
+  }
+
+  if (ncol(data) != length(expected_names)) {
+    return(list(
+      data = NULL,
+      message = paste0(
+        "Uploaded data requires exactly ",
+        length(expected_names),
+        " columns",
+        if (check_names) {
+          paste0(" named ", paste(expected_names, collapse = ", "), ".")
+        } else {
+          "."
+        }
+      )
+    ))
+  }
+
+  if (check_names) {
+    uploaded_names <- trimws(tolower(names(data)))
+    expected_names_norm <- trimws(tolower(expected_names))
+
+    if (!identical(uploaded_names, expected_names_norm)) {
+      return(list(
+        data = NULL,
+        message = paste0(
+          "Uploaded columns must be named ",
+          paste(expected_names, collapse = ", "),
+          "."
+        )
+      ))
+    }
+  }
+
+  names(data) <- expected_names
+
+  list(
+    data = as.data.frame(data, stringsAsFactors = FALSE),
+    message = NULL
+  )
+}
+
 #' Specification Server Functions
 #'
 #' @importFrom shiny observe observeEvent
@@ -601,29 +685,22 @@ mod_Specification_server <- function(id, results, parentsession){
       feature_table(modified_data)
     })
 
-    # Load an external file
-    loadedfeatures <- shiny::reactive({
-      file <- input$load_feature$datapath
-      shiny::req(file)
-
-      data <- readr::read_csv(file, show_col_types = FALSE)
-      # Do some checks?
-      shiny::validate(
-        shiny::need(ncol(data)!=3, "Uploaded data requires exactly 3 columns")
+    shiny::observeEvent(input$load_feature, {
+      upload_result <- read_uploaded_specification_table(
+        datapath = input$load_feature$datapath,
+        filename = input$load_feature$name,
+        expected_names = c("name", "group", "number")
       )
-      names(data) <- c("name", "group", "number")
-      return(data)
-    })
 
-    # Observe event to update data table
-    shiny::observeEvent(loadedfeatures(), {
-      output$featurelist <- DT::renderDT({
-        DT::datatable(loadedfeatures(), rownames = FALSE,
-                      colnames = c("Feature name", "Feature group", "Total number"),
-                      filter = "none", selection = "none",
-                      style = "auto",
-                      editable = TRUE)
-      })
+      if (!is.null(upload_result$message)) {
+        shiny::showNotification(upload_result$message,
+                                duration = 5, type = "warning")
+        return()
+      }
+
+      if (!is.null(upload_result$data)) {
+        feature_table(upload_result$data)
+      }
     })
 
     # --- #
@@ -674,31 +751,23 @@ mod_Specification_server <- function(id, results, parentsession){
       zones_table(modified_data)
     })
 
-    # Load an external file
-    loadedzones <- shiny::reactive({
-      file <- input$load_zones$datapath
-      shiny::req(file)
-
-      if(is.null(input$load_zones)){
-        return(NULL)
-      }
-      data <- readr::read_csv(file, show_col_types = FALSE)
-      # Do some checks?
-      shiny::validate(
-        shiny::need(ncol(data)!=4, "Uploaded data requires exactly 4 columns")
+    shiny::observeEvent(input$load_zones, {
+      upload_result <- read_uploaded_specification_table(
+        datapath = input$load_zones$datapath,
+        filename = input$load_zones$name,
+        expected_names = c("name", "aim", "costs", "contributions"),
+        check_names = FALSE
       )
-      names(data) <- c("name", "aim", "costs", "contributions")
-      return(data)
-    })
-    # Automatically render the loadedzones
-    # Observe event to update data table
-    shiny::observeEvent(loadedzones(), {
-      output$specificzones <- DT::renderDT({
-        DT::datatable(loadedzones(), rownames = FALSE,
-                      filter = "none", selection = "none",
-                      style = "auto",
-                      editable = TRUE)
-      })
+
+      if (!is.null(upload_result$message)) {
+        shiny::showNotification(upload_result$message,
+                                duration = 5, type = "warning")
+        return()
+      }
+
+      if (!is.null(upload_result$data)) {
+        zones_table(upload_result$data)
+      }
     })
 
     # Events for hiding data input boxes
