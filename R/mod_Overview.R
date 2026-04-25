@@ -12,9 +12,29 @@
 mod_Overview_ui <- function(id){
   ns <- NS(id)
 
+  link_status_label <- function(text, status_id){
+    shiny::tags$span(
+      class = "odpscp-link-label",
+      shiny::span(text),
+      shiny::htmlOutput(outputId = ns(status_id), inline = TRUE)
+    )
+  }
+
   bs4Dash::tabItem(
     tabName = "Overview",
     shiny::fluidPage(
+      shiny::tags$style(
+        shiny::HTML(
+          paste(
+            ".odpscp-link-label {display: inline-flex; align-items: center; gap: 0.35rem;}",
+            ".odpscp-link-status {display: inline-flex; align-items: center; justify-content: center; width: 1.15rem; min-width: 1.15rem;}",
+            ".odpscp-link-status.is-valid {color: #198754;}",
+            ".odpscp-link-status.is-invalid {color: #dc3545;}",
+            ".odpscp-link-status.is-empty {visibility: hidden;}",
+            sep = ""
+          )
+        )
+      ),
       shiny::fluidRow(
         shiny::column(width = 12,
             bs4Dash::box(
@@ -84,7 +104,8 @@ mod_Overview_ui <- function(id){
             status = "secondary",
             collapsible = FALSE,
             shiny::div("Who is the corresponding author? Here contact information can be added."),
-            shiny::textAreaInput(inputId = ns("authoremail"), label = "",
+            shiny::textAreaInput(inputId = ns("authoremail"),
+                          label = link_status_label("Email", "authoremail_status"),
                           placeholder = 'Email of the corresponding author',
                           height = "45px", width = "100%", resize = "none")
           ),
@@ -97,7 +118,8 @@ mod_Overview_ui <- function(id){
             status = "gray",
             collapsible = FALSE,
             shiny::div("Has the study already been published? If so, provide a reference."),
-            shiny::textAreaInput(inputId = ns("studylink"), label = "",
+            shiny::textAreaInput(inputId = ns("studylink"),
+                          label = link_status_label("Link", "studylink_status"),
                           placeholder = 'Link to the published study such as a DOI.',
                           height = "45px", width = "100%", resize = "none")
           )
@@ -338,7 +360,9 @@ mod_Overview_ui <- function(id){
                 shiny::conditionalPanel(
                   condition = "input.inputavailability == 'Yes'",
                   ns = ns,
-                  shiny::textAreaInput(inputId = ns('inputdata'), label = "Input data",
+                  shiny::textAreaInput(
+                    inputId = ns('inputdata'),
+                    label = link_status_label("Input data", "inputdata_status"),
                                        placeholder = 'If applicable please enter a link to the data storage repository.',
                                        height = "45px", width = "100%", resize = "none")
                 )
@@ -366,7 +390,9 @@ mod_Overview_ui <- function(id){
               shiny::conditionalPanel(
                 condition = "input.outputavailability == 'Yes'",
                 ns = ns,
-                shiny::textAreaInput(inputId = ns('outputdata'), label = "Output data",
+                shiny::textAreaInput(
+                  inputId = ns('outputdata'),
+                  label = link_status_label("Output data", "outputdata_status"),
                                      placeholder = 'If applicable please enter a link to the data storage repository.',
                                      height = "45px", width = "100%", resize = "none")
               )
@@ -396,7 +422,9 @@ mod_Overview_ui <- function(id){
               shiny::conditionalPanel(
                 condition = "input.codeavailability == 'Yes'",
                 ns = ns,
-                shiny::textAreaInput(inputId = ns('outputcode'), label = "Analysis code",
+                shiny::textAreaInput(
+                  inputId = ns('outputcode'),
+                  label = link_status_label("Analysis code", "outputcode_status"),
                                      placeholder = 'If applicable please enter a link to the code storage repository.',
                                      height = "45px", width = "100%", resize = "none")
               )
@@ -727,6 +755,65 @@ mod_Overview_server <- function(id, results, parentsession){
         authors(new_data)
       }
     })
+
+    #### Link validation -----
+
+    link_field_ids <- c("studylink", "inputdata", "outputdata", "outputcode")
+
+    render_field_status_icon <- function(status){
+
+      if(identical(status$state, "valid")) {
+        return(shiny::tags$span(
+          class = "odpscp-link-status is-valid",
+          title = status$message,
+          shiny::icon("check")
+        ))
+      }
+
+      if(identical(status$state, "invalid")) {
+        return(shiny::tags$span(
+          class = "odpscp-link-status is-invalid",
+          title = status$message,
+          shiny::icon("exclamation-triangle")
+        ))
+      }
+
+      shiny::tags$span(
+        class = "odpscp-link-status is-empty",
+        shiny::icon("check")
+      )
+    }
+
+    debounced_authoremail <- shiny::debounce(
+      shiny::reactive(input$authoremail),
+      millis = 500
+    )
+
+    output$authoremail_status <- shiny::renderUI({
+      render_field_status_icon(
+        get_email_field_status(debounced_authoremail())
+      )
+    })
+
+    debounced_link_inputs <- lapply(link_field_ids, function(field_id) {
+      shiny::debounce(shiny::reactive(input[[field_id]]), millis = 500)
+    })
+    names(debounced_link_inputs) <- link_field_ids
+
+    for(field_id in link_field_ids) {
+      local({
+        current_field <- field_id
+        current_input <- debounced_link_inputs[[current_field]]
+        current_output <- paste0(current_field, "_status")
+
+        output[[current_output]] <- shiny::renderUI({
+          render_field_status_icon(
+            get_link_field_status(current_input())
+          )
+        })
+      })
+    }
+
     # ----- #
     #### Study region updates ####
 

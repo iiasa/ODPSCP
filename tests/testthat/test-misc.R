@@ -33,4 +33,57 @@ testthat::test_that("Testing misc functions", {
   testthat::expect_true(
     is_valid_orcid("0000-0002-7569-1390")
   )
+
+  candidates <- extract_link_candidates(
+    "Study page: https://example.com/report. DOI: doi:10.1126/science.1213847"
+  )
+
+  testthat::expect_equal(
+    candidates,
+    c("https://example.com/report", "doi:10.1126/science.1213847")
+  )
+
+  testthat::expect_equal(
+    normalize_link_candidate("10.1126/science.1213847"),
+    "https://doi.org/10.1126/science.1213847"
+  )
+
+  testthat::expect_equal(
+    normalize_link_candidate("www.example.com/data"),
+    "https://www.example.com/data"
+  )
+
+  testthat::expect_null(
+    normalize_link_candidate("not a link")
+  )
+
+  testthat::expect_equal(
+    get_link_field_status("")$state,
+    "empty"
+  )
+
+  testthat::expect_equal(
+    get_link_field_status("not a link")$state,
+    "invalid"
+  )
+
+  testthat::expect_equal(
+    get_link_field_status("https://example.com/data")$state,
+    "valid"
+  )
+
+  testthat::expect_equal(
+    get_email_field_status("")$state,
+    "empty"
+  )
+
+  testthat::expect_equal(
+    get_email_field_status("name@provider.domain")$state,
+    "valid"
+  )
+
+  testthat::expect_equal(
+    get_email_field_status("name@provider")$state,
+    "invalid"
+  )
 })

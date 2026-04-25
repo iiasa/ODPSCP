@@ -219,3 +219,187 @@ is_valid_orcid <- function(val) {
 
   grepl("^\\d{4}-\\d{4}-\\d{4}-\\d{3}", val)
 }
+
+trim_link_candidate_text <- function(val) {
+  if(is.null(val) || length(val) != 1 || !is.character(val) || is.na(val)) {
+    return("")
+  }
+
+  val <- trimws(val)
+  leading_chars <- c("<", "[", "(", "\"", "'")
+  trailing_chars <- c(".", ",", ";", ":", "\"", "'", ")", "]", ">")
+
+  while(nzchar(val) && substr(val, 1, 1) %in% leading_chars) {
+    val <- substr(val, 2, nchar(val))
+  }
+
+  while(nzchar(val) && substr(val, nchar(val), nchar(val)) %in% trailing_chars) {
+    val <- substr(val, 1, nchar(val) - 1)
+  }
+
+  val
+}
+
+#' Extract URL or DOI candidates from free text
+#'
+#' @param text A [`character`] vector with one or more link candidates.
+#' @return A [`character`] vector containing URLs or DOIs found in `text`.
+#' @keywords internal
+#' @noRd
+extract_link_candidates <- function(text) {
+  if(is.null(text) || length(text) == 0 || !is.character(text)) {
+    return(character(0))
+  }
+
+  text <- paste(text, collapse = " ")
+  if(!nzchar(trimws(text))) {
+    return(character(0))
+  }
+
+  matches <- regmatches(
+    text,
+    gregexpr(
+      "(?i)(https?://[^\\s<>'\"]+|www\\.[^\\s<>'\"]+|doi:\\s*10\\.\\d{4,9}/[-._;()/:A-Z0-9]+|10\\.\\d{4,9}/[-._;()/:A-Z0-9]+)",
+      text,
+      perl = TRUE
+    )
+  )[[1]]
+
+  if(length(matches) == 0) {
+    return(character(0))
+  }
+
+  candidates <- vapply(matches, trim_link_candidate_text, character(1), USE.NAMES = FALSE)
+  unique(candidates[nzchar(candidates)])
+}
+
+#' Normalize URL and DOI candidates to a requestable URL
+#'
+#' @param val A [`character`] scalar containing a URL or DOI candidate.
+#' @return A normalized URL or `NULL` when the candidate is not a link.
+#' @keywords internal
+#' @noRd
+normalize_link_candidate <- function(val) {
+  if(is.null(val) || length(val) != 1 || !is.character(val) || is.na(val)) {
+    return(NULL)
+  }
+
+  val <- trim_link_candidate_text(val)
+
+  if(!nzchar(val)) {
+    return(NULL)
+  }
+
+  if(grepl("(?i)^doi:\\s*", val, perl = TRUE)) {
+    val <- sub("(?i)^doi:\\s*", "", val, perl = TRUE)
+  }
+
+  if(grepl("(?i)^https?://(dx\\.)?doi\\.org/", val, perl = TRUE)) {
+    return(val)
+  }
+
+  if(grepl("^10\\.\\d{4,9}/[-._;()/:A-Za-z0-9]+$", val, perl = TRUE)) {
+    return(paste0("https://doi.org/", val))
+  }
+
+  if(grepl("(?i)^www\\.", val, perl = TRUE)) {
+    val <- paste0("https://", val)
+  } else if(
+    !grepl("^[[:alpha:]][[:alnum:]+.-]*://", val, perl = TRUE) &&
+      grepl("^[[:alnum:].-]+\\.[[:alpha:]]{2,}(/.*)?$", val, perl = TRUE)
+  ) {
+    val <- paste0("https://", val)
+  }
+
+  parsed <- try(httr::parse_url(val), silent = TRUE)
+  if(inherits(parsed, "try-error")) {
+    return(NULL)
+  }
+
+  if(is.null(parsed$scheme) || !nzchar(parsed$scheme)) {
+    return(NULL)
+  }
+
+  if(is.null(parsed$hostname) || !nzchar(parsed$hostname)) {
+    return(NULL)
+  }
+
+  val
+}
+
+#' Summarize whether free text contains a valid link or DOI
+#'
+#' @param text A [`character`] vector with free-text link input.
+#' @return A [`list`] with a `state` and short `message`.
+#' @keywords internal
+#' @noRd
+get_link_field_status <- function(text) {
+  if(is.null(text) || length(text) == 0 || !is.character(text)) {
+    return(list(state = "empty", message = NULL))
+  }
+
+  text <- trimws(paste(text, collapse = " "))
+  if(!nzchar(text)) {
+    return(list(state = "empty", message = NULL))
+  }
+
+  candidates <- extract_link_candidates(text)
+  if(length(candidates) == 0L) {
+    return(list(
+      state = "invalid",
+      message = "Enter a valid URL or DOI."
+    ))
+  }
+
+  normalized <- vapply(
+    candidates,
+    function(candidate) !is.null(normalize_link_candidate(candidate)),
+    logical(1),
+    USE.NAMES = FALSE
+  )
+
+  if(!all(normalized)) {
+    return(list(
+      state = "invalid",
+      message = "Enter a valid URL or DOI."
+    ))
+  }
+
+  list(
+    state = "valid",
+    message = "Looks like a valid URL or DOI."
+  )
+}
+
+#' Summarize whether free text contains a valid email address
+#'
+#' @param text A [`character`] vector with free-text email input.
+#' @return A [`list`] with a `state` and short `message`.
+#' @keywords internal
+#' @noRd
+get_email_field_status <- function(text) {
+  if(is.null(text) || length(text) == 0 || !is.character(text)) {
+    return(list(state = "empty", message = NULL))
+  }
+
+  text <- trimws(paste(text, collapse = " "))
+  if(!nzchar(text)) {
+    return(list(state = "empty", message = NULL))
+  }
+
+  if(grepl(
+    "^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)+$",
+    text,
+    perl = TRUE
+  )) {
+    return(list(
+      state = "valid",
+      message = "Looks like a valid email address."
+    ))
+  }
+
+  list(
+    state = "invalid",
+    message = "Enter a valid email address."
+  )
+}
