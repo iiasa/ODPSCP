@@ -28,7 +28,7 @@ app_ui <- function(request) {
       dark = NULL,
       scrollToTop = TRUE,
       fullscreen = FALSE,
-      help = TRUE, # Default enable tooltips
+      help = FALSE, # Default enable tooltips
       # controlbar = bs4Dash::dashboardControlbar(),
       # Define header and footer
       header = bs4Dash::dashboardHeader(
@@ -208,6 +208,7 @@ golem_add_external_resources <- function() {
       path = app_sys("app/www"),
       app_title = "ODPSCP"
     ),
+    glossary_tooltip_resources(),
 
     # Add here other external resources
     # rintrojs::introjsUI(),

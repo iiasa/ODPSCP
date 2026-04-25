@@ -3,6 +3,8 @@
 * Support for directly drawing on the map.
 * Bug fixes with feature tables.
 * Some further test examples.
+* Implemented url and email validity check #11 #12
+* Now toolkit querying is enabled if help icon is checked #14
 
 ## Version 0.5
 

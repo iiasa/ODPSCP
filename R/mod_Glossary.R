@@ -14,20 +14,23 @@ mod_Glossary_ui <- function(id){
 
   bs4Dash::tabItem(
     tabName = "Glossary",
-    shiny::fluidPage(
-      shiny::fluidRow(
-        shiny::column(width = 2),
-        shiny::column(width = 12,
-                        bs4Dash::box(
-                          title = "Glossary",
-                          status = "primary",
-                          solidHeader = TRUE,
-                          collapsed = FALSE,
-                          width = 12,
-                          DT::DTOutput(outputId = ns('glossary_table'))
+    shiny::div(
+      `data-odpscp-glossary-skip` = "true",
+      shiny::fluidPage(
+        shiny::fluidRow(
+          shiny::column(width = 2),
+          shiny::column(width = 12,
+                          bs4Dash::box(
+                            title = "Glossary",
+                            status = "primary",
+                            solidHeader = TRUE,
+                            collapsed = FALSE,
+                            width = 12,
+                            DT::DTOutput(outputId = ns('glossary_table'))
+                          )
                         )
-                      )
-          )
+            )
+      )
     ) # End fluidpage
   ) # End of tabItem
 }

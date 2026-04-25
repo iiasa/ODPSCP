@@ -77,6 +77,7 @@ mod_Home_ui <- function(id){
                scientific community, publishers and editors and policy makers to make
                use of this protocol.",
                style= "font-size: 18px;"),
+             shiny::helpText("Use the ? toggle in the header to show or hide both example help and glossary definitions across the protocol."),
              # em(p("Please cite as follows:", style = "font-size: 18px;")),
              # p("<INSERT PREPRINT> DOI: ",
              #   a(href = '', '', target = "_blank", .noWS = "outside"), style= "font-size: 18px;"),
