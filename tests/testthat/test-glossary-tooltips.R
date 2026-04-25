@@ -1,5 +1,5 @@
 testthat::test_that("Glossary tooltip terms are prepared consistently", {
-  glossary_path <- testthat::test_path("..", "..", "inst", "glossary_table.csv")
+  glossary_path <- "inst/glossary_table.csv"
 
   entries <- get_glossary_tooltip_terms(path_glossary = glossary_path)
 
