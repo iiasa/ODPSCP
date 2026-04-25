@@ -1,5 +1,5 @@
 testthat::test_that("Glossary tooltip terms are prepared consistently", {
-  glossary_path <- "inst/glossary_table.csv"
+  glossary_path <- system.file("glossary_table.csv", package = "ODPSCP", mustWork = TRUE)
 
   entries <- get_glossary_tooltip_terms(path_glossary = glossary_path)
 
