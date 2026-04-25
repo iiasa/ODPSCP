@@ -51,7 +51,16 @@ app_server <- function(input, output, session) {
 
   # Bottom page buttons -------------------------------------------------------
   # Javascript to be rendered with shinyjs
-  jscode <- "function() {document.body.scrollTop = 0;}"
+  jscode <- paste(
+    "setTimeout(function() {",
+    "window.scrollTo({top: 0, left: 0, behavior: 'auto'});",
+    "document.documentElement.scrollTop = 0;",
+    "document.body.scrollTop = 0;",
+    "document.querySelectorAll('.content-wrapper, .content, section.content').forEach(function(el) {",
+    "el.scrollTop = 0;",
+    "});",
+    "}, 0);"
+  )
   shiny::observeEvent(input$start_new_protocol, {
     bs4Dash::updateTabItems(session,
                             inputId = "sidebarmenu", selected = "Overview")

@@ -10,8 +10,11 @@ $run_dev.*
 ^README\.Rmd$
 ^LICENSE\.md$
 ^CODE_OF_CONDUCT\.md$
+^CONTRIBUTING\.md$
 ^\.github$
 ^app\.R$
 ^rsconnect$
 ^deploy$
+^examples$
+^logs$
 ^\.httr-oauth$

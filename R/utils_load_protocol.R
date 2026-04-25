@@ -298,7 +298,7 @@ validate_protocol_results <- function(results, path_protocol = NULL){
       return("Incorrect study extent?")
     }
   } else {
-    v <- results |> dplyr::filter(element == 'extent') |> dplyr::pull(value)
+    v <- results$value[results$element == "extent"]
     if(!(v %in% template$overview$extent$options)) return("Incorrect study extent?")
   }
 
